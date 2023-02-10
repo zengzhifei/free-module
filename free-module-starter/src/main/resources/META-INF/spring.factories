@@ -1,2 +1,2 @@
 org.springframework.boot.autoconfigure.EnableAutoConfiguration=\
-com.chafree.free.common.module.autoconfigure.FreeMvcModuleAutoConfiguration
+com.stoicfree.free.common.module.autoconfigure.FreeMvcModuleAutoConfiguration
