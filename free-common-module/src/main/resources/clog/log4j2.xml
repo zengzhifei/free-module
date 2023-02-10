@@ -1,11 +1,11 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <configuration status="ERROR">
     <appenders>
-        <!--处理INFO级别的日志，并把该日志放到log/access.log文件中-->
+        <!--处理INFO级别的日志，并把该日志放到log/info.log文件中-->
         <RollingFile name="RollingFileInfo" fileName="./log/info.log"
                      filePattern="log/$${date:yyyy-MM}/info-%d{yyyy-MM-dd}-%i.log.gz">
             <Filters>
-                <!--只接受INFO级别的日志，其余的全部拒绝处理-->
+                <!--只接受DEBUG级别的日志，其余的全部拒绝处理-->
                 <ThresholdFilter level="DEBUG"/>
             </Filters>
             <PatternLayout charset="UTF-8"
