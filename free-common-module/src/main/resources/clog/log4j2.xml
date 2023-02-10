@@ -1,0 +1,67 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<configuration status="ERROR">
+    <appenders>
+        <!--处理INFO级别的日志，并把该日志放到log/access.log文件中-->
+        <RollingFile name="RollingFileInfo" fileName="./log/info.log"
+                     filePattern="log/$${date:yyyy-MM}/info-%d{yyyy-MM-dd}-%i.log.gz">
+            <Filters>
+                <!--只接受INFO级别的日志，其余的全部拒绝处理-->
+                <ThresholdFilter level="DEBUG"/>
+            </Filters>
+            <PatternLayout charset="UTF-8"
+                           pattern="[%p]\t%d\t[%t]\t[%X{bizMark}]\t[%X{X-B3-TraceId:-},%X{X-B3-SpanId:-}]\t%c{3}\t(%F\:%L)\t-%m%n"/>
+            <Policies>
+                <!--24 小时换一次名称-->
+                <TimeBasedTriggeringPolicy modulate="true" interval="1"/>
+            </Policies>
+            <!--最多保留30 个文件-->
+            <DefaultRolloverStrategy max="30"/>
+        </RollingFile>
+
+        <!--处理error级别的日志，并把该日志放到log/error.log文件中-->
+        <RollingFile name="RollingFileError" fileName="./log/error.log"
+                     filePattern="log/$${date:yyyy-MM}/error-%d{yyyy-MM-dd}-%i.log.gz">
+            <ThresholdFilter level="ERROR"/>
+            <PatternLayout charset="UTF-8"
+                           pattern="[%p]\t%d\t[%t]\t[%X{bizMark}]\t[%X{X-B3-TraceId:-},%X{X-B3-SpanId:-}]\t%c{3}\t(%F\:%L)\t-%m%n"/>
+            <Policies>
+                <!--24 小时换一次名称-->
+                <TimeBasedTriggeringPolicy modulate="true" interval="1"/>
+            </Policies>
+            <!--最多保留30 个文件-->
+            <DefaultRolloverStrategy max="30"/>
+        </RollingFile>
+
+        <Async name="async" bufferSize="1024" includeLocation="true">
+            <appender-ref ref="RollingFileInfo"/>
+            <appender-ref ref="RollingFileError"/>
+        </Async>
+    </appenders>
+
+    <loggers>
+        <root level="INFO">
+            <appender-ref ref="async"/>
+        </root>
+
+        <!--log4j2 自带过滤日志-->
+        <logger name="org.apache.catalina.startup.DigesterFactory" level="ERROR"/>
+        <logger name="org.apache.catalina.util.LifecycleBase" level="ERROR"/>
+        <logger name="org.apache.coyote.http11.Http11NioProtocol" level="WARN"/>
+        <logger name="org.apache.zookeeper" level="WARN"/>
+        <logger name="org.apache.sshd.common.util.SecurityUtils" level="WARN"/>
+        <logger name="org.apache.tomcat.util.net.NioSelectorPool" level="WARN"/>
+        <logger name="org.crsh.plugin" level="WARN"/>
+        <logger name="org.crsh.ssh" level="WARN"/>
+        <logger name="org.eclipse.jetty.util.component.AbstractLifeCycle" level="ERROR"/>
+        <logger name="org.hibernate.validator.internal.util.Version" level="WARN"/>
+        <logger name="org.springframework.boot.actuate.autoconfigure.CrshAutoConfiguration" level="WARN"/>
+        <logger name="org.springframework.boot.actuate.endpoint.jmx" level="WARN"/>
+        <logger name="org.thymeleaf" level="WARN"/>
+        <logger name="jdbc.connection" level="OFF"/>
+        <logger name="jdbc.audit" level="OFF"/>
+        <logger name="jdbc.resultset" level="OFF"/>
+        <logger name="jdbc.sqlonly" level="OFF"/>
+        <logger name="jdbc.sqltiming" level="INFO"/>
+        <logger name="jdbc.resultsettable" level="INFO"/>
+    </loggers>
+</configuration>
