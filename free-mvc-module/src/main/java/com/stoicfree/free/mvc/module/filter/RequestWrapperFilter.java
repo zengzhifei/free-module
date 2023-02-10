@@ -8,7 +8,6 @@ import javax.servlet.FilterConfig;
 import javax.servlet.ServletException;
 import javax.servlet.ServletRequest;
 import javax.servlet.ServletResponse;
-import javax.servlet.annotation.WebFilter;
 import javax.servlet.http.HttpServletRequest;
 
 import com.stoicfree.free.mvc.module.wrapper.BizHttpServletRequestWrapper;
@@ -17,8 +16,7 @@ import com.stoicfree.free.mvc.module.wrapper.BizHttpServletRequestWrapper;
  * @author zengzhifei
  * @date 2019/9/7 17:31
  */
-@WebFilter(urlPatterns = "/*")
-public class BaseFilter implements Filter {
+public class RequestWrapperFilter implements Filter {
     @Override
     public void init(FilterConfig filterConfig) {
     }
