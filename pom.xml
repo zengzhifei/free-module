@@ -21,6 +21,21 @@
         <spring-boot.version>2.1.18.RELEASE</spring-boot.version>
     </properties>
 
+    <dependencyManagement>
+        <dependencies>
+            <dependency>
+                <groupId>com.stoicfree</groupId>
+                <artifactId>free-common-module</artifactId>
+                <version>${project.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>com.stoicfree</groupId>
+                <artifactId>free-mvc-module</artifactId>
+                <version>${project.version}</version>
+            </dependency>
+        </dependencies>
+    </dependencyManagement>
+
     <dependencies>
         <!--springboot依赖-->
         <dependency>

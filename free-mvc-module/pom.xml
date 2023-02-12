@@ -14,6 +14,10 @@
 
     <dependencies>
         <dependency>
+            <groupId>com.stoicfree</groupId>
+            <artifactId>free-common-module</artifactId>
+        </dependency>
+        <dependency>
             <groupId>org.springframework.boot</groupId>
             <artifactId>spring-boot-starter-web</artifactId>
             <version>${spring-boot.version}</version>

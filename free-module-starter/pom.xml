@@ -16,12 +16,10 @@
         <dependency>
             <groupId>com.stoicfree</groupId>
             <artifactId>free-common-module</artifactId>
-            <version>${project.version}</version>
         </dependency>
         <dependency>
             <groupId>com.stoicfree</groupId>
             <artifactId>free-mvc-module</artifactId>
-            <version>${project.version}</version>
         </dependency>
     </dependencies>
 </project>
