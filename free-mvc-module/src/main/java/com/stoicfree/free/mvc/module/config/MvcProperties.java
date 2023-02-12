@@ -12,7 +12,7 @@ import lombok.Data;
 @Data
 @ConfigurationProperties(prefix = "free.mvc")
 public class MvcProperties {
-    private boolean enable = true;
+    private boolean enable = false;
 
     @NestedConfigurationProperty
     private RequestWrapperProperties requestWrapper = new RequestWrapperProperties();

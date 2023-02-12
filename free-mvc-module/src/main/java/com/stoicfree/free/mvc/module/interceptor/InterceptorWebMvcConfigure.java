@@ -19,9 +19,10 @@ import com.stoicfree.free.mvc.module.config.TimeCostProperties;
  * @date 2023/2/11 14:46
  */
 public class InterceptorWebMvcConfigure implements WebMvcConfigurer {
-    private final List<HandlerInterceptor> interceptors;
     @Autowired
     private MvcProperties mvcProperties;
+
+    private final List<HandlerInterceptor> interceptors;
 
     public InterceptorWebMvcConfigure(List<HandlerInterceptor> interceptors) {
         this.interceptors = interceptors == null ? new ArrayList<>(0) : interceptors;

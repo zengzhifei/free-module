@@ -1,4 +1,4 @@
-package com.stoicfree.free.common.module.support;
+package com.stoicfree.free.db.module.support;
 
 import java.util.function.Consumer;
 

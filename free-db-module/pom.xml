@@ -9,7 +9,7 @@
     </parent>
     <modelVersion>4.0.0</modelVersion>
 
-    <artifactId>free-module-starter</artifactId>
+    <artifactId>free-db-module</artifactId>
     <packaging>jar</packaging>
 
     <dependencies>
@@ -18,12 +18,8 @@
             <artifactId>free-common-module</artifactId>
         </dependency>
         <dependency>
-            <groupId>com.stoicfree</groupId>
-            <artifactId>free-mvc-module</artifactId>
-        </dependency>
-        <dependency>
-            <groupId>com.stoicfree</groupId>
-            <artifactId>free-db-module</artifactId>
+            <groupId>com.baomidou</groupId>
+            <artifactId>mybatis-plus-boot-starter</artifactId>
         </dependency>
     </dependencies>
 </project>

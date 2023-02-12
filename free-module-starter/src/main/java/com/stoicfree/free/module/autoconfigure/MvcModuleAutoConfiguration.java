@@ -1,4 +1,4 @@
-package com.stoicfree.free.common.module.autoconfigure;
+package com.stoicfree.free.module.autoconfigure;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -26,9 +26,9 @@ import com.stoicfree.free.mvc.module.interceptor.TimeCostInterceptor;
  */
 @Configuration
 @ConditionalOnWebApplication
-@ConditionalOnExpression("${free.mvc.enable:true}")
+@ConditionalOnExpression("${free.mvc.enable:false}")
 @EnableConfigurationProperties({MvcProperties.class})
-public class FreeMvcModuleAutoConfiguration {
+public class MvcModuleAutoConfiguration {
     private final List<HandlerInterceptor> interceptors = new ArrayList<>();
     @Autowired
     private MvcProperties mvcProperties;

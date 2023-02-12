@@ -13,6 +13,7 @@
         <module>free-module-starter</module>
         <module>free-common-module</module>
         <module>free-mvc-module</module>
+        <module>free-db-module</module>
     </modules>
 
     <properties>
@@ -32,6 +33,21 @@
                 <groupId>com.stoicfree</groupId>
                 <artifactId>free-mvc-module</artifactId>
                 <version>${project.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>com.stoicfree</groupId>
+                <artifactId>free-db-module</artifactId>
+                <version>${project.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>org.springframework.boot</groupId>
+                <artifactId>spring-boot-starter-web</artifactId>
+                <version>${spring-boot.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>com.baomidou</groupId>
+                <artifactId>mybatis-plus-boot-starter</artifactId>
+                <version>3.4.2</version>
             </dependency>
         </dependencies>
     </dependencyManagement>
