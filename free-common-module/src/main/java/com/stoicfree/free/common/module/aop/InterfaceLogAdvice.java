@@ -1,5 +1,7 @@
 package com.stoicfree.free.common.module.aop;
 
+import java.util.function.Consumer;
+
 import org.aspectj.lang.ProceedingJoinPoint;
 import org.aspectj.lang.reflect.MethodSignature;
 
@@ -16,6 +18,12 @@ import lombok.extern.slf4j.Slf4j;
  */
 @Slf4j
 public abstract class InterfaceLogAdvice {
+    private Consumer<Throwable> exceptionConsumer;
+
+    public void setExceptionConsumer(Consumer<Throwable> exceptionConsumer) {
+        this.exceptionConsumer = exceptionConsumer;
+    }
+
     public Object around(ProceedingJoinPoint jp) {
         StopWatcher watcher = new StopWatcher();
         String interfaceName = "";
@@ -36,6 +44,9 @@ public abstract class InterfaceLogAdvice {
         } catch (Throwable e) {
             log.error("request error, api:{}, parameters:{}, cost:{}",
                     interfaceName, GsonUtil.toJson(jp.getArgs()), watcher.end(), e);
+            if (exceptionConsumer != null) {
+                exceptionConsumer.accept(e);
+            }
             return Result.fail(e.getMessage());
         }
     }
