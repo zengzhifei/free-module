@@ -22,7 +22,6 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 import org.apache.commons.lang.StringUtils;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.RequestMethod;
 
@@ -33,7 +32,7 @@ import com.stoicfree.free.mvc.module.config.CrossDomainProperties;
  * @date 2019/9/7 17:31
  */
 public class CrossDomainFilter implements Filter {
-    private CrossDomainProperties crossDomainProperties;
+    private final CrossDomainProperties crossDomainProperties;
 
     public CrossDomainFilter(CrossDomainProperties crossDomainProperties) {
         this.crossDomainProperties = crossDomainProperties;

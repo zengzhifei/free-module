@@ -11,6 +11,7 @@ import org.springframework.web.servlet.config.annotation.InterceptorRegistration
 import org.springframework.web.servlet.config.annotation.InterceptorRegistry;
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 
+import com.stoicfree.free.mvc.module.config.MvcProperties;
 import com.stoicfree.free.mvc.module.config.TimeCostProperties;
 
 /**
@@ -20,7 +21,7 @@ import com.stoicfree.free.mvc.module.config.TimeCostProperties;
 public class InterceptorWebMvcConfigure implements WebMvcConfigurer {
     private final List<HandlerInterceptor> interceptors;
     @Autowired
-    private TimeCostProperties timeCostProperties;
+    private MvcProperties mvcProperties;
 
     public InterceptorWebMvcConfigure(List<HandlerInterceptor> interceptors) {
         this.interceptors = interceptors == null ? new ArrayList<>(0) : interceptors;
@@ -31,13 +32,13 @@ public class InterceptorWebMvcConfigure implements WebMvcConfigurer {
         for (HandlerInterceptor interceptor : interceptors) {
             // 耗时拦截器
             if (interceptor instanceof TimeCostInterceptor) {
-                InterceptorRegistration registration =
-                        registry.addInterceptor(interceptor).order(timeCostProperties.getOrder());
-                if (StringUtils.isNotBlank(timeCostProperties.getAddPaths())) {
-                    registration.addPathPatterns(Arrays.asList(timeCostProperties.getAddPaths().split(",")));
+                TimeCostProperties timeCost = mvcProperties.getTimeCost();
+                InterceptorRegistration registration = registry.addInterceptor(interceptor).order(timeCost.getOrder());
+                if (StringUtils.isNotBlank(timeCost.getAddPaths())) {
+                    registration.addPathPatterns(Arrays.asList(timeCost.getAddPaths().split(",")));
                 }
-                if (StringUtils.isNotBlank(timeCostProperties.getExcludePaths())) {
-                    registration.excludePathPatterns(Arrays.asList(timeCostProperties.getExcludePaths().split(",")));
+                if (StringUtils.isNotBlank(timeCost.getExcludePaths())) {
+                    registration.excludePathPatterns(Arrays.asList(timeCost.getExcludePaths().split(",")));
                 }
             }
         }
