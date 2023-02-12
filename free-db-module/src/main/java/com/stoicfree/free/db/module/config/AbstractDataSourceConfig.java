@@ -20,7 +20,17 @@ public abstract class AbstractDataSourceConfig {
      * 指定为数据源
      */
     public DataSource dataSource() {
-        return DataSourceBuilder.create().type(HikariDataSource.class).build();
+        HikariDataSource dataSource = DataSourceBuilder.create().type(HikariDataSource.class).build();
+        dataSource.setConnectionInitSql("set names utf8mb4");
+        dataSource.setAutoCommit(true);
+        dataSource.setConnectionTimeout(30000);
+        dataSource.setMinimumIdle(20);
+        dataSource.setIdleTimeout(180000);
+        dataSource.setConnectionTestQuery("SELECT 1");
+        dataSource.setMaximumPoolSize(300);
+        dataSource.setDriverClassName("com.mysql.jdbc.Driver");
+        dataSource.setMaxLifetime(300000);
+        return dataSource;
     }
 
     /**
