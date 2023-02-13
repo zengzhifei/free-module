@@ -17,7 +17,7 @@ import lombok.extern.slf4j.Slf4j;
  * @date 2022/8/15 12:44
  */
 @Slf4j
-public abstract class InterfaceLogAdvice {
+public abstract class AbstractInterfaceLogAdvice {
     private Consumer<Throwable> exceptionConsumer;
 
     public void setExceptionConsumer(Consumer<Throwable> exceptionConsumer) {
