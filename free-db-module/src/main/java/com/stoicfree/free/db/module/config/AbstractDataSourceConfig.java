@@ -19,7 +19,7 @@ public abstract class AbstractDataSourceConfig {
     /**
      * 指定为数据源
      */
-    public DataSource buildDataSource() {
+    public HikariDataSource buildHikariDataSource() {
         HikariDataSource dataSource = DataSourceBuilder.create().type(HikariDataSource.class).build();
         dataSource.setConnectionInitSql("set names utf8mb4");
         dataSource.setAutoCommit(true);
