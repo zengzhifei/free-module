@@ -9,7 +9,7 @@
     </parent>
     <modelVersion>4.0.0</modelVersion>
 
-    <artifactId>free-module-starter</artifactId>
+    <artifactId>free-redis-module</artifactId>
     <packaging>jar</packaging>
 
     <dependencies>
@@ -18,20 +18,8 @@
             <artifactId>free-common-module</artifactId>
         </dependency>
         <dependency>
-            <groupId>com.stoicfree</groupId>
-            <artifactId>free-mvc-module</artifactId>
-        </dependency>
-        <dependency>
-            <groupId>com.stoicfree</groupId>
-            <artifactId>free-db-module</artifactId>
-        </dependency>
-        <dependency>
-            <groupId>com.stoicfree</groupId>
-            <artifactId>free-es-module</artifactId>
-        </dependency>
-        <dependency>
-            <groupId>com.stoicfree</groupId>
-            <artifactId>free-redis-module</artifactId>
+            <groupId>redis.clients</groupId>
+            <artifactId>jedis</artifactId>
         </dependency>
     </dependencies>
 </project>

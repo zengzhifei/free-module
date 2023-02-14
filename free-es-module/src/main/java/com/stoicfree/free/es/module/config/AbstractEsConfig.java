@@ -15,7 +15,7 @@ import org.elasticsearch.client.RestHighLevelClient;
  * @date 2023/2/13 12:28
  */
 public abstract class AbstractEsConfig {
-    public RestHighLevelClient restHighLevelClient(EsClientConfig config) {
+    public RestHighLevelClient buildRestHighLevelClient(EsClientConfig config) {
         CredentialsProvider credentialsProvider = new BasicCredentialsProvider();
         credentialsProvider.setCredentials(AuthScope.ANY, new UsernamePasswordCredentials(config.getUser(),
                 config.getPassword()));

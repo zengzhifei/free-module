@@ -15,6 +15,7 @@
         <module>free-mvc-module</module>
         <module>free-db-module</module>
         <module>free-es-module</module>
+        <module>free-redis-module</module>
     </modules>
 
     <properties>
@@ -50,6 +51,11 @@
                 <artifactId>free-es-module</artifactId>
                 <version>${project.version}</version>
             </dependency>
+            <dependency>
+                <groupId>com.stoicfree</groupId>
+                <artifactId>free-redis-module</artifactId>
+                <version>${project.version}</version>
+            </dependency>
             <!-- springboot依赖 -->
             <dependency>
                 <groupId>org.springframework.boot</groupId>
@@ -82,6 +88,16 @@
                 <artifactId>mybatis-plus-boot-starter</artifactId>
                 <version>3.4.2</version>
             </dependency>
+            <dependency>
+                <groupId>com.baomidou</groupId>
+                <artifactId>mybatis-plus-generator</artifactId>
+                <version>3.5.1</version>
+            </dependency>
+            <dependency>
+                <groupId>org.freemarker</groupId>
+                <artifactId>freemarker</artifactId>
+                <version>2.3.31</version>
+            </dependency>
             <!-- ES依赖 -->
             <dependency>
                 <groupId>org.elasticsearch</groupId>
@@ -97,6 +113,12 @@
                 <groupId>org.elasticsearch.client</groupId>
                 <artifactId>elasticsearch-rest-client</artifactId>
                 <version>${elasticsearch.version}</version>
+            </dependency>
+            <!--redis依赖-->
+            <dependency>
+                <groupId>redis.clients</groupId>
+                <artifactId>jedis</artifactId>
+                <version>3.7.0</version>
             </dependency>
             <!--log4j2依赖-->
             <dependency>

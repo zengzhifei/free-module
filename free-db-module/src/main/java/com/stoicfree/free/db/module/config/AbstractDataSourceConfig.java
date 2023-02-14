@@ -19,7 +19,7 @@ public abstract class AbstractDataSourceConfig {
     /**
      * 指定为数据源
      */
-    public DataSource dataSource() {
+    public DataSource buildDataSource() {
         HikariDataSource dataSource = DataSourceBuilder.create().type(HikariDataSource.class).build();
         dataSource.setConnectionInitSql("set names utf8mb4");
         dataSource.setAutoCommit(true);
@@ -36,8 +36,8 @@ public abstract class AbstractDataSourceConfig {
     /**
      * 创建Mybatis的连接会话工厂实例
      */
-    public MybatisSqlSessionFactoryBean mybatisSqlSessionFactoryBean(DataSource dataSource,
-                                                                     MybatisPlusInterceptor interceptor) {
+    public MybatisSqlSessionFactoryBean buildMybatisSqlSessionFactoryBean(DataSource dataSource,
+                                                                          MybatisPlusInterceptor interceptor) {
         MybatisSqlSessionFactoryBean sessionFactory = new MybatisSqlSessionFactoryBean();
         // 设置数据源bean
         sessionFactory.setDataSource(dataSource);
