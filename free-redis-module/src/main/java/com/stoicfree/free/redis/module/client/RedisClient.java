@@ -20,4 +20,25 @@ import redis.clients.jedis.commands.SentinelCommands;
 public interface RedisClient extends BasicCommands, BinaryJedisCommands, MultiKeyBinaryCommands,
         AdvancedBinaryJedisCommands, BinaryScriptingCommands, JedisCommands, MultiKeyCommands,
         AdvancedJedisCommands, ScriptingCommands, ClusterCommands, SentinelCommands, ModuleCommands {
+
+    /**
+     * 全局锁
+     *
+     * @param lockKey
+     * @param requestId
+     * @param milliSeconds
+     *
+     * @return
+     */
+    String lock(String lockKey, String requestId, long milliSeconds);
+
+    /**
+     * 释放全局锁
+     *
+     * @param lockKey
+     * @param requestId
+     *
+     * @return
+     */
+    Object unlock(String lockKey, String requestId);
 }
