@@ -4,6 +4,9 @@ import java.lang.reflect.Proxy;
 
 import org.springframework.beans.factory.FactoryBean;
 import org.springframework.beans.factory.InitializingBean;
+import org.springframework.beans.factory.annotation.Autowired;
+
+import com.stoicfree.free.redis.module.config.RedisProperties;
 
 import cn.hutool.core.lang.Assert;
 import redis.clients.jedis.JedisPool;
@@ -15,6 +18,8 @@ import redis.clients.jedis.JedisPool;
 public class RedisClientFactory implements InitializingBean, FactoryBean<RedisClient> {
     private RedisClient redisClient;
     private JedisPool jedisPool;
+    @Autowired
+    private RedisProperties redisProperties;
 
     @Override
     public void afterPropertiesSet() throws Exception {
@@ -30,6 +35,7 @@ public class RedisClientFactory implements InitializingBean, FactoryBean<RedisCl
             if (redisClient == null) {
                 RedisInvocationHandler invocationHandler = new RedisInvocationHandler();
                 invocationHandler.setJedisPool(jedisPool);
+                invocationHandler.setRedisProperties(redisProperties);
                 redisClient = (RedisClient) Proxy.newProxyInstance(getClass().getClassLoader(),
                         new Class[] {RedisClient.class}, invocationHandler);
             }

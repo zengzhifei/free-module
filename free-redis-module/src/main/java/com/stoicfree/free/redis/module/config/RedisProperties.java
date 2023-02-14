@@ -12,4 +12,5 @@ import lombok.Data;
 @ConfigurationProperties("free.redis")
 public class RedisProperties {
     private boolean enable = false;
+    private boolean log = false;
 }
