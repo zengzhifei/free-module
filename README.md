@@ -11,6 +11,25 @@
 </dependency>
 ```
 
+## 常用注解
+
+```
+// 接口防重调用, 依赖redis
+@RepeatLimit 
+
+// aop日志拦截忽略接口
+@AspectIgnore
+
+// gson序列化忽略字段
+@GsonIgnore
+
+// es查询规则，依赖ES
+@EsQuery
+
+// es ID
+@EsID
+```
+
 ## common模块通用功能
 
 #### aop日志拦截
@@ -215,6 +234,27 @@ public class RedisConfig extends AbstractRedisConfig {
     public RedisClientFactory redisClientFactory(RedisClientConfig redisClientConfig) {
         JedisPool jedisPool = super.buildJedisPool(redisClientConfig);
         return super.buildRedisClientFactory(jedisPool);
+    }
+}
+```
+
+```java
+
+@AllArgsConstructor
+public enum RedisKeyEnum implements IRedisKeyEnum {
+    DEMO("demo", 10);
+
+    private final String key;
+    private final Integer expires;
+
+    @Override
+    public String getKey() {
+        return key;
+    }
+
+    @Override
+    public Integer getExpires() {
+        return expires;
     }
 }
 ```

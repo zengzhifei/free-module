@@ -21,6 +21,8 @@ public interface RedisClient extends BasicCommands, BinaryJedisCommands, MultiKe
         AdvancedBinaryJedisCommands, BinaryScriptingCommands, JedisCommands, MultiKeyCommands,
         AdvancedJedisCommands, ScriptingCommands, ClusterCommands, SentinelCommands, ModuleCommands {
 
+    String OK = "OK";
+
     /**
      * 全局锁
      *

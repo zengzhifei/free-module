@@ -1,4 +1,4 @@
-package com.stoicfree.free.common.module.aop;
+package com.stoicfree.free.common.module.aop.advice;
 
 import java.util.function.Consumer;
 
