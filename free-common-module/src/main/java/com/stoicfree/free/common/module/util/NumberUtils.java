@@ -9,7 +9,7 @@ import java.math.RoundingMode;
  * @author zengzhifei
  * @date 2022/11/24 5:18 PM
  */
-public class NumberUtil {
+public class NumberUtils {
     public static double fenToYuan(Long fen) {
         return new BigDecimal(fen).divide(BigDecimal.valueOf(100), 2, RoundingMode.HALF_UP).doubleValue();
     }

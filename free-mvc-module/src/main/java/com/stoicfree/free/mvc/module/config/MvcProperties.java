@@ -22,4 +22,7 @@ public class MvcProperties {
 
     @NestedConfigurationProperty
     private TimeCostProperties timeCost = new TimeCostProperties();
+
+    @NestedConfigurationProperty
+    private SecurityProperties security = new SecurityProperties();
 }

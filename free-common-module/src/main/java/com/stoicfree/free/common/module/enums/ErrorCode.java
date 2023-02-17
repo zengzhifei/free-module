@@ -12,6 +12,13 @@ public enum ErrorCode {
     // 通用错误码
     OK(0, "success"),
     UNKNOWN_ERROR(500, "对不起，服务器出错了，请稍候再试"),
+    NOT_LOGIN(501, "未登录"),
+    TOKEN_ERROR(502, "登录异常"),
+    LOGIN_EXPIRED(502, "登录过期"),
+    USER_NOT_FOUND(504, "用户不存在"),
+    PASSWORD_ERROR(505, "密码错误"),
+    USER_DISABLE(506, "用户状态异常"),
+
     EMPTY_PARAMS(10001, "参数为空"),
     INVALID_PARAMS(10002, "参数无效"),
     REQUEST_EXPIRED(10003, "请求过期"),

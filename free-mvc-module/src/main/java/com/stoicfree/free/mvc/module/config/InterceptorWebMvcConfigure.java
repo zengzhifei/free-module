@@ -1,4 +1,4 @@
-package com.stoicfree.free.mvc.module.interceptor;
+package com.stoicfree.free.mvc.module.config;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -11,8 +11,8 @@ import org.springframework.web.servlet.config.annotation.InterceptorRegistration
 import org.springframework.web.servlet.config.annotation.InterceptorRegistry;
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 
-import com.stoicfree.free.mvc.module.config.MvcProperties;
-import com.stoicfree.free.mvc.module.config.TimeCostProperties;
+import com.stoicfree.free.mvc.module.interceptor.SecurityInterceptor;
+import com.stoicfree.free.mvc.module.interceptor.TimeCostInterceptor;
 
 /**
  * @author zengzhifei
@@ -33,15 +33,23 @@ public class InterceptorWebMvcConfigure implements WebMvcConfigurer {
         for (HandlerInterceptor interceptor : interceptors) {
             // 耗时拦截器
             if (interceptor instanceof TimeCostInterceptor) {
-                TimeCostProperties timeCost = mvcProperties.getTimeCost();
-                InterceptorRegistration registration = registry.addInterceptor(interceptor).order(timeCost.getOrder());
-                if (StringUtils.isNotBlank(timeCost.getAddPaths())) {
-                    registration.addPathPatterns(Arrays.asList(timeCost.getAddPaths().split(",")));
-                }
-                if (StringUtils.isNotBlank(timeCost.getExcludePaths())) {
-                    registration.excludePathPatterns(Arrays.asList(timeCost.getExcludePaths().split(",")));
-                }
+                addInterceptorAndSetProperties(registry, interceptor, mvcProperties.getTimeCost());
             }
+            // 登录拦截器
+            if (interceptor instanceof SecurityInterceptor) {
+                addInterceptorAndSetProperties(registry, interceptor, mvcProperties.getSecurity());
+            }
+        }
+    }
+
+    private void addInterceptorAndSetProperties(InterceptorRegistry registry, HandlerInterceptor interceptor,
+                                                InterceptorProperties properties) {
+        InterceptorRegistration registration = registry.addInterceptor(interceptor).order(properties.getOrder());
+        if (StringUtils.isNotBlank(properties.getAddPaths())) {
+            registration.addPathPatterns(Arrays.asList(properties.getAddPaths().split(",")));
+        }
+        if (StringUtils.isNotBlank(properties.getExcludePaths())) {
+            registration.excludePathPatterns(Arrays.asList(properties.getExcludePaths().split(",")));
         }
     }
 }

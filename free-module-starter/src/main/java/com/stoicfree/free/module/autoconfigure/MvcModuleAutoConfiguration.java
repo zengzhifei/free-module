@@ -14,10 +14,11 @@ import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.DependsOn;
 import org.springframework.web.servlet.HandlerInterceptor;
 
+import com.stoicfree.free.mvc.module.config.InterceptorWebMvcConfigure;
 import com.stoicfree.free.mvc.module.config.MvcProperties;
 import com.stoicfree.free.mvc.module.filter.CrossDomainFilter;
 import com.stoicfree.free.mvc.module.filter.RequestWrapperFilter;
-import com.stoicfree.free.mvc.module.interceptor.InterceptorWebMvcConfigure;
+import com.stoicfree.free.mvc.module.interceptor.SecurityInterceptor;
 import com.stoicfree.free.mvc.module.interceptor.TimeCostInterceptor;
 
 /**
@@ -59,7 +60,16 @@ public class MvcModuleAutoConfiguration {
     }
 
     @Bean
-    @DependsOn({"timeCostInterceptor"})
+    public SecurityInterceptor securityInterceptor() {
+        SecurityInterceptor interceptor = new SecurityInterceptor();
+        if (mvcProperties.getSecurity().isEnable()) {
+            interceptors.add(interceptor);
+        }
+        return interceptor;
+    }
+
+    @Bean
+    @DependsOn({"timeCostInterceptor", "securityInterceptor"})
     @ConditionalOnMissingBean
     public InterceptorWebMvcConfigure interceptorWebMvcConfigure() {
         return new InterceptorWebMvcConfigure(interceptors);

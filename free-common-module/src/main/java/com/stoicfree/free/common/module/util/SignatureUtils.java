@@ -33,7 +33,6 @@ public class SignatureUtils {
             mac.init(secretKeySpec);
             byte[] hash = mac.doFinal(signString.getBytes(StandardCharsets.UTF_8));
             String signature = DatatypeConverter.printBase64Binary(hash);
-            System.out.println(signature);
             return URLEncoder.encode(signature, StandardCharsets.UTF_8.name());
         } catch (Exception e) {
             log.error("sign[{}] fail", method, e);
