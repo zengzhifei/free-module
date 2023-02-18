@@ -8,8 +8,10 @@ import cn.hutool.core.lang.Snowflake;
  */
 public class ID {
     public static final Snowflake SNOWFLAKE;
+    public static final ShortSnowflake SHORT_SNOWFLAKE;
 
     static {
         SNOWFLAKE = new Snowflake();
+        SHORT_SNOWFLAKE = new ShortSnowflake();
     }
 }

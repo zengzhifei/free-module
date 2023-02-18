@@ -73,7 +73,7 @@ public class SecurityUserService<E> extends AbstractUserService<E> implements In
         setFieldValue(entity, passwordFiledName, BCrypt.hashpw(password));
 
         // 生成uuid
-        setFieldValue(entity, uuidFiledName, ID.SNOWFLAKE.nextIdStr());
+        setFieldValue(entity, uuidFiledName, ID.SHORT_SNOWFLAKE.nextIdStr());
 
         mapper.insert(entity);
     }
