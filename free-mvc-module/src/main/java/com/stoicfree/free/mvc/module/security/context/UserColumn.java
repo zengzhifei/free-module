@@ -20,4 +20,5 @@ public class UserColumn<E> {
     private SFunction<E, ?> password;
     private SFunction<E, ?> enable;
     private SFunction<E, ?> uuid;
+    private SFunction<E, ?> roles;
 }

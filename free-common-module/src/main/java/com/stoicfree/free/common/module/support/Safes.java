@@ -1,6 +1,8 @@
 package com.stoicfree.free.common.module.support;
 
 import java.math.BigDecimal;
+import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.Iterator;
@@ -9,6 +11,7 @@ import java.util.Map;
 import java.util.Optional;
 import java.util.Set;
 import java.util.function.Function;
+import java.util.stream.Collectors;
 
 import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
@@ -57,5 +60,10 @@ public class Safes {
 
     public static <T, R> R of(T object, Function<T, R> mapper) {
         return Optional.ofNullable(object).map(mapper).orElse(null);
+    }
+
+    public static <T> List<T> of(T[] object) {
+        return Optional.ofNullable(object).map(e -> Arrays.stream(e).collect(Collectors.toList()))
+                .orElse(new ArrayList<>(0));
     }
 }
