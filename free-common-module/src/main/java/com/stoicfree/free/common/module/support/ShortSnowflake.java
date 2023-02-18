@@ -14,9 +14,9 @@ import cn.hutool.core.util.StrUtil;
  */
 public class ShortSnowflake {
     /**
-     * 默认的起始时间，为2022-02-18 00:00:00
+     * 默认的起始时间，为2023-01-01 00:00:00
      */
-    public static long DEFAULT_TWEPOCH = 1645113600L;
+    public static long DEFAULT_TWEPOCH = 1672502400L;
     /**
      * 默认回拨时间，2S
      */
