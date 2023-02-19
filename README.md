@@ -31,6 +31,9 @@
 
 // mvc auth
 @Auth
+
+// mvc login
+@Login(username = "#username", password = "#password")
 ```
 
 ## common模块通用功能
@@ -170,6 +173,13 @@ public class TestController {
     public Result<Boolean> login(String username, String password, HttpServletRequest request,
                                  HttpServletResponse response) {
         securityUserService.login(username, password, request, response);
+        return Result.ok(true);
+    }
+
+    @PostMapping("/login2")
+    @Login(username = "#username", password = "#password")
+    public Result<Boolean> login(String username, String password) {
+        System.out.println("login2");
         return Result.ok(true);
     }
 

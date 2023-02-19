@@ -20,6 +20,7 @@ import com.stoicfree.free.mvc.module.filter.CrossDomainFilter;
 import com.stoicfree.free.mvc.module.filter.RequestWrapperFilter;
 import com.stoicfree.free.mvc.module.interceptor.SecurityInterceptor;
 import com.stoicfree.free.mvc.module.interceptor.TimeCostInterceptor;
+import com.stoicfree.free.mvc.module.security.anotation.advice.LoginAdvice;
 
 /**
  * @author zengzhifei
@@ -73,5 +74,10 @@ public class MvcModuleAutoConfiguration {
     @ConditionalOnMissingBean
     public InterceptorWebMvcConfigure interceptorWebMvcConfigure() {
         return new InterceptorWebMvcConfigure(interceptors);
+    }
+
+    @Bean
+    public LoginAdvice loginAdvice() {
+        return new LoginAdvice();
     }
 }
