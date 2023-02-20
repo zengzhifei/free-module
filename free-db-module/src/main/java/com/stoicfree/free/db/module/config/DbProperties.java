@@ -11,6 +11,12 @@ import lombok.Data;
 @Data
 @ConfigurationProperties(prefix = "free.db")
 public class DbProperties {
+    /**
+     * 是否开启db
+     */
     private boolean enable = false;
+    /**
+     * 实体类包路径
+     */
     private String entityPackage;
 }

@@ -82,6 +82,11 @@
                 <artifactId>spring-boot-starter-aop</artifactId>
                 <version>${spring-boot.version}</version>
             </dependency>
+            <dependency>
+                <groupId>org.springframework</groupId>
+                <artifactId>spring-context-support</artifactId>
+                <version>5.1.19.RELEASE</version>
+            </dependency>
             <!-- mysql依赖 -->
             <dependency>
                 <groupId>com.baomidou</groupId>
@@ -213,6 +218,12 @@
                 <artifactId>snakeyaml</artifactId>
                 <version>1.23</version>
             </dependency>
+            <dependency>
+                <groupId>com.sun.mail</groupId>
+                <artifactId>javax.mail</artifactId>
+                <version>1.6.2</version>
+            </dependency>
+
         </dependencies>
     </dependencyManagement>
 

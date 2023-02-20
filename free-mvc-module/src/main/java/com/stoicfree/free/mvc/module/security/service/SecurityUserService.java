@@ -5,12 +5,12 @@ import java.util.Collections;
 import java.util.Set;
 import java.util.stream.Collectors;
 
+import javax.annotation.PostConstruct;
 import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 import org.apache.commons.collections.CollectionUtils;
-import org.springframework.beans.factory.InitializingBean;
 import org.springframework.web.method.HandlerMethod;
 
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
@@ -40,7 +40,7 @@ import cn.hutool.extra.servlet.ServletUtil;
  * @author zengzhifei
  * @date 2023/2/17 16:54
  */
-public class SecurityUserService<E> extends AbstractUserService<E> implements InitializingBean {
+public class SecurityUserService<E> extends AbstractUserService<E> {
     private static final AES AES = SecureUtil.aes("(7djPSrws9K2MJk8".getBytes(StandardCharsets.UTF_8));
     private final BaseMapper<E> mapper;
     private final UserColumn<E> userColumn;
@@ -56,6 +56,24 @@ public class SecurityUserService<E> extends AbstractUserService<E> implements In
         this.mapper = mapper;
         this.userColumn = userColumn;
         this.securityProperties = securityProperties;
+    }
+
+    @PostConstruct
+    private void init() {
+        Assert.notNull(mapper, ErrorCode.INVALID_PARAMS, "mapper not be null");
+        Assert.notNull(securityProperties, ErrorCode.INVALID_PARAMS, "securityProperties not be null");
+        Assert.notNull(userColumn, ErrorCode.INVALID_PARAMS, "userColumn not be null");
+        Assert.notNull(userColumn.getUsername(), ErrorCode.INVALID_PARAMS, "userColumn username not be null");
+        Assert.notNull(userColumn.getPassword(), ErrorCode.INVALID_PARAMS, "userColumn password not be null");
+        Assert.notNull(userColumn.getUuid(), ErrorCode.INVALID_PARAMS, "userColumn uuid not be null");
+        Assert.notNull(userColumn.getEnable(), ErrorCode.INVALID_PARAMS, "userColumn enable not be null");
+        Assert.notNull(userColumn.getRoles(), ErrorCode.INVALID_PARAMS, "userColumn roles not be null");
+
+        this.usernameFiledName = getFieldName(userColumn.getUsername());
+        this.passwordFiledName = getFieldName(userColumn.getPassword());
+        this.uuidFiledName = getFieldName(userColumn.getUuid());
+        this.enableFiledName = getFieldName(userColumn.getEnable());
+        this.rolesFiledName = getFieldName(userColumn.getRoles());
     }
 
     public void register(E entity) {
@@ -192,24 +210,6 @@ public class SecurityUserService<E> extends AbstractUserService<E> implements In
         updateWrapper.set(userColumn.getEnable(), enable)
                 .eq(userColumn.getUuid(), getFieldValue(user, uuidFiledName));
         mapper.update(null, updateWrapper);
-    }
-
-    @Override
-    public void afterPropertiesSet() throws Exception {
-        Assert.notNull(mapper, ErrorCode.INVALID_PARAMS, "mapper not be null");
-        Assert.notNull(securityProperties, ErrorCode.INVALID_PARAMS, "securityProperties not be null");
-        Assert.notNull(userColumn, ErrorCode.INVALID_PARAMS, "userColumn not be null");
-        Assert.notNull(userColumn.getUsername(), ErrorCode.INVALID_PARAMS, "userColumn username not be null");
-        Assert.notNull(userColumn.getPassword(), ErrorCode.INVALID_PARAMS, "userColumn password not be null");
-        Assert.notNull(userColumn.getUuid(), ErrorCode.INVALID_PARAMS, "userColumn uuid not be null");
-        Assert.notNull(userColumn.getEnable(), ErrorCode.INVALID_PARAMS, "userColumn enable not be null");
-        Assert.notNull(userColumn.getRoles(), ErrorCode.INVALID_PARAMS, "userColumn roles not be null");
-
-        this.usernameFiledName = getFieldName(userColumn.getUsername());
-        this.passwordFiledName = getFieldName(userColumn.getPassword());
-        this.uuidFiledName = getFieldName(userColumn.getUuid());
-        this.enableFiledName = getFieldName(userColumn.getEnable());
-        this.rolesFiledName = getFieldName(userColumn.getRoles());
     }
 
     private void refreshToken(String uuid, String password, HttpServletRequest request, HttpServletResponse response) {

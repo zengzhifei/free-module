@@ -11,5 +11,8 @@ import lombok.Data;
 @Data
 @ConfigurationProperties(prefix = "free.es")
 public class EsProperties {
+    /**
+     * 是否开启es
+     */
     private boolean enable = false;
 }

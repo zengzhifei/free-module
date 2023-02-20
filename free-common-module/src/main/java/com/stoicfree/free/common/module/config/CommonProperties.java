@@ -1,6 +1,7 @@
 package com.stoicfree.free.common.module.config;
 
 import org.springframework.boot.context.properties.ConfigurationProperties;
+import org.springframework.boot.context.properties.NestedConfigurationProperty;
 
 import lombok.Data;
 
@@ -11,5 +12,14 @@ import lombok.Data;
 @Data
 @ConfigurationProperties(prefix = "free.common")
 public class CommonProperties {
+    /**
+     * 日志等级自定义，class:level
+     */
     private String loggingLevels;
+
+    /**
+     * 邮箱配置
+     */
+    @NestedConfigurationProperty
+    private MailProperties mail;
 }
