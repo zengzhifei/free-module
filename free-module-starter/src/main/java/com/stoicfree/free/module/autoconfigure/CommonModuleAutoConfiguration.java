@@ -6,9 +6,9 @@ import org.springframework.boot.context.properties.EnableConfigurationProperties
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
-import com.stoicfree.free.common.module.config.CommonProperties;
-import com.stoicfree.free.common.module.support.LoggerLevel;
-import com.stoicfree.free.common.module.support.msg.MailHelper;
+import com.stoicfree.free.module.core.common.config.CommonProperties;
+import com.stoicfree.free.module.core.common.support.LoggerLevel;
+import com.stoicfree.free.module.core.common.support.msg.MailHelper;
 
 /**
  * @author zengzhifei

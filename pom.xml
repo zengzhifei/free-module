@@ -11,11 +11,7 @@
 
     <modules>
         <module>free-module-starter</module>
-        <module>free-common-module</module>
-        <module>free-mvc-module</module>
-        <module>free-db-module</module>
-        <module>free-es-module</module>
-        <module>free-redis-module</module>
+        <module>free-module-core</module>
     </modules>
 
     <properties>
@@ -33,27 +29,7 @@
             <!-- module 依赖-->
             <dependency>
                 <groupId>com.stoicfree</groupId>
-                <artifactId>free-common-module</artifactId>
-                <version>${project.version}</version>
-            </dependency>
-            <dependency>
-                <groupId>com.stoicfree</groupId>
-                <artifactId>free-mvc-module</artifactId>
-                <version>${project.version}</version>
-            </dependency>
-            <dependency>
-                <groupId>com.stoicfree</groupId>
-                <artifactId>free-db-module</artifactId>
-                <version>${project.version}</version>
-            </dependency>
-            <dependency>
-                <groupId>com.stoicfree</groupId>
-                <artifactId>free-es-module</artifactId>
-                <version>${project.version}</version>
-            </dependency>
-            <dependency>
-                <groupId>com.stoicfree</groupId>
-                <artifactId>free-redis-module</artifactId>
+                <artifactId>free-module-core</artifactId>
                 <version>${project.version}</version>
             </dependency>
             <!-- springboot依赖 -->
@@ -223,7 +199,6 @@
                 <artifactId>javax.mail</artifactId>
                 <version>1.6.2</version>
             </dependency>
-
         </dependencies>
     </dependencyManagement>
 

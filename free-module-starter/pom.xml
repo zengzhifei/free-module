@@ -15,23 +15,7 @@
     <dependencies>
         <dependency>
             <groupId>com.stoicfree</groupId>
-            <artifactId>free-common-module</artifactId>
-        </dependency>
-        <dependency>
-            <groupId>com.stoicfree</groupId>
-            <artifactId>free-mvc-module</artifactId>
-        </dependency>
-        <dependency>
-            <groupId>com.stoicfree</groupId>
-            <artifactId>free-db-module</artifactId>
-        </dependency>
-        <dependency>
-            <groupId>com.stoicfree</groupId>
-            <artifactId>free-es-module</artifactId>
-        </dependency>
-        <dependency>
-            <groupId>com.stoicfree</groupId>
-            <artifactId>free-redis-module</artifactId>
+            <artifactId>free-module-core</artifactId>
         </dependency>
     </dependencies>
 </project>

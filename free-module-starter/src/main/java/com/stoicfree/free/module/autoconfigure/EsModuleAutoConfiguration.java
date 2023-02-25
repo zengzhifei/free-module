@@ -5,7 +5,7 @@ import org.springframework.boot.autoconfigure.condition.ConditionalOnExpression;
 import org.springframework.boot.context.properties.EnableConfigurationProperties;
 import org.springframework.context.annotation.Configuration;
 
-import com.stoicfree.free.es.module.config.EsProperties;
+import com.stoicfree.free.module.core.elastic.config.EsProperties;
 
 /**
  * @author zengzhifei

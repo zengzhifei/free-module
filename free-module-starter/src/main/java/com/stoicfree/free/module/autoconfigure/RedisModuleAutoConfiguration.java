@@ -6,8 +6,8 @@ import org.springframework.boot.context.properties.EnableConfigurationProperties
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
-import com.stoicfree.free.redis.module.aop.advice.RepeatLimitAdvice;
-import com.stoicfree.free.redis.module.config.RedisProperties;
+import com.stoicfree.free.module.core.redis.aop.advice.RepeatLimitAdvice;
+import com.stoicfree.free.module.core.redis.config.RedisProperties;
 
 /**
  * @author zengzhifei

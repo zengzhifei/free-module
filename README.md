@@ -7,7 +7,7 @@
 <dependency>
     <groupId>com.stoicfree</groupId>
     <artifactId>free-module-starter</artifactId>
-    <version>lastest.version</version>
+    <version>latest.version</version>
 </dependency>
 ```
 

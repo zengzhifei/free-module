@@ -14,13 +14,13 @@ import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.DependsOn;
 import org.springframework.web.servlet.HandlerInterceptor;
 
-import com.stoicfree.free.mvc.module.config.InterceptorWebMvcConfigure;
-import com.stoicfree.free.mvc.module.config.MvcProperties;
-import com.stoicfree.free.mvc.module.filter.CrossDomainFilter;
-import com.stoicfree.free.mvc.module.filter.RequestWrapperFilter;
-import com.stoicfree.free.mvc.module.interceptor.SecurityInterceptor;
-import com.stoicfree.free.mvc.module.interceptor.TimeCostInterceptor;
-import com.stoicfree.free.mvc.module.security.anotation.advice.LoginAdvice;
+import com.stoicfree.free.module.core.mvc.config.InterceptorWebMvcConfigure;
+import com.stoicfree.free.module.core.mvc.config.MvcProperties;
+import com.stoicfree.free.module.core.mvc.filter.CrossDomainFilter;
+import com.stoicfree.free.module.core.mvc.filter.RequestWrapperFilter;
+import com.stoicfree.free.module.core.mvc.interceptor.SecurityInterceptor;
+import com.stoicfree.free.module.core.mvc.interceptor.TimeCostInterceptor;
+import com.stoicfree.free.module.core.mvc.security.anotation.advice.LoginAdvice;
 
 /**
  * @author zengzhifei
