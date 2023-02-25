@@ -1,6 +1,7 @@
 package com.stoicfree.free.module.autoconfigure;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.autoconfigure.condition.ConditionalOnExpression;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.boot.context.properties.EnableConfigurationProperties;
 import org.springframework.context.annotation.Bean;
@@ -26,7 +27,7 @@ public class CommonModuleAutoConfiguration {
     }
 
     @Bean
-    @ConditionalOnProperty(value = "free.common.mail")
+    @ConditionalOnExpression("${free.common.mail.enable:false}")
     public MailHelper mailHelper() {
         return new MailHelper(commonProperties.getMail());
     }

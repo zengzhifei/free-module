@@ -90,7 +90,7 @@ public class MailHelper {
         javaMailSender.setUsername(properties.getUsername());
         javaMailSender.setPassword(properties.getPassword());
         javaMailSender.setDefaultEncoding(properties.getDefaultEncoding());
-        javaMailSender.setJavaMailProperties(properties.getJavaMailProperties());
+        javaMailSender.setJavaMailProperties(properties.getProperties());
 
     }
 
