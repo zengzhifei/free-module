@@ -16,7 +16,7 @@ import com.stoicfree.free.module.core.common.support.msg.MailHelper;
  * @date 2023/2/3 17:14
  */
 @Configuration
-@EnableConfigurationProperties({CommonProperties.class})
+@EnableConfigurationProperties(CommonProperties.class)
 public class CommonModuleAutoConfiguration {
     @Autowired
     private CommonProperties commonProperties;

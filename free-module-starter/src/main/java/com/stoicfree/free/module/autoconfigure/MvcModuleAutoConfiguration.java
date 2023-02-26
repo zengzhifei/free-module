@@ -29,7 +29,7 @@ import com.stoicfree.free.module.core.mvc.security.anotation.advice.LoginAdvice;
 @Configuration
 @ConditionalOnWebApplication
 @ConditionalOnExpression("${free.mvc.enable:false}")
-@EnableConfigurationProperties({MvcProperties.class})
+@EnableConfigurationProperties(MvcProperties.class)
 public class MvcModuleAutoConfiguration {
     private final List<HandlerInterceptor> interceptors = new ArrayList<>();
     @Autowired

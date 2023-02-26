@@ -3,4 +3,5 @@ com.stoicfree.free.module.autoconfigure.CommonModuleAutoConfiguration,\
 com.stoicfree.free.module.autoconfigure.EsModuleAutoConfiguration,\
 com.stoicfree.free.module.autoconfigure.JdbcModuleAutoConfiguration,\
 com.stoicfree.free.module.autoconfigure.MvcModuleAutoConfiguration,\
-com.stoicfree.free.module.autoconfigure.RedisModuleAutoConfiguration
+com.stoicfree.free.module.autoconfigure.RedisModuleAutoConfiguration,\
+com.stoicfree.free.module.autoconfigure.RpcModuleAutoConfiguration

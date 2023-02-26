@@ -27,7 +27,7 @@ import cn.hutool.core.util.ClassUtil;
  */
 @Configuration
 @ConditionalOnExpression("${free.jdbc.enable:false}")
-@EnableConfigurationProperties({JdbcProperties.class})
+@EnableConfigurationProperties(JdbcProperties.class)
 public class JdbcModuleAutoConfiguration {
     @Autowired
     private JdbcProperties jdbcProperties;

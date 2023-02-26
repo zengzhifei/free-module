@@ -15,7 +15,7 @@ import com.stoicfree.free.module.core.redis.config.RedisProperties;
  */
 @Configuration
 @ConditionalOnExpression("${free.redis.enable:false}")
-@EnableConfigurationProperties({RedisProperties.class})
+@EnableConfigurationProperties(RedisProperties.class)
 public class RedisModuleAutoConfiguration {
     @Autowired
     private RedisProperties redisProperties;

@@ -13,7 +13,7 @@ import com.stoicfree.free.module.core.elastic.config.EsProperties;
  */
 @Configuration
 @ConditionalOnExpression("${free.es.enable:false}")
-@EnableConfigurationProperties({EsProperties.class})
+@EnableConfigurationProperties(EsProperties.class)
 public class EsModuleAutoConfiguration {
     @Autowired
     private EsProperties esProperties;
