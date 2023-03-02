@@ -16,7 +16,7 @@ import lombok.NoArgsConstructor;
 @Builder
 @AllArgsConstructor
 @NoArgsConstructor
-public class Pages<T> {
+public class Pager<T> {
     private long count;
     private List<T> rows = new ArrayList<>();
 }
