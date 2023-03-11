@@ -9,6 +9,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.servlet.HandlerInterceptor;
 import org.springframework.web.servlet.config.annotation.InterceptorRegistration;
 import org.springframework.web.servlet.config.annotation.InterceptorRegistry;
+import org.springframework.web.servlet.config.annotation.ResourceHandlerRegistry;
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 
 import com.stoicfree.free.module.core.mvc.interceptor.SecurityInterceptor;
@@ -24,8 +25,17 @@ public class InterceptorWebMvcConfigure implements WebMvcConfigurer {
 
     private final List<HandlerInterceptor> interceptors;
 
+    private static final List<String> SWAGGER_URLS = Arrays.asList("/swagger-ui.html", "/swagger-resources/**",
+            "/webjars/**", "/error", "/csrf", "/");
+
     public InterceptorWebMvcConfigure(List<HandlerInterceptor> interceptors) {
         this.interceptors = interceptors == null ? new ArrayList<>(0) : interceptors;
+    }
+
+    @Override
+    public void addResourceHandlers(ResourceHandlerRegistry registry) {
+        registry.addResourceHandler("/**")
+                .addResourceLocations("classpath:/META-INF/resources/");
     }
 
     @Override
@@ -48,6 +58,7 @@ public class InterceptorWebMvcConfigure implements WebMvcConfigurer {
         if (StringUtils.isNotBlank(properties.getAddPaths())) {
             registration.addPathPatterns(Arrays.asList(properties.getAddPaths().split(",")));
         }
+        registration.excludePathPatterns(SWAGGER_URLS);
         if (StringUtils.isNotBlank(properties.getExcludePaths())) {
             registration.excludePathPatterns(Arrays.asList(properties.getExcludePaths().split(",")));
         }

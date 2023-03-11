@@ -25,4 +25,7 @@ public class MvcProperties {
 
     @NestedConfigurationProperty
     private SecurityProperties security = new SecurityProperties();
+
+    @NestedConfigurationProperty
+    private SwaggerProperties swagger = new SwaggerProperties();
 }

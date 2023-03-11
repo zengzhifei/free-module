@@ -16,11 +16,18 @@ import org.springframework.web.servlet.HandlerInterceptor;
 
 import com.stoicfree.free.module.core.mvc.config.InterceptorWebMvcConfigure;
 import com.stoicfree.free.module.core.mvc.config.MvcProperties;
+import com.stoicfree.free.module.core.mvc.config.SwaggerProperties;
 import com.stoicfree.free.module.core.mvc.filter.CrossDomainFilter;
 import com.stoicfree.free.module.core.mvc.filter.RequestWrapperFilter;
 import com.stoicfree.free.module.core.mvc.interceptor.SecurityInterceptor;
 import com.stoicfree.free.module.core.mvc.interceptor.TimeCostInterceptor;
 import com.stoicfree.free.module.core.mvc.security.anotation.advice.LoginAdvice;
+
+import springfox.documentation.builders.ApiInfoBuilder;
+import springfox.documentation.builders.PathSelectors;
+import springfox.documentation.builders.RequestHandlerSelectors;
+import springfox.documentation.spi.DocumentationType;
+import springfox.documentation.spring.web.plugins.Docket;
 
 /**
  * @author zengzhifei
@@ -79,5 +86,21 @@ public class MvcModuleAutoConfiguration {
     @Bean
     public LoginAdvice loginAdvice() {
         return new LoginAdvice();
+    }
+
+    @Bean
+    @ConditionalOnExpression("${free.mvc.swagger.enable:false}")
+    public Docket createRestApi() {
+        SwaggerProperties swaggerProperties = mvcProperties.getSwagger();
+        return new Docket(DocumentationType.SWAGGER_2)
+                .enable(swaggerProperties.isEnable())
+                .apiInfo(new ApiInfoBuilder()
+                        .title(swaggerProperties.getTitle())
+                        .description(swaggerProperties.getDescription())
+                        .build())
+                .select()
+                .apis(RequestHandlerSelectors.basePackage(swaggerProperties.getBasePackage()))
+                .paths(PathSelectors.any())
+                .build();
     }
 }
