@@ -21,6 +21,7 @@ import com.stoicfree.free.module.core.common.gson.GsonUtil;
 import com.stoicfree.free.module.core.common.support.Assert;
 import com.stoicfree.free.module.core.common.support.BizException;
 import com.stoicfree.free.module.core.common.support.ID;
+import com.stoicfree.free.module.core.common.support.ReflectionHelper;
 import com.stoicfree.free.module.core.common.support.Safes;
 import com.stoicfree.free.module.core.common.util.UrlUtils;
 import com.stoicfree.free.module.core.mvc.config.SecurityProperties;
@@ -40,7 +41,7 @@ import cn.hutool.extra.servlet.ServletUtil;
  * @author zengzhifei
  * @date 2023/2/17 16:54
  */
-public class SecurityUserService<E> extends AbstractUserService<E> {
+public class SecurityUserService<E> {
     private static final AES AES = SecureUtil.aes("(7djPSrws9K2MJk8".getBytes(StandardCharsets.UTF_8));
     private final BaseMapper<E> mapper;
     private final UserColumn<E> userColumn;
@@ -69,16 +70,16 @@ public class SecurityUserService<E> extends AbstractUserService<E> {
         Assert.notNull(userColumn.getEnable(), ErrorCode.INVALID_PARAMS, "userColumn enable not be null");
         Assert.notNull(userColumn.getRoles(), ErrorCode.INVALID_PARAMS, "userColumn roles not be null");
 
-        this.usernameFiledName = getFieldName(userColumn.getUsername());
-        this.passwordFiledName = getFieldName(userColumn.getPassword());
-        this.uuidFiledName = getFieldName(userColumn.getUuid());
-        this.enableFiledName = getFieldName(userColumn.getEnable());
-        this.rolesFiledName = getFieldName(userColumn.getRoles());
+        this.usernameFiledName = ReflectionHelper.getFieldName(userColumn.getUsername());
+        this.passwordFiledName = ReflectionHelper.getFieldName(userColumn.getPassword());
+        this.uuidFiledName = ReflectionHelper.getFieldName(userColumn.getUuid());
+        this.enableFiledName = ReflectionHelper.getFieldName(userColumn.getEnable());
+        this.rolesFiledName = ReflectionHelper.getFieldName(userColumn.getRoles());
     }
 
     public void register(E entity) {
         // 校验用户是否存在
-        Object username = getFieldValue(entity, usernameFiledName);
+        Object username = ReflectionHelper.getFieldValue(entity, usernameFiledName);
         LambdaQueryWrapper<E> queryWrapper = new LambdaQueryWrapper<>();
         queryWrapper.eq(userColumn.getUsername(), username);
         E user = mapper.selectOne(queryWrapper);
@@ -87,11 +88,11 @@ public class SecurityUserService<E> extends AbstractUserService<E> {
         }
 
         // 密码加密
-        String password = (String) getFieldValue(entity, passwordFiledName);
-        setFieldValue(entity, passwordFiledName, BCrypt.hashpw(password));
+        String password = (String) ReflectionHelper.getFieldValue(entity, passwordFiledName);
+        ReflectionHelper.setFieldValue(entity, passwordFiledName, BCrypt.hashpw(password));
 
         // 生成uuid
-        setFieldValue(entity, uuidFiledName, ID.SHORT_SNOWFLAKE.nextIdStr());
+        ReflectionHelper.setFieldValue(entity, uuidFiledName, ID.SHORT_SNOWFLAKE.nextIdStr());
 
         mapper.insert(entity);
     }
@@ -104,15 +105,15 @@ public class SecurityUserService<E> extends AbstractUserService<E> {
         Assert.notNull(user, ErrorCode.USER_NOT_FOUND);
 
         // 校验密码
-        String dbPassword = (String) getFieldValue(user, passwordFiledName);
+        String dbPassword = (String) ReflectionHelper.getFieldValue(user, passwordFiledName);
         Assert.isTrue(BCrypt.checkpw(password, dbPassword), ErrorCode.PASSWORD_ERROR);
 
         // 校验状态
-        boolean enable = (boolean) getFieldValue(user, enableFiledName);
+        boolean enable = (boolean) ReflectionHelper.getFieldValue(user, enableFiledName);
         Assert.isTrue(enable, ErrorCode.USER_DISABLE);
 
         // 获取uuid
-        String uuid = (String) getFieldValue(user, uuidFiledName);
+        String uuid = (String) ReflectionHelper.getFieldValue(user, uuidFiledName);
 
         // 写入登录状态
         refreshToken(uuid, dbPassword, request, response);
@@ -143,15 +144,15 @@ public class SecurityUserService<E> extends AbstractUserService<E> {
         Assert.notNull(user, ErrorCode.USER_NOT_FOUND);
 
         // 校验密码
-        String dbPassword = (String) getFieldValue(user, passwordFiledName);
+        String dbPassword = (String) ReflectionHelper.getFieldValue(user, passwordFiledName);
         Assert.equals(tokenContext.getPassword(), dbPassword, ErrorCode.PASSWORD_ERROR);
 
         // 校验状态
-        boolean enable = (boolean) getFieldValue(user, enableFiledName);
+        boolean enable = (boolean) ReflectionHelper.getFieldValue(user, enableFiledName);
         Assert.isTrue(enable, ErrorCode.USER_DISABLE);
 
         // 校验角色
-        String userRole = (String) getFieldValue(user, rolesFiledName);
+        String userRole = (String) ReflectionHelper.getFieldValue(user, rolesFiledName);
         Set<String> userRoles = Safes.of(userRole.split(",")).stream().map(String::toLowerCase)
                 .collect(Collectors.toSet());
         checkAuth(userRoles, handler);
@@ -162,7 +163,7 @@ public class SecurityUserService<E> extends AbstractUserService<E> {
         }
 
         // 存储用户上下文
-        String username = (String) getFieldValue(user, usernameFiledName);
+        String username = (String) ReflectionHelper.getFieldValue(user, usernameFiledName);
         UserContext.set(UserContext.User.builder().uuid(uuid).username(username).userRoles(userRoles).build());
     }
 
@@ -174,13 +175,13 @@ public class SecurityUserService<E> extends AbstractUserService<E> {
         Assert.notNull(user, ErrorCode.USER_NOT_FOUND);
 
         // 校验旧密码
-        String dbPassword = (String) getFieldValue(user, passwordFiledName);
+        String dbPassword = (String) ReflectionHelper.getFieldValue(user, passwordFiledName);
         Assert.isTrue(BCrypt.checkpw(oldPassword, dbPassword), ErrorCode.OLD_PASSWORD_ERROR);
 
         // 更新密码
         LambdaUpdateWrapper<E> updateWrapper = new LambdaUpdateWrapper<>();
         updateWrapper.set(userColumn.getPassword(), BCrypt.hashpw(newPassword))
-                .eq(userColumn.getUuid(), getFieldValue(user, uuidFiledName));
+                .eq(userColumn.getUuid(), ReflectionHelper.getFieldValue(user, uuidFiledName));
         mapper.update(null, updateWrapper);
     }
 
@@ -194,7 +195,7 @@ public class SecurityUserService<E> extends AbstractUserService<E> {
         // 更新角色
         LambdaUpdateWrapper<E> updateWrapper = new LambdaUpdateWrapper<>();
         updateWrapper.set(userColumn.getRoles(), String.join(",", roles))
-                .eq(userColumn.getUuid(), getFieldValue(user, uuidFiledName));
+                .eq(userColumn.getUuid(), ReflectionHelper.getFieldValue(user, uuidFiledName));
         mapper.update(null, updateWrapper);
     }
 
@@ -208,7 +209,7 @@ public class SecurityUserService<E> extends AbstractUserService<E> {
         // 更新状态
         LambdaUpdateWrapper<E> updateWrapper = new LambdaUpdateWrapper<>();
         updateWrapper.set(userColumn.getEnable(), enable)
-                .eq(userColumn.getUuid(), getFieldValue(user, uuidFiledName));
+                .eq(userColumn.getUuid(), ReflectionHelper.getFieldValue(user, uuidFiledName));
         mapper.update(null, updateWrapper);
     }
 

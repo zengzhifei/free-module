@@ -1,21 +1,19 @@
-package com.stoicfree.free.module.core.mvc.security.service;
+package com.stoicfree.free.module.core.common.support;
 
 import java.lang.reflect.Field;
 import java.util.function.Function;
-
-import com.stoicfree.free.module.core.common.support.Column;
 
 /**
  * @author zengzhifei
  * @date 2023/2/17 16:58
  */
-public class AbstractUserService<E> {
-    protected String getFieldName(Function<E, ?> filed) {
+public class ReflectionHelper<E> {
+    public static <E> String getFieldName(Function<E, ?> filed) {
         Column<E, ?> column = Column.build(filed);
         return column.names().iterator().next();
     }
 
-    protected Object getFieldValue(E entity, String fieldName) {
+    public static <E> Object getFieldValue(E entity, String fieldName) {
         try {
             Field field = entity.getClass().getDeclaredField(fieldName);
             field.setAccessible(true);
@@ -25,7 +23,7 @@ public class AbstractUserService<E> {
         }
     }
 
-    protected void setFieldValue(E entity, String fieldName, String fieldValue) {
+    public static <E> void setFieldValue(E entity, String fieldName, String fieldValue) {
         try {
             Field field = entity.getClass().getDeclaredField(fieldName);
             field.setAccessible(true);
