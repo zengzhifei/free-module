@@ -16,9 +16,9 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 @AllArgsConstructor
 public class UserColumn<E> {
-    private SFunction<E, ?> username;
-    private SFunction<E, ?> password;
-    private SFunction<E, ?> enable;
-    private SFunction<E, ?> uuid;
-    private SFunction<E, ?> roles;
+    private SFunction<E, String> username;
+    private SFunction<E, String> password;
+    private SFunction<E, Boolean> enable;
+    private SFunction<E, String> uuid;
+    private SFunction<E, String> roles;
 }
