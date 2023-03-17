@@ -34,7 +34,7 @@ public class ProviderContainer implements ApplicationListener<ContextRefreshedEv
             for (Map.Entry<String, Object> entry : map.entrySet()) {
                 String name = entry.getKey();
                 Object bean = entry.getValue();
-                Method[] methods = bean.getClass().getMethods();
+                Method[] methods = bean.getClass().getDeclaredMethods();
                 if (methods.length == 0) {
                     continue;
                 }
@@ -42,7 +42,7 @@ public class ProviderContainer implements ApplicationListener<ContextRefreshedEv
                 for (Method method : methods) {
                     ProviderMethod providerMethod = method.getDeclaredAnnotation(ProviderMethod.class);
                     if (providerMethod == null) {
-                        return;
+                        continue;
                     }
                     String id = providerMethod.id();
                     if (StringUtils.isBlank(id)) {

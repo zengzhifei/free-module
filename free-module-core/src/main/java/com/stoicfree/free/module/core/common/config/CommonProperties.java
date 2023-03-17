@@ -22,4 +22,10 @@ public class CommonProperties {
      */
     @NestedConfigurationProperty
     private MailProperties mail;
+
+    /**
+     * 重试任务配置
+     */
+    @NestedConfigurationProperty
+    private RetryProperties retry = new RetryProperties();
 }

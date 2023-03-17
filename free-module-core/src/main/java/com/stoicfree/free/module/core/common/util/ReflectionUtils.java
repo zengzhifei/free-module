@@ -25,7 +25,7 @@ public class ReflectionUtils {
         }
     }
 
-    public static <E> void setFieldValue(E entity, String fieldName, String fieldValue) {
+    public static <E> void setFieldValue(E entity, String fieldName, Object fieldValue) {
         try {
             Field field = entity.getClass().getDeclaredField(fieldName);
             field.setAccessible(true);
