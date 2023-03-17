@@ -1,5 +1,6 @@
 package com.stoicfree.free.module.core.common.support;
 
+import java.lang.reflect.Field;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.Objects;
@@ -21,6 +22,18 @@ public class Assert {
     public static <T> void notNull(T param, ErrorCode errorCode, String... messages) {
         if (param == null) {
             throwException(errorCode, messages);
+        }
+    }
+
+    public static <T> void allFieldNotNull(T param, ErrorCode errorCode, String message) {
+        notNull(param, errorCode, message);
+        try {
+            for (Field field : param.getClass().getDeclaredFields()) {
+                field.setAccessible(true);
+                Assert.notNull(field.get(param), errorCode, String.format(message, field.getName()));
+            }
+        } catch (IllegalAccessException e) {
+            throw new RuntimeException(e);
         }
     }
 

@@ -5,6 +5,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
+import java.util.function.Function;
 import java.util.function.Supplier;
 
 import javax.annotation.PostConstruct;
@@ -41,17 +42,6 @@ public class Retriever<E> extends AnnotatedBeanContainer {
     private final Class<?> entityClass;
     private final RetryProperties properties;
 
-    private String idFiledName;
-    private String mainIdFiledName;
-    private String typeFiledName;
-    private String contentFiledName;
-    private String maxTimesFiledName;
-    private String retryTimesFiledName;
-    private String extFiledName;
-    private String statusFiledName;
-    private String createTimeFiledName;
-    private String updateTimeFiledName;
-
     public Retriever(BaseMapper<E> mapper, RetryColumn<E> column, Class<E> entityClass, RetryProperties properties) {
         super(null, RetryHandler.class);
 
@@ -63,30 +53,10 @@ public class Retriever<E> extends AnnotatedBeanContainer {
 
     @PostConstruct
     private void init() {
-        // 参数校验
         Assert.notNull(mapper, ErrorCode.INVALID_PARAMS, "mapper not be null");
         Assert.notNull(column, ErrorCode.INVALID_PARAMS, "column not be null");
-        Assert.notNull(column.getMainId(), ErrorCode.INVALID_PARAMS, "column mainId not be null");
-        Assert.notNull(column.getType(), ErrorCode.INVALID_PARAMS, "column type not be null");
-        Assert.notNull(column.getContent(), ErrorCode.INVALID_PARAMS, "column content not be null");
-        Assert.notNull(column.getMaxTimes(), ErrorCode.INVALID_PARAMS, "column maxTimes not be null");
-        Assert.notNull(column.getRetryTimes(), ErrorCode.INVALID_PARAMS, "column retryTimes not be null");
-        Assert.notNull(column.getStatus(), ErrorCode.INVALID_PARAMS, "column status not be null");
-        Assert.notNull(column.getExt(), ErrorCode.INVALID_PARAMS, "column ext not be null");
-        Assert.notNull(column.getCreateTime(), ErrorCode.INVALID_PARAMS, "column createTime not be null");
-        Assert.notNull(column.getUpdateTime(), ErrorCode.INVALID_PARAMS, "column updateTime not be null");
-
-        // 获取字段映射名称
-        this.idFiledName = ReflectionUtils.getFieldName(column.getId());
-        this.mainIdFiledName = ReflectionUtils.getFieldName(column.getMainId());
-        this.typeFiledName = ReflectionUtils.getFieldName(column.getType());
-        this.contentFiledName = ReflectionUtils.getFieldName(column.getContent());
-        this.maxTimesFiledName = ReflectionUtils.getFieldName(column.getMaxTimes());
-        this.retryTimesFiledName = ReflectionUtils.getFieldName(column.getRetryTimes());
-        this.statusFiledName = ReflectionUtils.getFieldName(column.getStatus());
-        this.extFiledName = ReflectionUtils.getFieldName(column.getExt());
-        this.createTimeFiledName = ReflectionUtils.getFieldName(column.getCreateTime());
-        this.updateTimeFiledName = ReflectionUtils.getFieldName(column.getUpdateTime());
+        Assert.allFieldNotNull(column, ErrorCode.INVALID_PARAMS, "%s not be null");
+        Assert.notNull(entityClass, ErrorCode.INVALID_PARAMS, "entityClass not be null");
     }
 
     public boolean initTask(Integer type, String content) {
@@ -107,15 +77,16 @@ public class Retriever<E> extends AnnotatedBeanContainer {
 
     public boolean initTask(String mainId, Integer type, String content, Integer maxTimes, String ext) {
         E entity = InstanceUtils.newInstance(entityClass);
-        ReflectionUtils.setFieldValue(entity, mainIdFiledName, mainId);
-        ReflectionUtils.setFieldValue(entity, typeFiledName, type);
-        ReflectionUtils.setFieldValue(entity, contentFiledName, content);
-        ReflectionUtils.setFieldValue(entity, maxTimesFiledName, maxTimes);
-        ReflectionUtils.setFieldValue(entity, retryTimesFiledName, 0);
-        ReflectionUtils.setFieldValue(entity, extFiledName, ext);
-        ReflectionUtils.setFieldValue(entity, statusFiledName, RetryStatus.PENDING_RETRY.getStatus());
-        ReflectionUtils.setFieldValue(entity, createTimeFiledName, DateUtil.current());
-        ReflectionUtils.setFieldValue(entity, updateTimeFiledName, DateUtil.current());
+
+        ReflectionUtils.setFieldValue(entity, fn(column.getMainId()), mainId);
+        ReflectionUtils.setFieldValue(entity, fn(column.getType()), type);
+        ReflectionUtils.setFieldValue(entity, fn(column.getContent()), content);
+        ReflectionUtils.setFieldValue(entity, fn(column.getMaxTimes()), maxTimes);
+        ReflectionUtils.setFieldValue(entity, fn(column.getRetryTimes()), 0);
+        ReflectionUtils.setFieldValue(entity, fn(column.getExt()), ext);
+        ReflectionUtils.setFieldValue(entity, fn(column.getStatus()), RetryStatus.PENDING_RETRY.getStatus());
+        ReflectionUtils.setFieldValue(entity, fn(column.getCreateTime()), DateUtil.current());
+        ReflectionUtils.setFieldValue(entity, fn(column.getUpdateTime()), DateUtil.current());
 
         return mapper.insert(entity) >= 1;
     }
@@ -123,7 +94,7 @@ public class Retriever<E> extends AnnotatedBeanContainer {
     public boolean cancelTask(Long taskId) {
         return updateRetrieveTask(taskId, () -> {
             E entity = InstanceUtils.newInstance(entityClass);
-            ReflectionUtils.setFieldValue(entity, statusFiledName, RetryStatus.RETRY_CANCEL.getStatus());
+            ReflectionUtils.setFieldValue(entity, fn(column.getStatus()), RetryStatus.RETRY_CANCEL.getStatus());
             return entity;
         });
     }
@@ -145,17 +116,18 @@ public class Retriever<E> extends AnnotatedBeanContainer {
         for (E task : tasks) {
             try {
                 // 获取任务id
-                Long id = (Long) ReflectionUtils.getFieldValue(task, idFiledName);
+                Long id = (Long) ReflectionUtils.getFieldValue(task, fn(column.getId()));
                 // 获取任务类型
-                Integer type = (Integer) ReflectionUtils.getFieldValue(task, typeFiledName);
+                Integer type = (Integer) ReflectionUtils.getFieldValue(task, fn(column.getType()));
 
                 // 超过执行次数，结束任务
-                Integer maxTimes = (Integer) ReflectionUtils.getFieldValue(task, maxTimesFiledName);
-                Integer retryTimes = (Integer) ReflectionUtils.getFieldValue(task, retryTimesFiledName);
+                Integer maxTimes = (Integer) ReflectionUtils.getFieldValue(task, fn(column.getMaxTimes()));
+                Integer retryTimes = (Integer) ReflectionUtils.getFieldValue(task, fn(column.getRetryTimes()));
                 if (retryTimes >= maxTimes) {
                     updateRetrieveTask(id, () -> {
                         E entity = InstanceUtils.newInstance(entityClass);
-                        ReflectionUtils.setFieldValue(entity, statusFiledName, RetryStatus.RETRY_FAIL.getStatus());
+                        ReflectionUtils.setFieldValue(entity, fn(column.getStatus()),
+                                RetryStatus.RETRY_FAIL.getStatus());
                         return entity;
                     });
                     continue;
@@ -166,9 +138,10 @@ public class Retriever<E> extends AnnotatedBeanContainer {
 
                 // 更新任务状态
                 E entity = InstanceUtils.newInstance(entityClass);
-                ReflectionUtils.setFieldValue(entity, retryTimesFiledName, retryTimes + 1);
+                ReflectionUtils.setFieldValue(entity, fn(column.getRetryTimes()), retryTimes + 1);
                 if (handleResult) {
-                    ReflectionUtils.setFieldValue(entity, statusFiledName, RetryStatus.RETRY_SUCCESS.getStatus());
+                    ReflectionUtils.setFieldValue(entity, fn(column.getStatus()),
+                            RetryStatus.RETRY_SUCCESS.getStatus());
                 }
                 updateRetrieveTask(id, () -> entity);
             } catch (Exception e) {
@@ -200,7 +173,7 @@ public class Retriever<E> extends AnnotatedBeanContainer {
 
     private boolean updateRetrieveTask(Long taskId, Supplier<E> supplier) {
         E entity = supplier.get();
-        ReflectionUtils.setFieldValue(entity, updateTimeFiledName, DateUtil.current());
+        ReflectionUtils.setFieldValue(entity, fn(column.getUpdateTime()), DateUtil.current());
 
         LambdaUpdateWrapper<E> updateWrapper = new LambdaUpdateWrapper<>();
         updateWrapper.eq(column.getId(), taskId);
@@ -228,5 +201,9 @@ public class Retriever<E> extends AnnotatedBeanContainer {
             log.error("RetryService handle error, type = {}, task = {}", type, task, e);
             return false;
         }
+    }
+
+    private String fn(Function<E, ?> filed) {
+        return ReflectionUtils.getFieldName(filed);
     }
 }
