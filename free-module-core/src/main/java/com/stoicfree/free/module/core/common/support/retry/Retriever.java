@@ -28,11 +28,13 @@ import cn.hutool.cron.task.Task;
 import lombok.extern.slf4j.Slf4j;
 
 /**
+ * retriever
+ *
  * @author zengzhifei
  * @date 2023/3/16 16:02
  */
 @Slf4j
-public class RetryHandlerService<E> extends AnnotatedBeanContainer {
+public class Retriever<E> extends AnnotatedBeanContainer {
     private final Map<Integer, TwoTuple<Object, Method>> handlers = new HashMap<>();
     private final BaseMapper<E> mapper;
     private final RetryColumn<E> column;
@@ -50,8 +52,7 @@ public class RetryHandlerService<E> extends AnnotatedBeanContainer {
     private String createTimeFiledName;
     private String updateTimeFiledName;
 
-    public RetryHandlerService(BaseMapper<E> mapper, RetryColumn<E> column, Class<E> entityClass,
-                               RetryProperties properties) {
+    public Retriever(BaseMapper<E> mapper, RetryColumn<E> column, Class<E> entityClass, RetryProperties properties) {
         super(null, RetryHandler.class);
 
         this.mapper = mapper;
@@ -112,7 +113,7 @@ public class RetryHandlerService<E> extends AnnotatedBeanContainer {
         ReflectionUtils.setFieldValue(entity, maxTimesFiledName, maxTimes);
         ReflectionUtils.setFieldValue(entity, retryTimesFiledName, 0);
         ReflectionUtils.setFieldValue(entity, extFiledName, ext);
-        ReflectionUtils.setFieldValue(entity, statusFiledName, RetryStatusEnum.PENDING_RETRY.getStatus());
+        ReflectionUtils.setFieldValue(entity, statusFiledName, RetryStatus.PENDING_RETRY.getStatus());
         ReflectionUtils.setFieldValue(entity, createTimeFiledName, DateUtil.current());
         ReflectionUtils.setFieldValue(entity, updateTimeFiledName, DateUtil.current());
 
@@ -122,7 +123,7 @@ public class RetryHandlerService<E> extends AnnotatedBeanContainer {
     public boolean cancelTask(Long taskId) {
         return updateRetrieveTask(taskId, () -> {
             E entity = InstanceUtils.newInstance(entityClass);
-            ReflectionUtils.setFieldValue(entity, statusFiledName, RetryStatusEnum.RETRY_CANCEL.getStatus());
+            ReflectionUtils.setFieldValue(entity, statusFiledName, RetryStatus.RETRY_CANCEL.getStatus());
             return entity;
         });
     }
@@ -132,7 +133,7 @@ public class RetryHandlerService<E> extends AnnotatedBeanContainer {
         if (Objects.nonNull(taskId)) {
             queryWrapper.eq(column.getId(), taskId);
         } else {
-            queryWrapper.eq(column.getStatus(), RetryStatusEnum.PENDING_RETRY.getStatus());
+            queryWrapper.eq(column.getStatus(), RetryStatus.PENDING_RETRY.getStatus());
         }
 
         // 查找任务
@@ -154,7 +155,7 @@ public class RetryHandlerService<E> extends AnnotatedBeanContainer {
                 if (retryTimes >= maxTimes) {
                     updateRetrieveTask(id, () -> {
                         E entity = InstanceUtils.newInstance(entityClass);
-                        ReflectionUtils.setFieldValue(entity, statusFiledName, RetryStatusEnum.RETRY_FAIL.getStatus());
+                        ReflectionUtils.setFieldValue(entity, statusFiledName, RetryStatus.RETRY_FAIL.getStatus());
                         return entity;
                     });
                     continue;
@@ -167,7 +168,7 @@ public class RetryHandlerService<E> extends AnnotatedBeanContainer {
                 E entity = InstanceUtils.newInstance(entityClass);
                 ReflectionUtils.setFieldValue(entity, retryTimesFiledName, retryTimes + 1);
                 if (handleResult) {
-                    ReflectionUtils.setFieldValue(entity, statusFiledName, RetryStatusEnum.RETRY_SUCCESS.getStatus());
+                    ReflectionUtils.setFieldValue(entity, statusFiledName, RetryStatus.RETRY_SUCCESS.getStatus());
                 }
                 updateRetrieveTask(id, () -> entity);
             } catch (Exception e) {
