@@ -19,6 +19,7 @@ import com.stoicfree.free.module.core.common.config.RetryProperties;
 import com.stoicfree.free.module.core.common.enums.ErrorCode;
 import com.stoicfree.free.module.core.common.support.AnnotatedBeanContainer;
 import com.stoicfree.free.module.core.common.support.Assert;
+import com.stoicfree.free.module.core.common.support.GlobalCache;
 import com.stoicfree.free.module.core.common.support.TwoTuple;
 import com.stoicfree.free.module.core.common.util.InstanceUtils;
 import com.stoicfree.free.module.core.common.util.ReflectionUtils;
@@ -57,6 +58,7 @@ public class Retriever<E> extends AnnotatedBeanContainer {
         Assert.notNull(column, ErrorCode.INVALID_PARAMS, "column not be null");
         Assert.allFieldNotNull(column, ErrorCode.INVALID_PARAMS, "%s not be null");
         Assert.notNull(entityClass, ErrorCode.INVALID_PARAMS, "entityClass not be null");
+        Assert.notNull(properties, ErrorCode.INVALID_PARAMS, "entityClass not be null");
     }
 
     public boolean initTask(Integer type, String content) {
@@ -82,8 +84,13 @@ public class Retriever<E> extends AnnotatedBeanContainer {
         ReflectionUtils.setFieldValue(entity, fn(column.getType()), type);
         ReflectionUtils.setFieldValue(entity, fn(column.getContent()), content);
         ReflectionUtils.setFieldValue(entity, fn(column.getMaxTimes()), maxTimes);
-        ReflectionUtils.setFieldValue(entity, fn(column.getRetryTimes()), 0);
         ReflectionUtils.setFieldValue(entity, fn(column.getExt()), ext);
+
+        return initTask(entity);
+    }
+
+    public boolean initTask(E entity) {
+        ReflectionUtils.setFieldValue(entity, fn(column.getRetryTimes()), 0);
         ReflectionUtils.setFieldValue(entity, fn(column.getStatus()), RetryStatus.PENDING_RETRY.getStatus());
         ReflectionUtils.setFieldValue(entity, fn(column.getCreateTime()), DateUtil.current());
         ReflectionUtils.setFieldValue(entity, fn(column.getUpdateTime()), DateUtil.current());
@@ -204,6 +211,8 @@ public class Retriever<E> extends AnnotatedBeanContainer {
     }
 
     private String fn(Function<E, ?> filed) {
-        return ReflectionUtils.getFieldName(filed);
+        return GlobalCache.<Function<E, ?>, String>cache(getClass().getName()).getIfAbsent(
+                filed, (none) -> ReflectionUtils.getFieldName(filed)
+        );
     }
 }

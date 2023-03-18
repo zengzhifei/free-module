@@ -3,6 +3,7 @@ package com.stoicfree.free.module.core.mvc.security.service;
 import java.nio.charset.StandardCharsets;
 import java.util.Collections;
 import java.util.Set;
+import java.util.function.Function;
 import java.util.stream.Collectors;
 
 import javax.annotation.PostConstruct;
@@ -20,6 +21,7 @@ import com.stoicfree.free.module.core.common.enums.ErrorCode;
 import com.stoicfree.free.module.core.common.gson.GsonUtil;
 import com.stoicfree.free.module.core.common.support.Assert;
 import com.stoicfree.free.module.core.common.support.BizException;
+import com.stoicfree.free.module.core.common.support.GlobalCache;
 import com.stoicfree.free.module.core.common.support.ID;
 import com.stoicfree.free.module.core.common.support.Safes;
 import com.stoicfree.free.module.core.common.util.ReflectionUtils;
@@ -44,55 +46,39 @@ import cn.hutool.extra.servlet.ServletUtil;
 public class SecurityUserService<E> {
     private static final AES AES = SecureUtil.aes("(7djPSrws9K2MJk8".getBytes(StandardCharsets.UTF_8));
     private final BaseMapper<E> mapper;
-    private final UserColumn<E> userColumn;
-    private final SecurityProperties securityProperties;
+    private final UserColumn<E> column;
+    private final SecurityProperties properties;
 
-    private String usernameFiledName;
-    private String passwordFiledName;
-    private String uuidFiledName;
-    private String enableFiledName;
-    private String rolesFiledName;
-
-    public SecurityUserService(BaseMapper<E> mapper, UserColumn<E> userColumn, SecurityProperties securityProperties) {
+    public SecurityUserService(BaseMapper<E> mapper, UserColumn<E> column, SecurityProperties properties) {
         this.mapper = mapper;
-        this.userColumn = userColumn;
-        this.securityProperties = securityProperties;
+        this.column = column;
+        this.properties = properties;
     }
 
     @PostConstruct
     private void init() {
         Assert.notNull(mapper, ErrorCode.INVALID_PARAMS, "mapper not be null");
-        Assert.notNull(securityProperties, ErrorCode.INVALID_PARAMS, "securityProperties not be null");
-        Assert.notNull(userColumn, ErrorCode.INVALID_PARAMS, "userColumn not be null");
-        Assert.notNull(userColumn.getUsername(), ErrorCode.INVALID_PARAMS, "userColumn username not be null");
-        Assert.notNull(userColumn.getPassword(), ErrorCode.INVALID_PARAMS, "userColumn password not be null");
-        Assert.notNull(userColumn.getUuid(), ErrorCode.INVALID_PARAMS, "userColumn uuid not be null");
-        Assert.notNull(userColumn.getEnable(), ErrorCode.INVALID_PARAMS, "userColumn enable not be null");
-        Assert.notNull(userColumn.getRoles(), ErrorCode.INVALID_PARAMS, "userColumn roles not be null");
-
-        this.usernameFiledName = ReflectionUtils.getFieldName(userColumn.getUsername());
-        this.passwordFiledName = ReflectionUtils.getFieldName(userColumn.getPassword());
-        this.uuidFiledName = ReflectionUtils.getFieldName(userColumn.getUuid());
-        this.enableFiledName = ReflectionUtils.getFieldName(userColumn.getEnable());
-        this.rolesFiledName = ReflectionUtils.getFieldName(userColumn.getRoles());
+        Assert.notNull(column, ErrorCode.INVALID_PARAMS, "column not be null");
+        Assert.allFieldNotNull(column, ErrorCode.INVALID_PARAMS, "%s not be null");
+        Assert.notNull(properties, ErrorCode.INVALID_PARAMS, "properties not be null");
     }
 
     public void register(E entity) {
         // 校验用户是否存在
-        Object username = ReflectionUtils.getFieldValue(entity, usernameFiledName);
+        Object username = ReflectionUtils.getFieldValue(entity, fn(column.getUsername()));
         LambdaQueryWrapper<E> queryWrapper = new LambdaQueryWrapper<>();
-        queryWrapper.eq(userColumn.getUsername(), username);
+        queryWrapper.eq(column.getUsername(), username);
         E user = mapper.selectOne(queryWrapper);
         if (user != null) {
             return;
         }
 
         // 密码加密
-        String password = (String) ReflectionUtils.getFieldValue(entity, passwordFiledName);
-        ReflectionUtils.setFieldValue(entity, passwordFiledName, BCrypt.hashpw(password));
+        String password = (String) ReflectionUtils.getFieldValue(entity, fn(column.getPassword()));
+        ReflectionUtils.setFieldValue(entity, fn(column.getPassword()), BCrypt.hashpw(password));
 
         // 生成uuid
-        ReflectionUtils.setFieldValue(entity, uuidFiledName, ID.SHORT_SNOWFLAKE.nextIdStr());
+        ReflectionUtils.setFieldValue(entity, fn(column.getUuid()), ID.SHORT_SNOWFLAKE.nextIdStr());
 
         mapper.insert(entity);
     }
@@ -100,20 +86,20 @@ public class SecurityUserService<E> {
     public void login(String username, String password, HttpServletRequest request, HttpServletResponse response) {
         // 获取用户
         LambdaQueryWrapper<E> queryWrapper = new LambdaQueryWrapper<>();
-        queryWrapper.eq(userColumn.getUsername(), username);
+        queryWrapper.eq(column.getUsername(), username);
         E user = mapper.selectOne(queryWrapper);
         Assert.notNull(user, ErrorCode.USER_NOT_FOUND);
 
         // 校验密码
-        String dbPassword = (String) ReflectionUtils.getFieldValue(user, passwordFiledName);
+        String dbPassword = (String) ReflectionUtils.getFieldValue(user, fn(column.getPassword()));
         Assert.isTrue(BCrypt.checkpw(password, dbPassword), ErrorCode.PASSWORD_ERROR);
 
         // 校验状态
-        boolean enable = (boolean) ReflectionUtils.getFieldValue(user, enableFiledName);
+        boolean enable = (boolean) ReflectionUtils.getFieldValue(user, fn(column.getEnable()));
         Assert.isTrue(enable, ErrorCode.USER_DISABLE);
 
         // 获取uuid
-        String uuid = (String) ReflectionUtils.getFieldValue(user, uuidFiledName);
+        String uuid = (String) ReflectionUtils.getFieldValue(user, fn(column.getUuid()));
 
         // 写入登录状态
         refreshToken(uuid, dbPassword, request, response);
@@ -121,7 +107,7 @@ public class SecurityUserService<E> {
 
     public void verifyLogin(HttpServletRequest request, HttpServletResponse response, Object handler) {
         // 获取token
-        String token = Safes.of(ServletUtil.getCookie(request, securityProperties.getTokenKey()), Cookie::getValue);
+        String token = Safes.of(ServletUtil.getCookie(request, properties.getTokenKey()), Cookie::getValue);
         Assert.notBlank(token, ErrorCode.NOT_LOGIN);
 
         // 解密token
@@ -139,20 +125,20 @@ public class SecurityUserService<E> {
         // 校验用户
         String uuid = tokenContext.getUuid();
         LambdaQueryWrapper<E> queryWrapper = new LambdaQueryWrapper<>();
-        queryWrapper.eq(userColumn.getUuid(), uuid);
+        queryWrapper.eq(column.getUuid(), uuid);
         E user = mapper.selectOne(queryWrapper);
         Assert.notNull(user, ErrorCode.USER_NOT_FOUND);
 
         // 校验密码
-        String dbPassword = (String) ReflectionUtils.getFieldValue(user, passwordFiledName);
+        String dbPassword = (String) ReflectionUtils.getFieldValue(user, fn(column.getPassword()));
         Assert.equals(tokenContext.getPassword(), dbPassword, ErrorCode.PASSWORD_ERROR);
 
         // 校验状态
-        boolean enable = (boolean) ReflectionUtils.getFieldValue(user, enableFiledName);
+        boolean enable = (boolean) ReflectionUtils.getFieldValue(user, fn(column.getEnable()));
         Assert.isTrue(enable, ErrorCode.USER_DISABLE);
 
         // 校验角色
-        String userRole = (String) ReflectionUtils.getFieldValue(user, rolesFiledName);
+        String userRole = (String) ReflectionUtils.getFieldValue(user, fn(column.getRoles()));
         Set<String> userRoles = Safes.of(userRole.split(",")).stream().map(String::toLowerCase)
                 .collect(Collectors.toSet());
         checkAuth(userRoles, handler);
@@ -163,53 +149,53 @@ public class SecurityUserService<E> {
         }
 
         // 存储用户上下文
-        String username = (String) ReflectionUtils.getFieldValue(user, usernameFiledName);
+        String username = (String) ReflectionUtils.getFieldValue(user, fn(column.getUsername()));
         UserContext.set(UserContext.User.builder().uuid(uuid).username(username).userRoles(userRoles).build());
     }
 
     public void changePassword(String username, String oldPassword, String newPassword) {
         // 获取用户
         LambdaQueryWrapper<E> queryWrapper = new LambdaQueryWrapper<>();
-        queryWrapper.eq(userColumn.getUsername(), username);
+        queryWrapper.eq(column.getUsername(), username);
         E user = mapper.selectOne(queryWrapper);
         Assert.notNull(user, ErrorCode.USER_NOT_FOUND);
 
         // 校验旧密码
-        String dbPassword = (String) ReflectionUtils.getFieldValue(user, passwordFiledName);
+        String dbPassword = (String) ReflectionUtils.getFieldValue(user, fn(column.getPassword()));
         Assert.isTrue(BCrypt.checkpw(oldPassword, dbPassword), ErrorCode.OLD_PASSWORD_ERROR);
 
         // 更新密码
         LambdaUpdateWrapper<E> updateWrapper = new LambdaUpdateWrapper<>();
-        updateWrapper.set(userColumn.getPassword(), BCrypt.hashpw(newPassword))
-                .eq(userColumn.getUuid(), ReflectionUtils.getFieldValue(user, uuidFiledName));
+        updateWrapper.set(column.getPassword(), BCrypt.hashpw(newPassword));
+        updateWrapper.eq(column.getUuid(), ReflectionUtils.getFieldValue(user, fn(column.getUuid())));
         mapper.update(null, updateWrapper);
     }
 
     public void updateRoles(String username, Set<String> roles) {
         // 获取用户
         LambdaQueryWrapper<E> queryWrapper = new LambdaQueryWrapper<>();
-        queryWrapper.eq(userColumn.getUsername(), username);
+        queryWrapper.eq(column.getUsername(), username);
         E user = mapper.selectOne(queryWrapper);
         Assert.notNull(user, ErrorCode.USER_NOT_FOUND);
 
         // 更新角色
         LambdaUpdateWrapper<E> updateWrapper = new LambdaUpdateWrapper<>();
-        updateWrapper.set(userColumn.getRoles(), String.join(",", roles))
-                .eq(userColumn.getUuid(), ReflectionUtils.getFieldValue(user, uuidFiledName));
+        updateWrapper.set(column.getRoles(), String.join(",", roles))
+                .eq(column.getUuid(), ReflectionUtils.getFieldValue(user, fn(column.getUuid())));
         mapper.update(null, updateWrapper);
     }
 
     public void updateEnable(String username, boolean enable) {
         // 获取用户
         LambdaQueryWrapper<E> queryWrapper = new LambdaQueryWrapper<>();
-        queryWrapper.eq(userColumn.getUsername(), username);
+        queryWrapper.eq(column.getUsername(), username);
         E user = mapper.selectOne(queryWrapper);
         Assert.notNull(user, ErrorCode.USER_NOT_FOUND);
 
         // 更新状态
         LambdaUpdateWrapper<E> updateWrapper = new LambdaUpdateWrapper<>();
-        updateWrapper.set(userColumn.getEnable(), enable)
-                .eq(userColumn.getUuid(), ReflectionUtils.getFieldValue(user, uuidFiledName));
+        updateWrapper.set(column.getEnable(), enable)
+                .eq(column.getUuid(), ReflectionUtils.getFieldValue(user, fn(column.getUuid())));
         mapper.update(null, updateWrapper);
     }
 
@@ -217,11 +203,11 @@ public class SecurityUserService<E> {
         TokenContext tokenContext = TokenContext.builder()
                 .uuid(uuid).password(password)
                 .random(RandomUtil.randomString(8))
-                .expires(DateUtil.currentSeconds() + securityProperties.getExpires().getSeconds())
+                .expires(DateUtil.currentSeconds() + properties.getExpires().getSeconds())
                 .build();
         String token = AES.encryptHex(GsonUtil.toJson(tokenContext));
-        Cookie cookie = new Cookie(securityProperties.getTokenKey(), token);
-        cookie.setMaxAge((int) securityProperties.getExpires().getSeconds());
+        Cookie cookie = new Cookie(properties.getTokenKey(), token);
+        cookie.setMaxAge((int) properties.getExpires().getSeconds());
         cookie.setDomain(UrlUtils.getDomain(request.getHeader("host"), 1));
         cookie.setPath("/");
         response.addCookie(cookie);
@@ -252,5 +238,11 @@ public class SecurityUserService<E> {
                 Assert.isTrue(Collections.disjoint(userRoles, excludeRoles), ErrorCode.ROLE_NO_PERMISSION);
             }
         }
+    }
+
+    private String fn(Function<E, ?> filed) {
+        return GlobalCache.<Function<E, ?>, String>cache(getClass().getName()).getIfAbsent(
+                filed, (none) -> ReflectionUtils.getFieldName(filed)
+        );
     }
 }
