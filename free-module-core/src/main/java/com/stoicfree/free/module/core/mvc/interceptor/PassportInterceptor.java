@@ -7,21 +7,21 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.servlet.HandlerInterceptor;
 import org.springframework.web.servlet.ModelAndView;
 
-import com.stoicfree.free.module.core.mvc.security.context.UserContext;
-import com.stoicfree.free.module.core.mvc.security.service.SecurityUserService;
+import com.stoicfree.free.module.core.mvc.passport.context.UserContext;
+import com.stoicfree.free.module.core.mvc.passport.service.PassGate;
 
 /**
  * @author zengzhifei
  * @date 2023/2/17 11:16
  */
-public class SecurityInterceptor implements HandlerInterceptor {
+public class PassportInterceptor implements HandlerInterceptor {
     @Autowired
-    private SecurityUserService<?> userService;
+    private PassGate<?> passGate;
 
     @Override
     public boolean preHandle(HttpServletRequest request, HttpServletResponse response, Object handler)
             throws Exception {
-        userService.verifyLogin(request, response, handler);
+        passGate.verifyLogin(request, response, handler);
         return true;
     }
 

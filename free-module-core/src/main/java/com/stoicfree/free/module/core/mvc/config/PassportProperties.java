@@ -11,7 +11,7 @@ import lombok.ToString;
  */
 @Data
 @ToString(callSuper = true)
-public class SecurityProperties extends InterceptorProperties {
+public class PassportProperties extends InterceptorProperties {
     private boolean enable = false;
     private String tokenKey;
     private Duration expires;

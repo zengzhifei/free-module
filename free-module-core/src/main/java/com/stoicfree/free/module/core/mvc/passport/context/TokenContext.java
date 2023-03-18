@@ -1,4 +1,4 @@
-package com.stoicfree.free.module.core.mvc.security.context;
+package com.stoicfree.free.module.core.mvc.passport.context;
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;

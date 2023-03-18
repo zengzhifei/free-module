@@ -1,4 +1,4 @@
-package com.stoicfree.free.module.core.mvc.security.service;
+package com.stoicfree.free.module.core.mvc.passport.service;
 
 import java.nio.charset.StandardCharsets;
 import java.util.Collections;
@@ -26,11 +26,11 @@ import com.stoicfree.free.module.core.common.support.ID;
 import com.stoicfree.free.module.core.common.support.Safes;
 import com.stoicfree.free.module.core.common.util.ReflectionUtils;
 import com.stoicfree.free.module.core.common.util.UrlUtils;
-import com.stoicfree.free.module.core.mvc.config.SecurityProperties;
-import com.stoicfree.free.module.core.mvc.security.anotation.Auth;
-import com.stoicfree.free.module.core.mvc.security.context.TokenContext;
-import com.stoicfree.free.module.core.mvc.security.context.UserColumn;
-import com.stoicfree.free.module.core.mvc.security.context.UserContext;
+import com.stoicfree.free.module.core.mvc.config.PassportProperties;
+import com.stoicfree.free.module.core.mvc.passport.anotation.Auth;
+import com.stoicfree.free.module.core.mvc.passport.context.TokenContext;
+import com.stoicfree.free.module.core.mvc.passport.context.UserColumn;
+import com.stoicfree.free.module.core.mvc.passport.context.UserContext;
 
 import cn.hutool.core.date.DateUtil;
 import cn.hutool.core.util.RandomUtil;
@@ -43,13 +43,13 @@ import cn.hutool.extra.servlet.ServletUtil;
  * @author zengzhifei
  * @date 2023/2/17 16:54
  */
-public class SecurityUserService<E> {
+public class PassGate<E> {
     private static final AES AES = SecureUtil.aes("(7djPSrws9K2MJk8".getBytes(StandardCharsets.UTF_8));
     private final BaseMapper<E> mapper;
     private final UserColumn<E> column;
-    private final SecurityProperties properties;
+    private final PassportProperties properties;
 
-    public SecurityUserService(BaseMapper<E> mapper, UserColumn<E> column, SecurityProperties properties) {
+    public PassGate(BaseMapper<E> mapper, UserColumn<E> column, PassportProperties properties) {
         this.mapper = mapper;
         this.column = column;
         this.properties = properties;

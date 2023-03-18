@@ -1,4 +1,4 @@
-package com.stoicfree.free.module.core.mvc.security.context;
+package com.stoicfree.free.module.core.mvc.passport.context;
 
 import com.baomidou.mybatisplus.core.toolkit.support.SFunction;
 

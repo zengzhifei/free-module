@@ -1,4 +1,4 @@
-package com.stoicfree.free.module.core.mvc.security.anotation;
+package com.stoicfree.free.module.core.mvc.passport.anotation;
 
 import java.lang.annotation.Documented;
 import java.lang.annotation.ElementType;

@@ -19,9 +19,9 @@ import com.stoicfree.free.module.core.mvc.config.MvcProperties;
 import com.stoicfree.free.module.core.mvc.config.SwaggerProperties;
 import com.stoicfree.free.module.core.mvc.filter.CrossDomainFilter;
 import com.stoicfree.free.module.core.mvc.filter.RequestWrapperFilter;
-import com.stoicfree.free.module.core.mvc.interceptor.SecurityInterceptor;
+import com.stoicfree.free.module.core.mvc.interceptor.PassportInterceptor;
 import com.stoicfree.free.module.core.mvc.interceptor.TimeCostInterceptor;
-import com.stoicfree.free.module.core.mvc.security.anotation.advice.LoginAdvice;
+import com.stoicfree.free.module.core.mvc.passport.anotation.advice.LoginAdvice;
 
 import springfox.documentation.builders.ApiInfoBuilder;
 import springfox.documentation.builders.PathSelectors;
@@ -68,16 +68,16 @@ public class MvcModuleAutoConfiguration {
     }
 
     @Bean
-    public SecurityInterceptor securityInterceptor() {
-        SecurityInterceptor interceptor = new SecurityInterceptor();
-        if (mvcProperties.getSecurity().isEnable()) {
+    public PassportInterceptor passportInterceptor() {
+        PassportInterceptor interceptor = new PassportInterceptor();
+        if (mvcProperties.getPassport().isEnable()) {
             interceptors.add(interceptor);
         }
         return interceptor;
     }
 
     @Bean
-    @DependsOn({"timeCostInterceptor", "securityInterceptor"})
+    @DependsOn({"timeCostInterceptor", "passportInterceptor"})
     @ConditionalOnMissingBean
     public InterceptorWebMvcConfigure interceptorWebMvcConfigure() {
         return new InterceptorWebMvcConfigure(interceptors);
@@ -90,7 +90,7 @@ public class MvcModuleAutoConfiguration {
 
     @Bean
     @ConditionalOnExpression("${free.mvc.swagger.enable:false}")
-    public Docket createRestApi() {
+    public Docket docket() {
         SwaggerProperties swaggerProperties = mvcProperties.getSwagger();
         return new Docket(DocumentationType.SWAGGER_2)
                 .enable(swaggerProperties.isEnable())

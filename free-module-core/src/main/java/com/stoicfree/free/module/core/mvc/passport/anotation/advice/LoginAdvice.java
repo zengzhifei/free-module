@@ -1,4 +1,4 @@
-package com.stoicfree.free.module.core.mvc.security.anotation.advice;
+package com.stoicfree.free.module.core.mvc.passport.anotation.advice;
 
 import java.lang.reflect.Method;
 
@@ -15,8 +15,8 @@ import org.springframework.web.context.request.RequestContextHolder;
 import org.springframework.web.context.request.ServletRequestAttributes;
 
 import com.stoicfree.free.module.core.common.util.AopUtils;
-import com.stoicfree.free.module.core.mvc.security.anotation.Login;
-import com.stoicfree.free.module.core.mvc.security.service.SecurityUserService;
+import com.stoicfree.free.module.core.mvc.passport.anotation.Login;
+import com.stoicfree.free.module.core.mvc.passport.service.PassGate;
 
 import lombok.extern.slf4j.Slf4j;
 
@@ -29,9 +29,9 @@ import lombok.extern.slf4j.Slf4j;
 @Aspect
 public class LoginAdvice {
     @Autowired
-    private SecurityUserService<?> securityUserService;
+    private PassGate<?> passGate;
 
-    @Before("@annotation(com.stoicfree.free.module.core.mvc.security.anotation.Login)")
+    @Before("@annotation(com.stoicfree.free.module.core.mvc.passport.anotation.Login)")
     public void beforeAdvice(JoinPoint joinPoint) {
         // 获取参数
         Object[] args = joinPoint.getArgs();
@@ -56,7 +56,7 @@ public class LoginAdvice {
             HttpServletRequest request = attribute.getRequest();
             HttpServletResponse response = attribute.getResponse();
             // 校验登录
-            securityUserService.login(username, password, request, response);
+            passGate.login(username, password, request, response);
         }
     }
 }

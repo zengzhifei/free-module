@@ -24,7 +24,7 @@ public class MvcProperties {
     private TimeCostProperties timeCost = new TimeCostProperties();
 
     @NestedConfigurationProperty
-    private SecurityProperties security = new SecurityProperties();
+    private PassportProperties passport = new PassportProperties();
 
     @NestedConfigurationProperty
     private SwaggerProperties swagger = new SwaggerProperties();

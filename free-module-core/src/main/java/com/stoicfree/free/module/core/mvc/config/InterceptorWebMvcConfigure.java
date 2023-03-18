@@ -12,7 +12,7 @@ import org.springframework.web.servlet.config.annotation.InterceptorRegistry;
 import org.springframework.web.servlet.config.annotation.ResourceHandlerRegistry;
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 
-import com.stoicfree.free.module.core.mvc.interceptor.SecurityInterceptor;
+import com.stoicfree.free.module.core.mvc.interceptor.PassportInterceptor;
 import com.stoicfree.free.module.core.mvc.interceptor.TimeCostInterceptor;
 
 /**
@@ -46,8 +46,8 @@ public class InterceptorWebMvcConfigure implements WebMvcConfigurer {
                 addInterceptorAndSetProperties(registry, interceptor, mvcProperties.getTimeCost());
             }
             // 登录拦截器
-            if (interceptor instanceof SecurityInterceptor) {
-                addInterceptorAndSetProperties(registry, interceptor, mvcProperties.getSecurity());
+            if (interceptor instanceof PassportInterceptor) {
+                addInterceptorAndSetProperties(registry, interceptor, mvcProperties.getPassport());
             }
         }
     }

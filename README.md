@@ -122,7 +122,7 @@ public class DemoApplication {
 free:
   mvc:
     enable: true
-    security:
+    passport:
       enable: true
       token-key: fr_token
       expires: 7d
@@ -132,14 +132,14 @@ free:
 ```java
 
 @Configuration
-public class SecurityConfig {
+public class PassportConfig {
     @Autowired
     private UserMapper userMapper;
     @Autowired
     private MvcProperties mvcProperties;
 
     @Bean
-    public SecurityUserService<User> securityUserService() {
+    public PassGate<User> passGate() {
         UserColumn<User> userColumn = UserColumn.<User>builder()
                 .username(User::getUsername)
                 .password(User::getPassword)
@@ -147,7 +147,7 @@ public class SecurityConfig {
                 .enable(User::getEnable)
                 .roles(User::getRoles)
                 .build();
-        return new SecurityUserService<>(userMapper, userColumn, mvcProperties.getSecurity());
+        return new PassGate<>(userMapper, userColumn, mvcProperties.getPassport());
     }
 }
 ```
@@ -160,19 +160,19 @@ public class SecurityConfig {
 @Auth(roles = "admin", excludeRoles = "user")
 public class TestController {
     @Autowired
-    private SecurityUserService<User> securityUserService;
+    private PassGate<User> passGate;
 
     @PostMapping("/register")
     public Result<Boolean> register(User user) {
         user.setEnable(true);
-        securityUserService.register(user);
+        passGate.register(user);
         return Result.ok(true);
     }
 
     @PostMapping("/login")
     public Result<Boolean> login(String username, String password, HttpServletRequest request,
                                  HttpServletResponse response) {
-        securityUserService.login(username, password, request, response);
+        passGate.login(username, password, request, response);
         return Result.ok(true);
     }
 
@@ -185,19 +185,19 @@ public class TestController {
 
     @PostMapping("/changePassword")
     public Result<Boolean> changePassword(String username, String oldPassword, String newPassword) {
-        securityUserService.changePassword(username, oldPassword, newPassword);
+        passGate.changePassword(username, oldPassword, newPassword);
         return Result.ok(true);
     }
 
     @PostMapping("/updateRoles")
     public Result<Boolean> updateRoles(String username, String[] roles) {
-        securityUserService.updateRoles(username, Arrays.stream(roles).collect(Collectors.toSet()));
+        passGate.updateRoles(username, Arrays.stream(roles).collect(Collectors.toSet()));
         return Result.ok(true);
     }
 
     @PostMapping("/updateEnable")
     public Result<Boolean> updateEnable(String username, boolean enable) {
-        securityUserService.updateEnable(username, enable);
+        passGate.updateEnable(username, enable);
         return Result.ok(true);
     }
 }
