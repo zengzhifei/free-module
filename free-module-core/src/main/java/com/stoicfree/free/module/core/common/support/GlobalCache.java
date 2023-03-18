@@ -1,8 +1,8 @@
 package com.stoicfree.free.module.core.common.support;
 
-import java.util.HashMap;
-import java.util.Map;
 import java.util.concurrent.TimeUnit;
+
+import org.apache.commons.collections.map.LRUMap;
 
 import com.google.common.cache.Cache;
 import com.google.common.cache.CacheBuilder;
@@ -14,7 +14,7 @@ import javafx.util.Callback;
  * @date 2023/3/18 00:26
  */
 public class GlobalCache<K, V> {
-    private static final Map<String, GlobalCache<Object, Object>> GLOBAL_CACHE_MAP = new HashMap<>(256);
+    private static final LRUMap GLOBAL_CACHE_MAP = new LRUMap(256);
     private Cache<K, V> cache = CacheBuilder.newBuilder()
             .expireAfterWrite(1, TimeUnit.HOURS)
             .initialCapacity(32)
@@ -30,7 +30,7 @@ public class GlobalCache<K, V> {
         if (globalCache == null) {
             globalCache = new GlobalCache<>();
             globalCache.cache = globalCache.buildDefaultCache();
-            GLOBAL_CACHE_MAP.put(type, (GlobalCache<Object, Object>) globalCache);
+            GLOBAL_CACHE_MAP.put(type, globalCache);
         }
         return globalCache;
     }
@@ -41,7 +41,7 @@ public class GlobalCache<K, V> {
         if (globalCache == null) {
             globalCache = new GlobalCache<>();
             globalCache.cache = cache;
-            GLOBAL_CACHE_MAP.put(type, (GlobalCache<Object, Object>) globalCache);
+            GLOBAL_CACHE_MAP.put(type, globalCache);
         }
         return globalCache;
     }
