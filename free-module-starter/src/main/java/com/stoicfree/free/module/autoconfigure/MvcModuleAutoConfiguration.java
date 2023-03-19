@@ -12,8 +12,12 @@ import org.springframework.boot.web.servlet.FilterRegistrationBean;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.DependsOn;
+import org.springframework.core.annotation.Order;
 import org.springframework.web.servlet.HandlerInterceptor;
 
+import com.stoicfree.free.module.core.mvc.captcha.anotation.advice.CreateCaptchaAdvice;
+import com.stoicfree.free.module.core.mvc.captcha.anotation.advice.VerifyCaptchaAdvice;
+import com.stoicfree.free.module.core.mvc.captcha.service.Captcha;
 import com.stoicfree.free.module.core.mvc.config.InterceptorWebMvcConfigure;
 import com.stoicfree.free.module.core.mvc.config.MvcProperties;
 import com.stoicfree.free.module.core.mvc.config.SwaggerProperties;
@@ -86,6 +90,21 @@ public class MvcModuleAutoConfiguration {
     @Bean
     public LoginAdvice loginAdvice() {
         return new LoginAdvice();
+    }
+
+    @Bean
+    public Captcha captcha() {
+        return new Captcha(mvcProperties.getCaptcha());
+    }
+
+    @Bean
+    public CreateCaptchaAdvice createCaptchaAdvice() {
+        return new CreateCaptchaAdvice();
+    }
+
+    @Bean
+    public VerifyCaptchaAdvice verifyCaptchaAdvice() {
+        return new VerifyCaptchaAdvice();
     }
 
     @Bean

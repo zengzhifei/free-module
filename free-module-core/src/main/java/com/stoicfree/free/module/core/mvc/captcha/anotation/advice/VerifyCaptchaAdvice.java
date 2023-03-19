@@ -1,9 +1,8 @@
-package com.stoicfree.free.module.core.mvc.passport.anotation.advice;
+package com.stoicfree.free.module.core.mvc.captcha.anotation.advice;
 
 import java.lang.reflect.Method;
 
 import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
 
 import org.aspectj.lang.JoinPoint;
 import org.aspectj.lang.annotation.Aspect;
@@ -15,8 +14,8 @@ import org.springframework.web.context.request.RequestContextHolder;
 import org.springframework.web.context.request.ServletRequestAttributes;
 
 import com.stoicfree.free.module.core.common.util.AopUtils;
-import com.stoicfree.free.module.core.mvc.passport.anotation.Login;
-import com.stoicfree.free.module.core.mvc.passport.service.PassGate;
+import com.stoicfree.free.module.core.mvc.captcha.anotation.VerifyCaptcha;
+import com.stoicfree.free.module.core.mvc.captcha.service.Captcha;
 
 import lombok.extern.slf4j.Slf4j;
 
@@ -25,13 +24,13 @@ import lombok.extern.slf4j.Slf4j;
  * @date 2023/2/19 23:17
  */
 @Slf4j
-@Order(1)
+@Order(0)
 @Aspect
-public class LoginAdvice {
+public class VerifyCaptchaAdvice {
     @Autowired
-    private PassGate<?> passGate;
+    private Captcha captcha;
 
-    @Before("@annotation(com.stoicfree.free.module.core.mvc.passport.anotation.Login)")
+    @Before("@annotation(com.stoicfree.free.module.core.mvc.captcha.anotation.VerifyCaptcha)")
     public void beforeAdvice(JoinPoint joinPoint) {
         // 获取参数
         Object[] args = joinPoint.getArgs();
@@ -40,23 +39,19 @@ public class LoginAdvice {
         // 获取调用方法
         Method method = signature.getMethod();
         // 获取注解
-        Login annotation = method.getAnnotation(Login.class);
+        VerifyCaptcha annotation = method.getAnnotation(VerifyCaptcha.class);
 
         // 解析注解
         if (annotation != null) {
-            // 获取username
-            String usernameKey = annotation.username();
-            // 获取password
-            String passwordKey = annotation.password();
+            // 获取code
+            String captchaCodeKey = annotation.captchaCode();
 
             // 解析SpEL表达式
-            String username = AopUtils.parseAnnotationParam(usernameKey, method, args, String.class);
-            String password = AopUtils.parseAnnotationParam(passwordKey, method, args, String.class);
+            String captchaCode = AopUtils.parseAnnotationParam(captchaCodeKey, method, args, String.class);
             ServletRequestAttributes attribute = (ServletRequestAttributes) RequestContextHolder.getRequestAttributes();
             HttpServletRequest request = attribute.getRequest();
-            HttpServletResponse response = attribute.getResponse();
             // 校验登录
-            passGate.login(username, password, request, response);
+            captcha.verify(captchaCode, request);
         }
     }
 }

@@ -27,5 +27,8 @@ public class MvcProperties {
     private PassportProperties passport = new PassportProperties();
 
     @NestedConfigurationProperty
+    private CaptchaProperties captcha = new CaptchaProperties();
+
+    @NestedConfigurationProperty
     private SwaggerProperties swagger = new SwaggerProperties();
 }
