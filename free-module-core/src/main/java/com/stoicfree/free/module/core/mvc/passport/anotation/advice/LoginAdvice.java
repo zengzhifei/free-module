@@ -16,7 +16,7 @@ import org.springframework.web.context.request.ServletRequestAttributes;
 
 import com.stoicfree.free.module.core.common.util.AopUtils;
 import com.stoicfree.free.module.core.mvc.passport.anotation.Login;
-import com.stoicfree.free.module.core.mvc.passport.service.PassGate;
+import com.stoicfree.free.module.core.mvc.passport.PassGate;
 
 import lombok.extern.slf4j.Slf4j;
 

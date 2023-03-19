@@ -1,4 +1,4 @@
-package com.stoicfree.free.module.core.mvc.passport.service;
+package com.stoicfree.free.module.core.mvc.passport;
 
 import java.nio.charset.StandardCharsets;
 import java.util.Collections;

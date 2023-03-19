@@ -1,4 +1,4 @@
-package com.stoicfree.free.module.core.mvc.captcha.service;
+package com.stoicfree.free.module.core.mvc.captcha;
 
 import java.io.IOException;
 import java.io.OutputStream;

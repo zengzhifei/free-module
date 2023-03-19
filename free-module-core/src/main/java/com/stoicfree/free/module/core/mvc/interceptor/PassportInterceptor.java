@@ -8,7 +8,7 @@ import org.springframework.web.servlet.HandlerInterceptor;
 import org.springframework.web.servlet.ModelAndView;
 
 import com.stoicfree.free.module.core.mvc.passport.context.UserContext;
-import com.stoicfree.free.module.core.mvc.passport.service.PassGate;
+import com.stoicfree.free.module.core.mvc.passport.PassGate;
 
 /**
  * @author zengzhifei

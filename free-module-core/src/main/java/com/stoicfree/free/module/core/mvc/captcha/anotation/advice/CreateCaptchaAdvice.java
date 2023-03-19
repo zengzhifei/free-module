@@ -11,7 +11,7 @@ import org.springframework.core.annotation.Order;
 import org.springframework.web.context.request.RequestContextHolder;
 import org.springframework.web.context.request.ServletRequestAttributes;
 
-import com.stoicfree.free.module.core.mvc.captcha.service.Captcha;
+import com.stoicfree.free.module.core.mvc.captcha.Captcha;
 
 import lombok.extern.slf4j.Slf4j;
 
