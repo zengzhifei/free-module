@@ -8,11 +8,13 @@ import java.util.function.Function;
 import java.util.stream.Collectors;
 
 import org.apache.commons.collections.CollectionUtils;
+import org.apache.commons.lang.ClassUtils;
 import org.apache.commons.lang.StringUtils;
 
 import com.stoicfree.free.module.core.common.enums.ErrorCode;
 
 import cn.hutool.core.util.CharsetUtil;
+import cn.hutool.core.util.ReflectUtil;
 
 /**
  * @author zengzhifei
@@ -25,15 +27,19 @@ public class Assert {
         }
     }
 
-    public static <T> void allFieldNotNull(T param, ErrorCode errorCode, String message) {
-        notNull(param, errorCode, message);
-        try {
-            for (Field field : param.getClass().getDeclaredFields()) {
-                field.setAccessible(true);
-                Assert.notNull(field.get(param), errorCode, String.format(message, field.getName()));
+    public static <T> void allFieldsValid(T param, ErrorCode errorCode, String fieldFormat, String... messages) {
+        Assert.notNull(param, errorCode, messages);
+        for (Field field : param.getClass().getDeclaredFields()) {
+            field.setAccessible(true);
+            Object value = ReflectUtil.getFieldValue(param, field);
+            Class<?> fieldType = field.getType();
+            if (ClassUtils.isAssignable(fieldType, String.class, true)) {
+                Assert.notBlank((String) value, errorCode, String.format(fieldFormat, field.getName()));
+            } else if (ClassUtils.isAssignable(fieldType, Collection.class, true)) {
+                Assert.notEmpty((Collection<?>) value, errorCode, String.format(fieldFormat, field.getName()));
+            } else {
+                Assert.notNull(value, errorCode, String.format(fieldFormat, field.getName()));
             }
-        } catch (IllegalAccessException e) {
-            throw new RuntimeException(e);
         }
     }
 

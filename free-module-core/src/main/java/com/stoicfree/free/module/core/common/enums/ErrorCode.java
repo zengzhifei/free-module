@@ -20,6 +20,9 @@ public enum ErrorCode {
     USER_DISABLE(506, "用户状态异常"),
     ROLE_NO_PERMISSION(507, "角色无权限"),
     OLD_PASSWORD_ERROR(507, "旧密码错误"),
+    AUTH_FAIL(508, "验证失败"),
+    GROUP_FAIL(509, "分组失败"),
+    VERSION_ERROR(510, "版本不符合要求"),
 
     EMPTY_PARAMS(10001, "参数为空"),
     INVALID_PARAMS(10002, "参数无效"),

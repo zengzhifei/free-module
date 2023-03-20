@@ -31,8 +31,7 @@ public class Recorder<E> {
     @PostConstruct
     private void init() {
         Assert.notNull(mapper, ErrorCode.INVALID_PARAMS, "mapper not be null");
-        Assert.notNull(column, ErrorCode.INVALID_PARAMS, "column not be null");
-        Assert.allFieldNotNull(column, ErrorCode.INVALID_PARAMS, "%s not be null");
+        Assert.allFieldsValid(column, ErrorCode.INVALID_PARAMS, "%s must be valid", "column not be null");
         Assert.notNull(entityClass, ErrorCode.INVALID_PARAMS, "entityClass not be null");
     }
 

@@ -11,7 +11,7 @@ import java.util.stream.Collectors;
  * @date 2022/10/18 16:39
  */
 public class DateTimeUtils {
-    public static <T> boolean isIntersect(Collection<T> cols, Function<T, Long> start, Function<T, Long> end) {
+    public static <T> boolean intersect(Collection<T> cols, Function<T, Long> start, Function<T, Long> end) {
         if (cols == null || cols.size() <= 1) {
             return false;
         }
