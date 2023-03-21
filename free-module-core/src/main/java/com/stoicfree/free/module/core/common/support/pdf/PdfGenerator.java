@@ -514,14 +514,14 @@ public class PdfGenerator {
         if (baseFont == null) {
             // 使用中文字体，在模板文件中设置字体为中文字体 Adobe 宋体 std L
             // font = BaseFont.createFont("STSongStd-Light", "UniGB-UCS2-H", BaseFont.EMBEDDED);
-            baseFont = BaseFont.createFont("font/simsun.ttc,0", BaseFont.IDENTITY_H, BaseFont.EMBEDDED);
+            baseFont = BaseFont.createFont("default/font/simsun.ttc,0", BaseFont.IDENTITY_H, BaseFont.EMBEDDED);
         }
         return baseFont;
     }
 
     private static PDFont getPDFont(PDDocument document) throws IOException {
         if (ttc == null) {
-            ttc = new TrueTypeCollection(ResourceUtil.getStream("font/simsun.ttc"));
+            ttc = new TrueTypeCollection(ResourceUtil.getStream("default/font/simsun.ttc"));
         }
         return PDType0Font.load(document, ttc.getFontByName("SimSun"), true);
     }
