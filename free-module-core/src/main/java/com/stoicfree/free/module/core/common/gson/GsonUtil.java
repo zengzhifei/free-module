@@ -86,6 +86,11 @@ public class GsonUtil {
         return GSON.fromJson(json, typeOfT);
     }
 
+    public static <T> T fromJson(String json, Class<?> rawClazz, Class<?>... genericClasses) {
+        Type type = TypeToken.getParameterized(rawClazz, genericClasses).getType();
+        return GSON.fromJson(json, type);
+    }
+
     public static <T> List<T> fromJsonToList(String json, Class<T> clazz) {
         Type type = TypeToken.getParameterized(List.class, clazz).getType();
         return GSON.fromJson(json, type);
