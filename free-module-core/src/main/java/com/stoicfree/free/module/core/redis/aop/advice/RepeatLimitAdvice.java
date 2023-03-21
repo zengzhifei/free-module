@@ -27,13 +27,13 @@ import lombok.extern.slf4j.Slf4j;
 @Order
 @Aspect
 public class RepeatLimitAdvice {
-    private String prefix;
+    private final String prefix;
 
     @Autowired
     private RedisClient redisClient;
 
-    public RepeatLimitAdvice(String prefix) {
-        this.prefix = prefix;
+    public RepeatLimitAdvice() {
+        prefix = "repeat-limit:";
     }
 
     @Before("@annotation(com.stoicfree.free.module.core.redis.aop.RepeatLimit)")

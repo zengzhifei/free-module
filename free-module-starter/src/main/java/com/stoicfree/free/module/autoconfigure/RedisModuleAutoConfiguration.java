@@ -1,6 +1,5 @@
 package com.stoicfree.free.module.autoconfigure;
 
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnExpression;
 import org.springframework.boot.context.properties.EnableConfigurationProperties;
 import org.springframework.context.annotation.Bean;
@@ -17,11 +16,8 @@ import com.stoicfree.free.module.core.redis.config.RedisProperties;
 @ConditionalOnExpression("${free.redis.enable:false}")
 @EnableConfigurationProperties(RedisProperties.class)
 public class RedisModuleAutoConfiguration {
-    @Autowired
-    private RedisProperties redisProperties;
-
     @Bean
     public RepeatLimitAdvice repeatLimitAdvice() {
-        return new RepeatLimitAdvice(redisProperties.getPrefix());
+        return new RepeatLimitAdvice();
     }
 }

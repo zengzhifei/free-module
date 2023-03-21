@@ -13,5 +13,4 @@ import lombok.Data;
 public class RedisProperties {
     private boolean enable = false;
     private boolean log = false;
-    private String prefix = "";
 }
