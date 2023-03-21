@@ -13,7 +13,6 @@ import org.apache.commons.lang.StringUtils;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import com.google.gson.JsonElement;
-import com.google.gson.JsonSyntaxException;
 import com.google.gson.TypeAdapterFactory;
 import com.google.gson.annotations.SerializedName;
 import com.google.gson.internal.bind.ObjectTypeAdapter;
@@ -79,31 +78,36 @@ public class GsonUtil {
         return GSON.toJsonTree(src);
     }
 
-    public static <T> T fromJson(String json, Class<T> classOfT) throws JsonSyntaxException {
+    public static <T> T fromJson(String json, Class<T> classOfT) {
         return GSON.fromJson(json, classOfT);
     }
 
-    public static <T> T fromJson(String json, Type typeOfT) throws JsonSyntaxException {
+    public static <T> T fromJson(String json, Type typeOfT) {
         return GSON.fromJson(json, typeOfT);
     }
 
-    public static <T> List<T> fromJsonToList(String json, Class<T> clazz) throws JsonSyntaxException {
+    public static <T> List<T> fromJsonToList(String json, Class<T> clazz) {
         Type type = TypeToken.getParameterized(List.class, clazz).getType();
         return GSON.fromJson(json, type);
     }
 
-    public static Map<String, Object> objectToMap(Object object, boolean getNulls) {
-        if (object == null) {
+    public static <K, V> Map<K, V> fromJsonToMap(String json, Class<K> keyClazz, Class<V> valueClazz) {
+        Type type = TypeToken.getParameterized(Map.class, keyClazz, valueClazz).getType();
+        return GSON.fromJson(json, type);
+    }
+
+    public static Map<String, Object> objectToMap(Object src, boolean getNulls) {
+        if (src == null) {
             return null;
         }
 
-        Field[] fields = ReflectUtil.getFieldsDirectly(object.getClass(), true);
+        Field[] fields = ReflectUtil.getFieldsDirectly(src.getClass(), true);
         Map<String, Object> result = new HashMap<>(fields.length);
 
         for (Field field : fields) {
             field.setAccessible(true);
             try {
-                Object value = field.get(object);
+                Object value = field.get(src);
                 if (!getNulls && value == null) {
                     continue;
                 }
