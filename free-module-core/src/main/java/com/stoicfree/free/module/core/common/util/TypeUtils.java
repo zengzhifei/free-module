@@ -1,4 +1,4 @@
-package com.stoicfree.free.module.core.common.support;
+package com.stoicfree.free.module.core.common.util;
 
 import java.util.Collection;
 
