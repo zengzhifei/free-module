@@ -8,7 +8,6 @@ import java.util.function.Function;
 import java.util.stream.Collectors;
 
 import org.apache.commons.collections.CollectionUtils;
-import org.apache.commons.lang.ClassUtils;
 import org.apache.commons.lang.StringUtils;
 
 import com.stoicfree.free.module.core.common.enums.ErrorCode;
@@ -24,22 +23,6 @@ public class Assert {
     public static <T> void notNull(T param, ErrorCode errorCode, String... messages) {
         if (param == null) {
             throwException(errorCode, messages);
-        }
-    }
-
-    public static <T> void allFieldsValid(T param, ErrorCode errorCode, String fieldFormat, String... messages) {
-        Assert.notNull(param, errorCode, messages);
-        for (Field field : param.getClass().getDeclaredFields()) {
-            field.setAccessible(true);
-            Object value = ReflectUtil.getFieldValue(param, field);
-            Class<?> fieldType = field.getType();
-            if (ClassUtils.isAssignable(fieldType, String.class, true)) {
-                Assert.notBlank((String) value, errorCode, String.format(fieldFormat, field.getName()));
-            } else if (ClassUtils.isAssignable(fieldType, Collection.class, true)) {
-                Assert.notEmpty((Collection<?>) value, errorCode, String.format(fieldFormat, field.getName()));
-            } else {
-                Assert.notNull(value, errorCode, String.format(fieldFormat, field.getName()));
-            }
         }
     }
 
@@ -209,6 +192,32 @@ public class Assert {
         }
         if (num != null && max != null && num > max) {
             throwException(errorCode, messages);
+        }
+    }
+
+    public static <T> void isValid(T param, ErrorCode errorCode, String... messages) {
+        Assert.notNull(param, errorCode, messages);
+        if (TypeUtils.isString(param.getClass())) {
+            Assert.notBlank((String) param, errorCode, messages);
+        }
+        if (TypeUtils.isCollection(param.getClass())) {
+            Assert.notEmpty((Collection<?>) param, errorCode, messages);
+        }
+    }
+
+    public static <T> void allFieldsValid(T param, ErrorCode errorCode, String fieldFormat, String... messages) {
+        Assert.notNull(param, errorCode, messages);
+        for (Field field : param.getClass().getDeclaredFields()) {
+            field.setAccessible(true);
+            Object value = ReflectUtil.getFieldValue(param, field);
+            Class<?> fieldType = field.getType();
+            if (TypeUtils.isString(fieldType)) {
+                Assert.notBlank((String) value, errorCode, String.format(fieldFormat, field.getName()));
+            }
+            if (TypeUtils.isCollection(fieldType)) {
+                Assert.notEmpty((Collection<?>) value, errorCode, String.format(fieldFormat, field.getName()));
+            }
+            Assert.notNull(value, errorCode, String.format(fieldFormat, field.getName()));
         }
     }
 
