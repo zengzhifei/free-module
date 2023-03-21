@@ -10,7 +10,7 @@ import java.util.Map;
  * @author zengzhifei
  * @date 2023/3/20 16:05
  */
-public class PrimitiveUtils {
+public class BaseUtils {
     public static double fenToYuan(Long fen) {
         return new BigDecimal(fen).divide(BigDecimal.valueOf(100), 2, RoundingMode.HALF_UP).doubleValue();
     }
