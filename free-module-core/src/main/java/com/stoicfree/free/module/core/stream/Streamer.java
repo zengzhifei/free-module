@@ -8,7 +8,7 @@ import java.util.stream.Collectors;
 
 import com.stoicfree.free.module.core.common.enums.ErrorCode;
 import com.stoicfree.free.module.core.common.support.Assert;
-import com.stoicfree.free.module.core.common.util.PrimitiveUtils;
+import com.stoicfree.free.module.core.common.util.BaseUtils;
 import com.stoicfree.free.module.core.redis.client.RedisClient;
 import com.stoicfree.free.module.core.stream.constant.StreamConstants;
 
@@ -42,7 +42,7 @@ public class Streamer {
     }
 
     public static boolean checkVersion(String info) {
-        Map<String, String> infoMap = PrimitiveUtils.strToMap(info, "\r\n", ":");
+        Map<String, String> infoMap = BaseUtils.strToMap(info, "\r\n", ":");
         String version = infoMap.getOrDefault("redis_version", "0.0.0");
         return VersionComparator.INSTANCE.compare(version, StreamConstants.VERSION) >= 0;
     }
