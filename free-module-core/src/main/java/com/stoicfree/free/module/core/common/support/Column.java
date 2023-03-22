@@ -1,11 +1,10 @@
 package com.stoicfree.free.module.core.common.support;
 
-import java.lang.invoke.SerializedLambda;
-import java.lang.reflect.Method;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Set;
-import java.util.function.Function;
+
+import com.stoicfree.free.module.core.common.util.LambdaUtils;
 
 import lombok.extern.slf4j.Slf4j;
 
@@ -18,10 +17,10 @@ public class Column<T, I> {
     private final Map<String, I> columnMap = new HashMap<>();
 
     @SafeVarargs
-    public static <T> Column<T, ?> build(Function<T, ?>... fns) {
+    public static <T> Column<T, ?> build(Func<T, ?>... fns) {
         Column<T, ?> column = new Column<>();
         if (fns != null && fns.length > 0) {
-            for (Function<T, ?> fn : fns) {
+            for (Func<T, ?> fn : fns) {
                 column.add(fn);
             }
         }
@@ -38,24 +37,13 @@ public class Column<T, I> {
         return this;
     }
 
-    public Column<T, I> add(Function<T, ?> fn) {
+    public Column<T, I> add(Func<T, ?> fn) {
         this.add(fn, null);
         return this;
     }
 
-    public Column<T, I> add(Function<T, ?> fn, I info) {
-        try {
-            Method method = fn.getClass().getDeclaredMethod("writeReplace");
-            method.setAccessible(true);
-            SerializedLambda serializedLambda = (SerializedLambda) method.invoke(fn);
-            String fieldWithGet = serializedLambda.getImplMethodName();
-            // 转小驼峰
-            char[] chars = fieldWithGet.substring(3).toCharArray();
-            chars[0] = Character.toLowerCase(chars[0]);
-            columnMap.put(new String(chars), info);
-        } catch (ReflectiveOperationException e) {
-            log.warn("Column ReflectiveOperationException", e);
-        }
+    public Column<T, I> add(Func<T, ?> fn, I info) {
+        columnMap.put(LambdaUtils.getFieldName(fn), info);
         return this;
     }
 

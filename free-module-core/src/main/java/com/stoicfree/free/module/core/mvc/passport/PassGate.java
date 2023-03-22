@@ -3,7 +3,6 @@ package com.stoicfree.free.module.core.mvc.passport;
 import java.nio.charset.StandardCharsets;
 import java.util.Collections;
 import java.util.Set;
-import java.util.function.Function;
 import java.util.stream.Collectors;
 
 import javax.annotation.PostConstruct;
@@ -17,6 +16,7 @@ import org.springframework.web.method.HandlerMethod;
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.core.conditions.update.LambdaUpdateWrapper;
 import com.baomidou.mybatisplus.core.mapper.BaseMapper;
+import com.baomidou.mybatisplus.core.toolkit.support.SFunction;
 import com.stoicfree.free.module.core.common.enums.ErrorCode;
 import com.stoicfree.free.module.core.common.gson.GsonUtil;
 import com.stoicfree.free.module.core.common.support.Assert;
@@ -24,6 +24,7 @@ import com.stoicfree.free.module.core.common.support.BizException;
 import com.stoicfree.free.module.core.common.support.GlobalCache;
 import com.stoicfree.free.module.core.common.support.ID;
 import com.stoicfree.free.module.core.common.support.Safes;
+import com.stoicfree.free.module.core.common.util.LambdaUtils;
 import com.stoicfree.free.module.core.common.util.ReflectionUtils;
 import com.stoicfree.free.module.core.common.util.UrlUtils;
 import com.stoicfree.free.module.core.mvc.config.PassportProperties;
@@ -239,9 +240,9 @@ public class PassGate<E> {
         }
     }
 
-    private String fn(Function<E, ?> filed) {
-        return GlobalCache.<Function<E, ?>, String>cache(getClass().getName()).getIfAbsent(
-                filed, (none) -> ReflectionUtils.getFieldName(filed)
+    private String fn(SFunction<E, ?> filed) {
+        return GlobalCache.<SFunction<E, ?>, String>cache(getClass().getName()).getIfAbsent(
+                filed, (none) -> LambdaUtils.getFieldName(filed)
         );
     }
 }

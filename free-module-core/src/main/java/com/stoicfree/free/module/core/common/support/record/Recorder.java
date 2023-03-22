@@ -1,14 +1,14 @@
 package com.stoicfree.free.module.core.common.support.record;
 
-import java.util.function.Function;
-
 import javax.annotation.PostConstruct;
 
 import com.baomidou.mybatisplus.core.mapper.BaseMapper;
+import com.baomidou.mybatisplus.core.toolkit.support.SFunction;
 import com.stoicfree.free.module.core.common.enums.ErrorCode;
 import com.stoicfree.free.module.core.common.support.Assert;
 import com.stoicfree.free.module.core.common.support.GlobalCache;
 import com.stoicfree.free.module.core.common.util.InstanceUtils;
+import com.stoicfree.free.module.core.common.util.LambdaUtils;
 import com.stoicfree.free.module.core.common.util.ReflectionUtils;
 
 import cn.hutool.core.date.DateUtil;
@@ -66,9 +66,9 @@ public class Recorder<E> {
         return mapper.insert(entity) >= 1;
     }
 
-    private String fn(Function<E, ?> filed) {
-        return GlobalCache.<Function<E, ?>, String>cache(getClass().getName()).getIfAbsent(
-                filed, (none) -> ReflectionUtils.getFieldName(filed)
+    private String fn(SFunction<E, ?> filed) {
+        return GlobalCache.<SFunction<E, ?>, String>cache(getClass().getName()).getIfAbsent(
+                filed, (none) -> LambdaUtils.getFieldName(filed)
         );
     }
 }

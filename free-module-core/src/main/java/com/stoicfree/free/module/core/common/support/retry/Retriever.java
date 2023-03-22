@@ -5,7 +5,6 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
-import java.util.function.Function;
 import java.util.function.Supplier;
 
 import javax.annotation.PostConstruct;
@@ -15,6 +14,7 @@ import org.apache.commons.collections.CollectionUtils;
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.core.conditions.update.LambdaUpdateWrapper;
 import com.baomidou.mybatisplus.core.mapper.BaseMapper;
+import com.baomidou.mybatisplus.core.toolkit.support.SFunction;
 import com.stoicfree.free.module.core.common.config.RetryProperties;
 import com.stoicfree.free.module.core.common.enums.ErrorCode;
 import com.stoicfree.free.module.core.common.support.AnnotatedBeanContainer;
@@ -22,6 +22,7 @@ import com.stoicfree.free.module.core.common.support.Assert;
 import com.stoicfree.free.module.core.common.support.GlobalCache;
 import com.stoicfree.free.module.core.common.support.TwoTuple;
 import com.stoicfree.free.module.core.common.util.InstanceUtils;
+import com.stoicfree.free.module.core.common.util.LambdaUtils;
 import com.stoicfree.free.module.core.common.util.ReflectionUtils;
 
 import cn.hutool.core.date.DateUtil;
@@ -209,9 +210,9 @@ public class Retriever<E> extends AnnotatedBeanContainer {
         }
     }
 
-    private String fn(Function<E, ?> filed) {
-        return GlobalCache.<Function<E, ?>, String>cache(getClass().getName()).getIfAbsent(
-                filed, (none) -> ReflectionUtils.getFieldName(filed)
+    private String fn(SFunction<E, ?> filed) {
+        return GlobalCache.<SFunction<E, ?>, String>cache(getClass().getName()).getIfAbsent(
+                filed, (none) -> LambdaUtils.getFieldName(filed)
         );
     }
 }
