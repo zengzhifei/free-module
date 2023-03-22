@@ -66,7 +66,7 @@ public class Captcha {
     private ICaptcha getCaptcha() {
         ICaptcha captcha;
         String style = Optional.ofNullable(properties.getStyle()).map(String::toLowerCase).orElse("");
-        CaptchaStyle captchaStyle = EnumUtils.of(CaptchaStyle.class, CaptchaStyle::getStyle, style);
+        CaptchaStyle captchaStyle = EnumUtils.of(CaptchaStyle::getStyle, style);
         switch (Optional.ofNullable(captchaStyle).orElse(CaptchaStyle.LINE)) {
             default:
             case LINE:
