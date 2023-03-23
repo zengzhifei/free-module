@@ -13,6 +13,7 @@ import org.apache.commons.lang.StringUtils;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import com.google.gson.JsonElement;
+import com.google.gson.JsonObject;
 import com.google.gson.TypeAdapterFactory;
 import com.google.gson.annotations.SerializedName;
 import com.google.gson.internal.bind.ObjectTypeAdapter;
@@ -128,5 +129,13 @@ public class GsonUtil {
         }
 
         return result;
+    }
+
+    public static JsonObject emptyJsonObject() {
+        return new JsonObject();
+    }
+
+    public static String emptyJson() {
+        return toJson(emptyJsonObject());
     }
 }
