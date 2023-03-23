@@ -20,6 +20,7 @@ import com.stoicfree.free.module.core.common.enums.ErrorCode;
 import com.stoicfree.free.module.core.common.support.AnnotatedBeanContainer;
 import com.stoicfree.free.module.core.common.support.Assert;
 import com.stoicfree.free.module.core.common.support.GlobalCache;
+import com.stoicfree.free.module.core.common.support.Safes;
 import com.stoicfree.free.module.core.common.support.TwoTuple;
 import com.stoicfree.free.module.core.common.util.InstanceUtils;
 import com.stoicfree.free.module.core.common.util.LambdaUtils;
@@ -41,16 +42,16 @@ public class Retriever<E> extends AnnotatedBeanContainer {
     private final Map<Integer, TwoTuple<Object, Method>> handlers = new HashMap<>();
     private final BaseMapper<E> mapper;
     private final RetryColumn<E> column;
-    private final Class<?> entityClass;
     private final RetryProperties properties;
+    private final Class<?> entityClass;
 
-    public Retriever(BaseMapper<E> mapper, RetryColumn<E> column, Class<E> entityClass, RetryProperties properties) {
+    public Retriever(BaseMapper<E> mapper, RetryColumn<E> column, RetryProperties properties) {
         super(null, RetryHandler.class);
 
         this.mapper = mapper;
         this.column = column;
-        this.entityClass = entityClass;
         this.properties = properties;
+        this.entityClass = Safes.of(column, RetryColumn::getId, LambdaUtils::getRealClass);
     }
 
     @PostConstruct

@@ -38,7 +38,7 @@ public class LambdaUtils {
     }
 
     public static <F extends Function<?, ?> & Serializable> SerializedLambda resolve(F func) {
-        return ReflectUtil.invoke(func, "writeReplace");
+        return ReflectUtil.invoke(func, "writeReplace", new Object[0]);
     }
 
     private static void checkLambdaTypeCanGetClass(int implMethodKind) {

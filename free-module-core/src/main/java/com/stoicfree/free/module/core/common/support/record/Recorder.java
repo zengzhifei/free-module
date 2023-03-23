@@ -7,6 +7,7 @@ import com.baomidou.mybatisplus.core.toolkit.support.SFunction;
 import com.stoicfree.free.module.core.common.enums.ErrorCode;
 import com.stoicfree.free.module.core.common.support.Assert;
 import com.stoicfree.free.module.core.common.support.GlobalCache;
+import com.stoicfree.free.module.core.common.support.Safes;
 import com.stoicfree.free.module.core.common.util.InstanceUtils;
 import com.stoicfree.free.module.core.common.util.LambdaUtils;
 import com.stoicfree.free.module.core.common.util.ReflectionUtils;
@@ -22,17 +23,17 @@ public class Recorder<E> {
     private final RecordColumn<E> column;
     private final Class<E> entityClass;
 
-    public Recorder(BaseMapper<E> mapper, RecordColumn<E> column, Class<E> entityClass) {
+    public Recorder(BaseMapper<E> mapper, RecordColumn<E> column) {
         this.mapper = mapper;
         this.column = column;
-        this.entityClass = entityClass;
+        this.entityClass = Safes.of(column, RecordColumn::getMainId, LambdaUtils::getRealClass);
     }
 
     @PostConstruct
     private void init() {
         Assert.notNull(mapper, ErrorCode.INVALID_PARAMS, "mapper not be null");
         Assert.allFieldsValid(column, ErrorCode.INVALID_PARAMS, "%s must be valid", "column not be null");
-        Assert.notNull(entityClass, ErrorCode.INVALID_PARAMS, "entityClass not be null");
+        Assert.notNull(entityClass, ErrorCode.INVALID_PARAMS, "entity class not be null");
     }
 
     public boolean record(Integer type, String action, String content) {

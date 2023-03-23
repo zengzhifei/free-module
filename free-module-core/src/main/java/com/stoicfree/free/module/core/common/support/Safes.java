@@ -62,6 +62,10 @@ public class Safes {
         return Optional.ofNullable(object).map(mapper).orElse(null);
     }
 
+    public static <T, V, R> R of(T object, Function<T, V> func, Function<V, R> mapper) {
+        return Optional.ofNullable(object).map(func).map(mapper).orElse(null);
+    }
+
     public static <T> List<T> of(T[] object) {
         return Optional.ofNullable(object).map(e -> Arrays.stream(e).collect(Collectors.toList()))
                 .orElse(new ArrayList<>(0));
