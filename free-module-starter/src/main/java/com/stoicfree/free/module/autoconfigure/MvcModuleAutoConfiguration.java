@@ -14,16 +14,16 @@ import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.DependsOn;
 import org.springframework.web.servlet.HandlerInterceptor;
 
+import com.stoicfree.free.module.core.mvc.captcha.Captcha;
 import com.stoicfree.free.module.core.mvc.captcha.anotation.advice.CreateCaptchaAdvice;
 import com.stoicfree.free.module.core.mvc.captcha.anotation.advice.VerifyCaptchaAdvice;
-import com.stoicfree.free.module.core.mvc.captcha.Captcha;
 import com.stoicfree.free.module.core.mvc.config.InterceptorWebMvcConfigure;
 import com.stoicfree.free.module.core.mvc.config.MvcProperties;
 import com.stoicfree.free.module.core.mvc.config.SwaggerProperties;
 import com.stoicfree.free.module.core.mvc.filter.CrossDomainFilter;
 import com.stoicfree.free.module.core.mvc.filter.RequestWrapperFilter;
+import com.stoicfree.free.module.core.mvc.interceptor.LoggingInterceptor;
 import com.stoicfree.free.module.core.mvc.interceptor.PassportInterceptor;
-import com.stoicfree.free.module.core.mvc.interceptor.TimeCostInterceptor;
 import com.stoicfree.free.module.core.mvc.passport.anotation.advice.LoginAdvice;
 
 import springfox.documentation.builders.ApiInfoBuilder;
@@ -64,8 +64,8 @@ public class MvcModuleAutoConfiguration {
     }
 
     @Bean
-    public TimeCostInterceptor timeCostInterceptor() {
-        TimeCostInterceptor interceptor = new TimeCostInterceptor();
+    public LoggingInterceptor loggingInterceptor() {
+        LoggingInterceptor interceptor = new LoggingInterceptor();
         interceptors.add(interceptor);
         return interceptor;
     }
@@ -80,7 +80,7 @@ public class MvcModuleAutoConfiguration {
     }
 
     @Bean
-    @DependsOn({"timeCostInterceptor", "passportInterceptor"})
+    @DependsOn({"loggingInterceptor", "passportInterceptor"})
     @ConditionalOnMissingBean
     public InterceptorWebMvcConfigure interceptorWebMvcConfigure() {
         return new InterceptorWebMvcConfigure(interceptors);

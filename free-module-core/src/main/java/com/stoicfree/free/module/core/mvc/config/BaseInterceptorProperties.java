@@ -1,13 +1,14 @@
 package com.stoicfree.free.module.core.mvc.config;
 
 import lombok.Data;
-import lombok.ToString;
 
 /**
  * @author zengzhifei
  * @date 2023/2/11 14:46
  */
 @Data
-@ToString(callSuper = true)
-public class TimeCostProperties extends InterceptorProperties {
+public class BaseInterceptorProperties {
+    private int order = 1;
+    private String addPaths;
+    private String excludePaths;
 }

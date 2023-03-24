@@ -12,8 +12,8 @@ import org.springframework.web.servlet.config.annotation.InterceptorRegistry;
 import org.springframework.web.servlet.config.annotation.ResourceHandlerRegistry;
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 
+import com.stoicfree.free.module.core.mvc.interceptor.LoggingInterceptor;
 import com.stoicfree.free.module.core.mvc.interceptor.PassportInterceptor;
-import com.stoicfree.free.module.core.mvc.interceptor.TimeCostInterceptor;
 
 /**
  * @author zengzhifei
@@ -41,9 +41,9 @@ public class InterceptorWebMvcConfigure implements WebMvcConfigurer {
     @Override
     public void addInterceptors(InterceptorRegistry registry) {
         for (HandlerInterceptor interceptor : interceptors) {
-            // 耗时拦截器
-            if (interceptor instanceof TimeCostInterceptor) {
-                addInterceptorAndSetProperties(registry, interceptor, mvcProperties.getTimeCost());
+            // 记录拦截器
+            if (interceptor instanceof LoggingInterceptor) {
+                addInterceptorAndSetProperties(registry, interceptor, mvcProperties.getLogging());
             }
             // 登录拦截器
             if (interceptor instanceof PassportInterceptor) {
@@ -53,7 +53,7 @@ public class InterceptorWebMvcConfigure implements WebMvcConfigurer {
     }
 
     private void addInterceptorAndSetProperties(InterceptorRegistry registry, HandlerInterceptor interceptor,
-                                                InterceptorProperties properties) {
+                                                BaseInterceptorProperties properties) {
         InterceptorRegistration registration = registry.addInterceptor(interceptor).order(properties.getOrder());
         if (StringUtils.isNotBlank(properties.getAddPaths())) {
             registration.addPathPatterns(Arrays.asList(properties.getAddPaths().split(",")));

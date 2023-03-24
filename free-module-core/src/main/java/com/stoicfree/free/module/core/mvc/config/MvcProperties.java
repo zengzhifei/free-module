@@ -15,13 +15,10 @@ public class MvcProperties {
     private boolean enable = false;
 
     @NestedConfigurationProperty
-    private RequestWrapperProperties requestWrapper = new RequestWrapperProperties();
-
-    @NestedConfigurationProperty
     private CrossDomainProperties crossDomain = new CrossDomainProperties();
 
     @NestedConfigurationProperty
-    private TimeCostProperties timeCost = new TimeCostProperties();
+    private LoggingProperties logging = new LoggingProperties();
 
     @NestedConfigurationProperty
     private PassportProperties passport = new PassportProperties();
