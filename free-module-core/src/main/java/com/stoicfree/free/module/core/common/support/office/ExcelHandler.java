@@ -1,21 +1,28 @@
 package com.stoicfree.free.module.core.common.support.office;
 
+import java.io.File;
 import java.io.IOException;
 import java.io.OutputStream;
+import java.lang.reflect.Proxy;
 import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
 import java.util.LinkedHashMap;
 import java.util.List;
+import java.util.concurrent.atomic.AtomicInteger;
+import java.util.function.Consumer;
 
 import javax.servlet.http.HttpServletResponse;
 
 import org.apache.poi.ss.usermodel.CellStyle;
+import org.apache.poi.ss.usermodel.Font;
 
 import com.stoicfree.free.module.core.common.support.Func;
+import com.stoicfree.free.module.core.common.support.Safes;
 import com.stoicfree.free.module.core.common.support.ThreeTuple;
 import com.stoicfree.free.module.core.common.util.LambdaUtils;
 
 import cn.hutool.core.io.FileUtil;
+import cn.hutool.core.util.ReflectUtil;
 import cn.hutool.poi.excel.BigExcelWriter;
 import cn.hutool.poi.excel.ExcelUtil;
 import cn.hutool.poi.excel.ExcelWriter;
@@ -27,6 +34,8 @@ import cn.hutool.poi.excel.StyleSet;
  */
 public class ExcelHandler {
     private final ExcelWriter writer;
+    private final Configure configure;
+    private final AtomicInteger rows = new AtomicInteger(0);
 
     public ExcelHandler(long rowAccessWindowSize) {
         if (rowAccessWindowSize > BigExcelWriter.DEFAULT_WINDOW_SIZE) {
@@ -34,14 +43,18 @@ public class ExcelHandler {
         } else {
             this.writer = ExcelUtil.getWriter(true);
         }
+
+        this.configure = (Configure) Proxy.newProxyInstance(getClass().getClassLoader(), new Class[] {Configure.class},
+                (proxy, method, args) -> ReflectUtil.invoke(writer, method.getName(), Safes.of(args, new Object[0]))
+        );
     }
 
     public static ExcelHandler build(long rowAccessWindowSize) {
         return new ExcelHandler(rowAccessWindowSize);
     }
 
-    public ExcelHandler style(StyleSet styleSet) {
-        writer.setStyleSet(styleSet);
+    public ExcelHandler config(Consumer<Configure> consumer) {
+        consumer.accept(configure);
         return this;
     }
 
@@ -71,7 +84,7 @@ public class ExcelHandler {
     }
 
     public <E> ExcelHandler content(List<E> contents) {
-        writer.write(contents, true);
+        writer.write(contents, rows.getAndAdd(contents.size()) == 0);
         return this;
     }
 
@@ -147,5 +160,49 @@ public class ExcelHandler {
         public LinkedHashMap<String, String> build() {
             return header;
         }
+    }
+
+    public interface Configure {
+        void autoSizeColumnAll();
+
+        void autoSizeColumn(int columnIndex);
+
+        void autoSizeColumn(int columnIndex, boolean useMergedCells);
+
+        void disableDefaultStyle();
+
+        void setStyleSet(StyleSet styleSet);
+
+        StyleSet getStyleSet();
+
+        CellStyle getHeadCellStyle();
+
+        CellStyle getCellStyle();
+
+        void setFreezePane(int rowSplit);
+
+        void setFreezePane(int colSplit, int rowSplit);
+
+        void setColumnWidth(int columnIndex, int width);
+
+        void setDefaultRowHeight(int height);
+
+        void setRowHeight(int rownum, int height);
+
+        void setStyle(CellStyle style, String locationRef);
+
+        void setStyle(CellStyle style, int x, int y);
+
+        void setRowStyle(int y, CellStyle style);
+
+        void setRowStyleIfHasData(int y, CellStyle style);
+
+        void setColumnStyle(int x, CellStyle style);
+
+        void setColumnStyleIfHasData(int x, int y, CellStyle style);
+
+        Font createFont();
+
+        void writeImg(File imgFile, int col1, int row1, int col2, int row2);
     }
 }

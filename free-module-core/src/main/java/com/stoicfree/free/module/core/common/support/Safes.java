@@ -70,4 +70,8 @@ public class Safes {
         return Optional.ofNullable(object).map(e -> Arrays.stream(e).collect(Collectors.toList()))
                 .orElse(new ArrayList<>(0));
     }
+
+    public static <T> T[] of(T[] object, T[] defaultReturn) {
+        return Optional.ofNullable(object).orElse(defaultReturn);
+    }
 }
