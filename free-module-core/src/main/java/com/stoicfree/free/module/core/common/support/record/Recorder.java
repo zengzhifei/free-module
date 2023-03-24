@@ -8,11 +8,11 @@ import com.stoicfree.free.module.core.common.enums.ErrorCode;
 import com.stoicfree.free.module.core.common.support.Assert;
 import com.stoicfree.free.module.core.common.support.GlobalCache;
 import com.stoicfree.free.module.core.common.support.Safes;
-import com.stoicfree.free.module.core.common.util.InstanceUtils;
 import com.stoicfree.free.module.core.common.util.LambdaUtils;
 import com.stoicfree.free.module.core.common.util.ReflectionUtils;
 
 import cn.hutool.core.date.DateUtil;
+import cn.hutool.core.util.ReflectUtil;
 
 /**
  * @author zengzhifei
@@ -49,7 +49,7 @@ public class Recorder<E> {
     }
 
     public boolean record(String mainId, Integer type, String action, String content, String ext, String user) {
-        E entity = InstanceUtils.newInstance(entityClass);
+        E entity = ReflectUtil.newInstance(entityClass);
 
         ReflectionUtils.setFieldValue(entity, fn(column.getMainId()), mainId);
         ReflectionUtils.setFieldValue(entity, fn(column.getType()), type);

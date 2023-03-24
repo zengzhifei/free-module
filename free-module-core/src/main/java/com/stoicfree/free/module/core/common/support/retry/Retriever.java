@@ -22,11 +22,11 @@ import com.stoicfree.free.module.core.common.support.Assert;
 import com.stoicfree.free.module.core.common.support.GlobalCache;
 import com.stoicfree.free.module.core.common.support.Safes;
 import com.stoicfree.free.module.core.common.support.TwoTuple;
-import com.stoicfree.free.module.core.common.util.InstanceUtils;
 import com.stoicfree.free.module.core.common.util.LambdaUtils;
 import com.stoicfree.free.module.core.common.util.ReflectionUtils;
 
 import cn.hutool.core.date.DateUtil;
+import cn.hutool.core.util.ReflectUtil;
 import cn.hutool.cron.CronUtil;
 import cn.hutool.cron.task.Task;
 import lombok.extern.slf4j.Slf4j;
@@ -43,7 +43,7 @@ public class Retriever<E> extends AnnotatedBeanContainer {
     private final BaseMapper<E> mapper;
     private final RetryColumn<E> column;
     private final RetryProperties properties;
-    private final Class<?> entityClass;
+    private final Class<E> entityClass;
 
     public Retriever(BaseMapper<E> mapper, RetryColumn<E> column, RetryProperties properties) {
         super(null, RetryHandler.class);
@@ -79,7 +79,7 @@ public class Retriever<E> extends AnnotatedBeanContainer {
     }
 
     public boolean initTask(String mainId, Integer type, String content, Integer maxTimes, String ext) {
-        E entity = InstanceUtils.newInstance(entityClass);
+        E entity = ReflectUtil.newInstance(entityClass);
 
         ReflectionUtils.setFieldValue(entity, fn(column.getMainId()), mainId);
         ReflectionUtils.setFieldValue(entity, fn(column.getType()), type);
@@ -101,7 +101,7 @@ public class Retriever<E> extends AnnotatedBeanContainer {
 
     public boolean cancelTask(Long taskId) {
         return updateRetrieveTask(taskId, () -> {
-            E entity = InstanceUtils.newInstance(entityClass);
+            E entity = ReflectUtil.newInstance(entityClass);
             ReflectionUtils.setFieldValue(entity, fn(column.getStatus()), RetryStatus.RETRY_CANCEL.getStatus());
             return entity;
         });
@@ -133,7 +133,7 @@ public class Retriever<E> extends AnnotatedBeanContainer {
                 Integer retryTimes = (Integer) ReflectionUtils.getFieldValue(task, fn(column.getRetryTimes()));
                 if (retryTimes >= maxTimes) {
                     updateRetrieveTask(id, () -> {
-                        E entity = InstanceUtils.newInstance(entityClass);
+                        E entity = ReflectUtil.newInstance(entityClass);
                         ReflectionUtils.setFieldValue(entity, fn(column.getStatus()),
                                 RetryStatus.RETRY_FAIL.getStatus());
                         return entity;
@@ -145,7 +145,7 @@ public class Retriever<E> extends AnnotatedBeanContainer {
                 boolean handleResult = handle(type, task);
 
                 // 更新任务状态
-                E entity = InstanceUtils.newInstance(entityClass);
+                E entity = ReflectUtil.newInstance(entityClass);
                 ReflectionUtils.setFieldValue(entity, fn(column.getRetryTimes()), retryTimes + 1);
                 if (handleResult) {
                     ReflectionUtils.setFieldValue(entity, fn(column.getStatus()),

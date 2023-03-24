@@ -3,7 +3,6 @@ package com.stoicfree.free.module.core.common.support;
 import java.util.function.Predicate;
 
 import com.stoicfree.free.module.core.common.enums.ErrorCode;
-import com.stoicfree.free.module.core.common.util.InstanceUtils;
 
 import cn.hutool.core.util.ReflectUtil;
 
@@ -19,7 +18,7 @@ public abstract class Validator<Child, P, C> {
         Assert.notNull(clazz, ErrorCode.EMPTY_PARAMS);
         Assert.isValid(param, ErrorCode.EMPTY_PARAMS);
 
-        Child child = InstanceUtils.newInstance(clazz);
+        Child child = ReflectUtil.newInstance(clazz);
         ReflectUtil.setFieldValue(child, "clazz", clazz);
         ReflectUtil.setFieldValue(child, "param", param);
         return child;
