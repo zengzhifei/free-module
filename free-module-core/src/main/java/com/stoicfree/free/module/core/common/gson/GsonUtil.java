@@ -75,8 +75,8 @@ public class GsonUtil {
         return GSON.toJson(src);
     }
 
-    public static JsonElement toJsonTree(Object src) {
-        return GSON.toJsonTree(src);
+    public static JsonObject toJsonObject(Object src) {
+        return GSON.toJsonTree(src).getAsJsonObject();
     }
 
     public static <T> T fromJson(String json, Class<T> classOfT) {

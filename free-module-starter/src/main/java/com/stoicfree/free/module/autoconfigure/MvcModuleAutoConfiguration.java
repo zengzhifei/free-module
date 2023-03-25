@@ -65,7 +65,7 @@ public class MvcModuleAutoConfiguration {
 
     @Bean
     public LoggingInterceptor loggingInterceptor() {
-        LoggingInterceptor interceptor = new LoggingInterceptor();
+        LoggingInterceptor interceptor = new LoggingInterceptor(mvcProperties.getLogging());
         interceptors.add(interceptor);
         return interceptor;
     }

@@ -10,9 +10,14 @@ import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.multipart.MultipartRequest;
 import org.springframework.web.servlet.HandlerInterceptor;
 
+import com.google.gson.Gson;
+import com.google.gson.GsonBuilder;
+import com.google.gson.JsonObject;
 import com.stoicfree.free.module.core.common.support.Safes;
 import com.stoicfree.free.module.core.common.util.DateUtils;
+import com.stoicfree.free.module.core.mvc.config.LoggingProperties;
 
+import cn.hutool.core.date.BetweenFormatter;
 import cn.hutool.core.date.DatePattern;
 import cn.hutool.extra.servlet.ServletUtil;
 import lombok.Data;
@@ -26,12 +31,18 @@ import lombok.extern.slf4j.Slf4j;
  */
 @Slf4j
 public class LoggingInterceptor implements HandlerInterceptor {
+    private final LoggingProperties properties;
+
+    public LoggingInterceptor(LoggingProperties properties) {
+        this.properties = properties;
+    }
+
     @Override
     public boolean preHandle(HttpServletRequest request, HttpServletResponse response, Object handler) {
         Logging logging = Logging.removeAndCreate();
 
         logging.setPath(request.getRequestURI());
-        logging.setClientIp(ServletUtil.getClientIP(request));
+        logging.setIp(ServletUtil.getClientIP(request));
         logging.setStart(System.currentTimeMillis());
         logging.setMethod(request.getMethod());
         Map<String, String> headerMap = Safes.of(ServletUtil.getHeaderMap(request));
@@ -52,7 +63,7 @@ public class LoggingInterceptor implements HandlerInterceptor {
         Logging logging = Logging.get();
 
         logging.setEnd(System.currentTimeMillis());
-        log.info(logging.toString());
+        log.info(properties.isToPrettyString() ? logging.toPrettyString() : logging.toString());
 
         Logging.remove();
     }
@@ -60,10 +71,12 @@ public class LoggingInterceptor implements HandlerInterceptor {
     @Data
     private static class Logging {
         private static final ThreadLocal<Logging> LOGGING = ThreadLocal.withInitial(Logging::new);
+        private static final Gson gson = new GsonBuilder().serializeNulls().setPrettyPrinting().create();
         private String path;
-        private String clientIp;
+        private String ip;
         private long start;
         private long end;
+        private long cost;
         private String method;
         private Map<String, String> header;
         private Map<String, String> param;
@@ -88,7 +101,7 @@ public class LoggingInterceptor implements HandlerInterceptor {
             StringJoiner joiner = new StringJoiner(" ");
             joiner.add("Logging{");
             joiner.add(String.format("path[%s]", path));
-            joiner.add(String.format("ip[%s]", clientIp));
+            joiner.add(String.format("ip[%s]", ip));
             joiner.add(String.format("start[%s]", DateUtils.format(start, DatePattern.NORM_DATETIME_MS_PATTERN)));
             joiner.add(String.format("end[%s]", DateUtils.format(end, DatePattern.NORM_DATETIME_MS_PATTERN)));
             joiner.add(String.format("cost[%s]", end - start));
@@ -100,6 +113,16 @@ public class LoggingInterceptor implements HandlerInterceptor {
             joiner.add("}");
 
             return joiner.toString();
+        }
+
+        public String toPrettyString() {
+            JsonObject object = gson.toJsonTree(this).getAsJsonObject();
+            object.addProperty("start", DateUtils.format(start, DatePattern.NORM_DATETIME_MS_PATTERN));
+            object.addProperty("end", DateUtils.format(end, DatePattern.NORM_DATETIME_MS_PATTERN));
+            object.addProperty("cost", DateUtils.formatBetween(end - start, BetweenFormatter.Level.MILLISECOND));
+            object.add("body", gson.fromJson(body, JsonObject.class));
+
+            return String.format("Logging:\n%s", gson.toJson(object));
         }
     }
 }

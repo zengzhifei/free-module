@@ -10,4 +10,5 @@ import lombok.ToString;
 @Data
 @ToString(callSuper = true)
 public class LoggingProperties extends BaseInterceptorProperties {
+    private boolean toPrettyString;
 }
