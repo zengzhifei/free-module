@@ -11,8 +11,8 @@ import org.springframework.web.multipart.MultipartRequest;
 import org.springframework.web.servlet.HandlerInterceptor;
 
 import com.google.gson.Gson;
-import com.google.gson.GsonBuilder;
 import com.google.gson.JsonObject;
+import com.stoicfree.free.module.core.common.gson.GsonUtil;
 import com.stoicfree.free.module.core.common.support.Safes;
 import com.stoicfree.free.module.core.common.util.DateUtils;
 import com.stoicfree.free.module.core.mvc.config.LoggingProperties;
@@ -71,7 +71,7 @@ public class LoggingInterceptor implements HandlerInterceptor {
     @Data
     private static class Logging {
         private static final ThreadLocal<Logging> LOGGING = ThreadLocal.withInitial(Logging::new);
-        private static final Gson gson = new GsonBuilder().serializeNulls().setPrettyPrinting().create();
+        private static final Gson GSON = GsonUtil.build(builder -> builder.serializeNulls().setPrettyPrinting());
         private String path;
         private String ip;
         private long start;
@@ -116,13 +116,13 @@ public class LoggingInterceptor implements HandlerInterceptor {
         }
 
         public String toPrettyString() {
-            JsonObject object = gson.toJsonTree(this).getAsJsonObject();
+            JsonObject object = GSON.toJsonTree(this).getAsJsonObject();
             object.addProperty("start", DateUtils.format(start, DatePattern.NORM_DATETIME_MS_PATTERN));
             object.addProperty("end", DateUtils.format(end, DatePattern.NORM_DATETIME_MS_PATTERN));
             object.addProperty("cost", DateUtils.formatBetween(end - start, BetweenFormatter.Level.MILLISECOND));
-            object.add("body", gson.fromJson(body, JsonObject.class));
+            object.add("body", GSON.fromJson(body, JsonObject.class));
 
-            return String.format("Logging:\n%s", gson.toJson(object));
+            return String.format("Logging:\n%s", GSON.toJson(object));
         }
     }
 }

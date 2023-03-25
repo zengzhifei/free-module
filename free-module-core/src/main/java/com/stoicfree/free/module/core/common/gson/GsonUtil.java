@@ -7,12 +7,12 @@ import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.function.Consumer;
 
 import org.apache.commons.lang.StringUtils;
 
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
-import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import com.google.gson.TypeAdapterFactory;
 import com.google.gson.annotations.SerializedName;
@@ -28,47 +28,17 @@ import lombok.extern.slf4j.Slf4j;
  */
 @Slf4j
 public class GsonUtil {
-    public static final Gson JSON = new Gson();
     private static final Gson GSON;
+    public static final Gson JSON;
 
     private GsonUtil() {
     }
 
     static {
-        GSON = new GsonBuilder()
-                // 有 transient 和 static 修饰的字段 不做序列化处理
-                .excludeFieldsWithModifiers(Modifier.TRANSIENT, Modifier.STATIC)
-                // 当有GsonIgnore注解时,过滤该字段
-                .setExclusionStrategies(new GsonIgnoreExclusionStrategy())
-                // 当Map的key为复杂对象时,需要开启该方法
-                .enableComplexMapKeySerialization()
-                // 当字段值为空或null时，依然对该字段进行转换
-                .serializeNulls()
-                // 时间转化为特定格式
-                .setDateFormat("yyyy-MM-dd HH:mm:ss")
-                // 防止特殊字符出现乱码
-                .disableHtmlEscaping()
-                .create();
-        // 通过反射修改gson 内部实现的ObjectTypeAdapter 方法，避免修改了源代码
-        try {
-            Field factories = Gson.class.getDeclaredField("factories");
-            factories.setAccessible(true);
-            Object o = factories.get(GSON);
-            Class<?>[] declaredClasses = Collections.class.getDeclaredClasses();
-            for (Class<?> c : declaredClasses) {
-                if ("java.util.Collections$UnmodifiableList".equals(c.getName())) {
-                    Field listField = c.getDeclaredField("list");
-                    listField.setAccessible(true);
-                    @SuppressWarnings("unchecked")
-                    List<TypeAdapterFactory> list = (List<TypeAdapterFactory>) listField.get(o);
-                    int i = list.indexOf(ObjectTypeAdapter.FACTORY);
-                    list.set(i, GsonObjectTypeAdapter.FACTORY);
-                    break;
-                }
-            }
-        } catch (Exception e) {
-            log.error("GSON init error:", e);
-        }
+        // 默认:当字段值为空或null时，依然对该字段进行转换
+        GSON = build(GsonBuilder::serializeNulls);
+        // 原生gson
+        JSON = build();
     }
 
     public static String toJson(Object src) {
@@ -137,5 +107,57 @@ public class GsonUtil {
 
     public static String emptyJson() {
         return toJson(emptyJsonObject());
+    }
+
+    public static Gson build() {
+        return build(null);
+    }
+
+    public static Gson build(Consumer<GsonBuilder> consumer) {
+        // 配置基础属性
+        GsonBuilder gsonBuilder = new GsonBuilder()
+                // 有 transient 和 static 修饰的字段 不做序列化处理
+                .excludeFieldsWithModifiers(Modifier.TRANSIENT, Modifier.STATIC)
+                // 当有GsonIgnore注解时,过滤该字段
+                .setExclusionStrategies(new GsonIgnoreExclusionStrategy())
+                // 当Map的key为复杂对象时,需要开启该方法
+                .enableComplexMapKeySerialization()
+                // 当字段值为空或null时，依然对该字段进行转换
+                .serializeNulls()
+                // 时间转化为特定格式
+                .setDateFormat("yyyy-MM-dd HH:mm:ss")
+                // 防止特殊字符出现乱码
+                .disableHtmlEscaping();
+
+        // 配置额外属性
+        if (consumer != null) {
+            consumer.accept(gsonBuilder);
+        }
+
+        // 构建
+        Gson gson = gsonBuilder.create();
+
+        // 通过反射修改gson 内部实现的ObjectTypeAdapter 方法，避免修改了源代码
+        try {
+            Field factories = Gson.class.getDeclaredField("factories");
+            factories.setAccessible(true);
+            Object o = factories.get(gson);
+            Class<?>[] declaredClasses = Collections.class.getDeclaredClasses();
+            for (Class<?> c : declaredClasses) {
+                if ("java.util.Collections$UnmodifiableList".equals(c.getName())) {
+                    Field listField = c.getDeclaredField("list");
+                    listField.setAccessible(true);
+                    @SuppressWarnings("unchecked")
+                    List<TypeAdapterFactory> list = (List<TypeAdapterFactory>) listField.get(o);
+                    int i = list.indexOf(ObjectTypeAdapter.FACTORY);
+                    list.set(i, GsonObjectTypeAdapter.FACTORY);
+                    break;
+                }
+            }
+        } catch (Exception e) {
+            log.error("GSON init error:", e);
+        }
+
+        return gson;
     }
 }
