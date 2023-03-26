@@ -31,7 +31,7 @@ public class ExecutorHelper {
                 new ThreadPoolExecutor.CallerRunsPolicy());
     }
 
-    public static ExecutorService newScheduledThreadPool(String name, int corePoolSize) {
+    public static ScheduledThreadPoolExecutor newScheduledThreadPool(String name, int corePoolSize) {
         return new ScheduledThreadPoolExecutor(corePoolSize,
                 new ThreadFactoryBuilder().setNameFormat(name + "-%d").build(),
                 new ThreadPoolExecutor.CallerRunsPolicy());

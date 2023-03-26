@@ -37,6 +37,10 @@ public class Streamer {
         return StreamConstants.QUEUE_PREFIX + queue;
     }
 
+    public static String getDelayKey() {
+        return StreamConstants.DELAY_KEY;
+    }
+
     public static String safe(String data) {
         return SecureUtil.md5(data);
     }
