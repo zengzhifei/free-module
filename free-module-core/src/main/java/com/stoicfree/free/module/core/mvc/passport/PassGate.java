@@ -29,6 +29,7 @@ import com.stoicfree.free.module.core.common.util.ReflectionUtils;
 import com.stoicfree.free.module.core.common.util.UrlUtils;
 import com.stoicfree.free.module.core.mvc.config.PassportProperties;
 import com.stoicfree.free.module.core.mvc.passport.anotation.Auth;
+import com.stoicfree.free.module.core.mvc.passport.anotation.NoLogin;
 import com.stoicfree.free.module.core.mvc.passport.context.TokenContext;
 import com.stoicfree.free.module.core.mvc.passport.context.UserColumn;
 import com.stoicfree.free.module.core.mvc.passport.context.UserContext;
@@ -106,6 +107,11 @@ public class PassGate<E> {
     }
 
     public void verifyLogin(HttpServletRequest request, HttpServletResponse response, Object handler) {
+        // 验证免登录
+        if (isNoLogin(handler)) {
+            return;
+        }
+
         // 获取token
         String token = Safes.of(ServletUtil.getCookie(request, properties.getTokenKey()), Cookie::getValue);
         Assert.notBlank(token, ErrorCode.NOT_LOGIN);
@@ -211,6 +217,20 @@ public class PassGate<E> {
         cookie.setDomain(UrlUtils.getDomain(request.getHeader("host"), 1));
         cookie.setPath("/");
         response.addCookie(cookie);
+    }
+
+    private boolean isNoLogin(Object handler) {
+        if (!(handler instanceof HandlerMethod)) {
+            return false;
+        }
+
+        HandlerMethod handlerMethod = (HandlerMethod) handler;
+        NoLogin noLogin = handlerMethod.getMethodAnnotation(NoLogin.class);
+        if (noLogin == null) {
+            Class<?> controller = handlerMethod.getBeanType();
+            noLogin = controller.getDeclaredAnnotation(NoLogin.class);
+        }
+        return noLogin != null;
     }
 
     private void checkAuth(Set<String> userRoles, Object handler) {

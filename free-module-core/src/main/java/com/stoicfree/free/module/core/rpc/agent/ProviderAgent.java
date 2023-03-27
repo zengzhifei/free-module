@@ -18,6 +18,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.stoicfree.free.module.core.common.support.AnnotatedBeanContainer;
 import com.stoicfree.free.module.core.common.support.TwoTuple;
+import com.stoicfree.free.module.core.mvc.passport.anotation.NoLogin;
 import com.stoicfree.free.module.core.rpc.annotation.ProviderClass;
 import com.stoicfree.free.module.core.rpc.annotation.ProviderMethod;
 import com.stoicfree.free.module.core.rpc.config.ProviderProperties;
@@ -30,6 +31,7 @@ import com.stoicfree.free.module.core.rpc.safe.SecureKeeper;
  * @author zengzhifei
  * @date 2023/2/26 00:15
  */
+@NoLogin
 @RestController
 public class ProviderAgent extends AnnotatedBeanContainer {
     private final Map<String, TwoTuple<Object, Method>> providers = new HashMap<>();
