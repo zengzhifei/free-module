@@ -82,9 +82,9 @@ public class StreamConsumer {
                     for (StreamEntry entry : entries.get(0).getValue()) {
                         ids.add(entry.getID());
                         Map<String, String> fields = entry.getFields();
-                        String messageId = StringUtils.defaultIfBlank(fields.get(StreamConstants.DELAY_ID),
-                                entry.getID().toString());
-                        Message message = Message.builder().messageId(messageId)
+                        Message message = Message.builder()
+                                .messageId(entry.getID().toString())
+                                .delayId(fields.get(StreamConstants.DELAY_ID))
                                 .message(fields.get(StreamConstants.HASH_KEY))
                                 .build();
                         messages.add(message);

@@ -2,6 +2,7 @@ package com.stoicfree.free.module.core.common.util;
 
 import java.util.Collection;
 import java.util.Comparator;
+import java.util.Date;
 import java.util.List;
 import java.util.function.Function;
 import java.util.stream.Collectors;
@@ -31,5 +32,9 @@ public class DateUtils extends DateUtil {
 
     public static String format(long millis, String format) {
         return format(date(millis), format);
+    }
+
+    public static long getSecondTime(Date date) {
+        return date.getTime() / 1000;
     }
 }

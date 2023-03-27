@@ -1,6 +1,7 @@
 package com.stoicfree.free.module.core.stream;
 
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -70,10 +71,12 @@ public class StreamProvider {
         }
     }
 
-    public String delayPublish(String message, long time) {
+    public String delayPublish(String message, Date date) {
         String id = ID.SNOWFLAKE.nextIdStr();
+        long time = 0;
         try {
             DelayMember member = DelayMember.builder().id(id).message(message).build();
+            time = DateUtils.getSecondTime(date);
             boolean ret = client.zadd(StreamConstants.DELAY_KEY, time, GsonUtil.toJson(member)) > 0;
             if (!ret) {
                 throw new RuntimeException("delay publish fail");
@@ -90,7 +93,7 @@ public class StreamProvider {
             List<String> members = new ArrayList<>();
             try {
                 Set<Tuple> scoreAndMembers = client.zrangeByScoreWithScores(StreamConstants.DELAY_KEY, 0,
-                        DateUtils.current(), 0, 1);
+                        DateUtils.currentSeconds());
                 for (Tuple scoreAndMember : scoreAndMembers) {
                     String member = scoreAndMember.getElement();
                     members.add(member);
