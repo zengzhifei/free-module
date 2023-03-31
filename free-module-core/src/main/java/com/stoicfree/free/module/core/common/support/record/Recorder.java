@@ -69,7 +69,7 @@ public class Recorder<E> {
 
     private String fn(SFunction<E, ?> filed) {
         return GlobalCache.<SFunction<E, ?>, String>cache(getClass().getName()).getIfAbsent(
-                filed, (none) -> LambdaUtils.getFieldName(filed)
+                filed, () -> LambdaUtils.getFieldName(filed)
         );
     }
 }

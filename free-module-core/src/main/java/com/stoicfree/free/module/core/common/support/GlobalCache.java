@@ -7,8 +7,6 @@ import org.apache.commons.collections.map.LRUMap;
 import com.google.common.cache.Cache;
 import com.google.common.cache.CacheBuilder;
 
-import javafx.util.Callback;
-
 /**
  * @author zengzhifei
  * @date 2023/3/18 00:26
@@ -54,13 +52,13 @@ public class GlobalCache<K, V> {
         return cache.getIfPresent(key);
     }
 
-    public V getIfAbsent(K key, Callback<?, V> callback) {
+    public V getIfAbsent(K key, Callback2<V> callback) {
         V value = get(key);
         if (value != null) {
             return value;
         }
 
-        V newVal = callback.call(null);
+        V newVal = callback.call();
         put(key, newVal);
 
         return newVal;

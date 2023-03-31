@@ -8,6 +8,7 @@ import java.util.function.Function;
 import java.util.stream.Collectors;
 
 import org.apache.commons.collections.CollectionUtils;
+import org.apache.commons.lang.ArrayUtils;
 import org.apache.commons.lang.StringUtils;
 
 import com.stoicfree.free.module.core.common.enums.ErrorCode;
@@ -53,6 +54,24 @@ public class Assert {
 
     public static <T> void notEmpty(Collection<T> cols, ErrorCode errorCode, String... messages) {
         if (CollectionUtils.isEmpty(cols)) {
+            throwException(errorCode, messages);
+        }
+    }
+
+    public static <T> void isEmpty(T[] array, ErrorCode errorCode, String... messages) {
+        if (ArrayUtils.isNotEmpty(array)) {
+            throwException(errorCode, messages);
+        }
+    }
+
+    public static <T> void notEmpty(T[] array, ErrorCode errorCode, String... messages) {
+        if (ArrayUtils.isEmpty(array)) {
+            throwException(errorCode, messages);
+        }
+    }
+
+    public static <T> void hasLength(T[] array, int length, ErrorCode errorCode, String... messages) {
+        if (ArrayUtils.isEmpty(array) || array.length != length) {
             throwException(errorCode, messages);
         }
     }
