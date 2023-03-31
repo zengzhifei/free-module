@@ -2,14 +2,13 @@ package com.stoicfree.free.module.autoconfigure;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnExpression;
-import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.boot.context.properties.EnableConfigurationProperties;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
 import com.stoicfree.free.module.core.common.config.CommonProperties;
 import com.stoicfree.free.module.core.common.support.LoggerLevel;
-import com.stoicfree.free.module.core.common.support.msg.MailHelper;
+import com.stoicfree.free.module.core.common.misc.msg.MailHelper;
 
 /**
  * @author zengzhifei

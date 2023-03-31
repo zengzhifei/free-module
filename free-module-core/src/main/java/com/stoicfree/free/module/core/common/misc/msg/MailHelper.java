@@ -1,4 +1,4 @@
-package com.stoicfree.free.module.core.common.support.msg;
+package com.stoicfree.free.module.core.common.misc.msg;
 
 import java.util.Optional;
 import java.util.Properties;

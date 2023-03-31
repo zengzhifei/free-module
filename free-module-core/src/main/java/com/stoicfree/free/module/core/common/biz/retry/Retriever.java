@@ -1,4 +1,4 @@
-package com.stoicfree.free.module.core.common.support.retry;
+package com.stoicfree.free.module.core.common.biz.retry;
 
 import java.lang.reflect.Method;
 import java.util.HashMap;

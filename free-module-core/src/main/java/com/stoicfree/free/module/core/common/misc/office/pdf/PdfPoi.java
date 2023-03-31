@@ -1,4 +1,4 @@
-package com.stoicfree.free.module.core.common.support.pdf;
+package com.stoicfree.free.module.core.common.misc.office.pdf;
 
 import java.lang.annotation.Documented;
 import java.lang.annotation.ElementType;

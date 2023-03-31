@@ -1,4 +1,4 @@
-package com.stoicfree.free.module.core.common.support.office;
+package com.stoicfree.free.module.core.common.misc.office.excel;
 
 import java.io.File;
 import java.io.IOException;

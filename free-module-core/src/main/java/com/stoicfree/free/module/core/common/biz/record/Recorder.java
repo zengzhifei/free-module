@@ -1,4 +1,4 @@
-package com.stoicfree.free.module.core.common.support.record;
+package com.stoicfree.free.module.core.common.biz.record;
 
 import javax.annotation.PostConstruct;
 

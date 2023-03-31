@@ -1,4 +1,4 @@
-package com.stoicfree.free.module.core.common.support.eventbus;
+package com.stoicfree.free.module.core.common.misc.eventbus;
 
 /**
  * @author zengzhifei
