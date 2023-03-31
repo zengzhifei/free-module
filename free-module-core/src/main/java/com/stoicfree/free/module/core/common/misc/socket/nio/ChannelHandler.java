@@ -8,5 +8,12 @@ import java.nio.channels.SocketChannel;
  */
 @FunctionalInterface
 public interface ChannelHandler {
-    void handle(SocketChannel socketChannel) throws Exception;
+    /**
+     * IO事件处理器
+     *
+     * @param channel
+     *
+     * @throws Exception
+     */
+    void handle(SocketChannel channel) throws Exception;
 }

@@ -9,7 +9,6 @@ import java.util.Iterator;
 
 import cn.hutool.core.io.IoUtil;
 import cn.hutool.core.thread.GlobalThreadPool;
-import cn.hutool.socket.nio.ChannelHandler;
 import lombok.extern.slf4j.Slf4j;
 
 /**
@@ -22,7 +21,7 @@ public abstract class Nio implements Closeable {
     protected Selector selector;
 
     @SuppressWarnings("unchecked")
-    public <T extends Nio> T setChannelHandler(ChannelHandler handler) {
+    public <T extends Nio> T registerChannelHandler(ChannelHandler handler) {
         this.handler = handler;
         return (T) this;
     }
@@ -51,7 +50,7 @@ public abstract class Nio implements Closeable {
 
     protected void handleRead(SelectionKey selectionKey) {
         if (this.handler == null) {
-            log.warn("channel handler not config");
+            log.warn("channel handler not register");
             return;
         }
 

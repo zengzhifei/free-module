@@ -25,20 +25,24 @@ public class NioClient extends Nio {
         init(new InetSocketAddress(host, port), block);
     }
 
-    public String blockWrite(ByteBuffer... src) {
+    public ByteBuffer blockingWrite(ByteBuffer... src) {
         if (!this.socketChannel.isBlocking()) {
-            throw new UnsupportedOperationException("block write must running of block mode");
+            throw new UnsupportedOperationException("blocking write must running of blocking mode");
         }
 
         try {
             this.socketChannel.write(src);
-            return ChannelHelper.read(this.socketChannel);
+            return ChannelHelper.readByteBuffer(this.socketChannel);
         } catch (IOException e) {
             throw new RuntimeException(e);
         }
     }
 
-    public void unblockWrite(ByteBuffer... src) {
+    public void nonblockingWrite(ByteBuffer... src) {
+        if (this.socketChannel.isBlocking()) {
+            throw new UnsupportedOperationException("nonblocking write must running of nonblocking mode");
+        }
+
         try {
             this.socketChannel.write(src);
         } catch (IOException e) {

@@ -12,11 +12,20 @@ import cn.hutool.core.io.BufferUtil;
  * @date 2023/3/31 17:50
  */
 public class ChannelHelper {
-    public static String read(SocketChannel channel) throws IOException {
+    public static ByteBuffer readByteBuffer(SocketChannel channel) throws IOException {
         ByteBuffer buffer = ByteBuffer.allocate(1024);
         int read = channel.read(buffer);
         if (read > 0) {
             buffer.flip();
+            return buffer;
+        } else {
+            return null;
+        }
+    }
+
+    public static String readString(SocketChannel channel) throws IOException {
+        ByteBuffer buffer = readByteBuffer(channel);
+        if (buffer != null) {
             return BufferUtil.readUtf8Str(buffer);
         } else {
             return null;

@@ -13,7 +13,7 @@ import lombok.NoArgsConstructor;
 @Builder
 @AllArgsConstructor
 @NoArgsConstructor
-public class ProviderAuthPayload {
+public class ProviderPayload {
     private String pipe;
     private String password;
 }
