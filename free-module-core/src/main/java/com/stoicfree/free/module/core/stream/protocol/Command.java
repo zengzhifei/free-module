@@ -11,5 +11,5 @@ import lombok.Getter;
 @AllArgsConstructor
 public enum Command {
     // 协议命令
-    PROVIDER_AUTH, PUBLISH
+    PROVIDER_AUTH, PUBLISH, DELAY_PUBLISH, DELAY_QUEUE;
 }

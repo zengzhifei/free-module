@@ -1,5 +1,6 @@
 package com.stoicfree.free.module.core.common.misc.socket.nio;
 
+import java.nio.channels.SelectionKey;
 import java.nio.channels.SocketChannel;
 
 /**
@@ -11,9 +12,10 @@ public interface ChannelHandler {
     /**
      * IO事件处理器
      *
+     * @param selectionKey
      * @param channel
      *
      * @throws Exception
      */
-    void handle(SocketChannel channel) throws Exception;
+    void handle(SelectionKey selectionKey, SocketChannel channel) throws Exception;
 }

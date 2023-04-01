@@ -32,7 +32,7 @@ public class NioClient extends Nio {
 
         try {
             this.socketChannel.write(src);
-            return ChannelHelper.readByteBuffer(this.socketChannel);
+            return ChannelHelper.read(this.socketChannel);
         } catch (IOException e) {
             throw new RuntimeException(e);
         }

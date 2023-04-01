@@ -56,7 +56,7 @@ public abstract class Nio implements Closeable {
 
         SocketChannel socketChannel = (SocketChannel) selectionKey.channel();
         try {
-            this.handler.handle(socketChannel);
+            this.handler.handle(selectionKey, socketChannel);
         } catch (Exception e) {
             IoUtil.close(socketChannel);
         }
