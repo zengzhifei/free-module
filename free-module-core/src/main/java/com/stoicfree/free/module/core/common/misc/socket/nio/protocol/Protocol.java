@@ -22,8 +22,4 @@ public class Protocol {
         return GsonUtil.fromJson(data, new TypeToken<Packet<Command>>() {
         }.getType());
     }
-
-    public static void main(String[] args) {
-        System.out.println(GsonUtil.toJson(true));
-    }
 }
