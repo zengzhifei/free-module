@@ -12,10 +12,13 @@ import com.stoicfree.free.module.core.stream.handler.CommandHandlerSelect;
 import com.stoicfree.free.module.core.stream.handler.DelayQueueHandler;
 import com.stoicfree.free.module.core.stream.protocol.Command;
 
+import lombok.extern.slf4j.Slf4j;
+
 /**
  * @author zengzhifei
  * @date 2023/3/31 18:24
  */
+@Slf4j
 public class StreamServer {
     private final RedisClient client;
 
@@ -38,6 +41,7 @@ public class StreamServer {
     private ChannelHandler getChannelHandler() {
         return (selectionKey, channel) -> {
             Packet<Command> packet = ChannelIo.readout(channel);
+            log.info("stream read packet: {}", packet);
             CommandHandlerSelect.select(packet.getCommand()).validate(selectionKey, channel)
                     .handle(client, selectionKey, channel, packet);
         };

@@ -126,6 +126,8 @@ public class GsonUtil {
                 .serializeNulls()
                 // 时间转化为特定格式
                 .setDateFormat("yyyy-MM-dd HH:mm:ss")
+                // 当key为class类型时,需要开启该方法
+                .registerTypeAdapter(Class.class, new ClassCodec())
                 // 防止特殊字符出现乱码
                 .disableHtmlEscaping();
 

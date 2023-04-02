@@ -1,5 +1,6 @@
 package com.stoicfree.free.module.core.common.misc.socket.nio.protocol;
 
+import java.io.Serializable;
 import java.util.UUID;
 
 import lombok.AllArgsConstructor;
@@ -13,10 +14,10 @@ import lombok.experimental.SuperBuilder;
  * @date 2023/3/30 19:09
  */
 @Data
-@SuperBuilder
 @AllArgsConstructor
 @NoArgsConstructor
-public class Packet<Command extends Enum<Command>> {
+@SuperBuilder(toBuilder = true)
+public class Packet<Command extends Enum<Command>> implements Serializable {
     /**
      * 请求唯一id
      */
@@ -27,7 +28,13 @@ public class Packet<Command extends Enum<Command>> {
      * 协议版本
      */
     @Builder.Default
-    private final double version = 0;
+    private final double version = 1;
+
+    /**
+     * Command Class
+     */
+    @Builder.ObtainVia(method = "getCommandClass")
+    private Class<Command> cc;
 
     /**
      * 消息命令
@@ -61,5 +68,10 @@ public class Packet<Command extends Enum<Command>> {
     public Packet<Command> newPayload(Object payload) {
         setPayload(payload);
         return this;
+    }
+
+    @SuppressWarnings("unchecked")
+    private Class<Command> getCommandClass() {
+        return (Class<Command>) command.getClass();
     }
 }

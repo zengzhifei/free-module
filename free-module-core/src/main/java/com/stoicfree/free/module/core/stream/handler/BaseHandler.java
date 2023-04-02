@@ -14,12 +14,14 @@ import com.stoicfree.free.module.core.stream.protocol.Command;
 
 import cn.hutool.core.convert.Convert;
 import cn.hutool.core.io.IoUtil;
+import lombok.extern.slf4j.Slf4j;
 import redis.clients.jedis.StreamEntryID;
 
 /**
  * @author zengzhifei
  * @date 2023/3/31 23:51
  */
+@Slf4j
 public abstract class BaseHandler implements CommandHandler {
     @Override
     public CommandHandler validate(SelectionKey selectionKey, SocketChannel channel) {
@@ -52,6 +54,7 @@ public abstract class BaseHandler implements CommandHandler {
         } finally {
             // 返回结果
             ChannelIo.writeIn(channel, packet.newPayload(newPayload));
+            log.info("stream write packet: {}", packet);
         }
     }
 
