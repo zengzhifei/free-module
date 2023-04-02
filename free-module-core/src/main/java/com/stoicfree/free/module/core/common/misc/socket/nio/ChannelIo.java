@@ -32,7 +32,7 @@ public class ChannelIo {
         channel.write(buffers);
     }
 
-    public static <Command extends Enum<Command>> void write(SocketChannel channel, Packet<Command> packet)
+    public static <Command extends Enum<Command>> void writeIn(SocketChannel channel, Packet<Command> packet)
             throws IOException {
         ByteBuffer buffer = Protocol.encode(packet);
         write(channel, buffer);
