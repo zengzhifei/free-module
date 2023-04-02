@@ -41,5 +41,37 @@ public class Payload {
             private String message;
             private Date date;
         }
+
+        @Data
+        @SuperBuilder
+        @ToString(callSuper = true)
+        @EqualsAndHashCode(callSuper = true)
+        public static class DelayQueue extends Provider {
+            private String id;
+            private String message;
+        }
+    }
+
+    @Data
+    @SuperBuilder
+    public static class Consumer {
+        String queue;
+
+        @Data
+        @SuperBuilder
+        @ToString(callSuper = true)
+        @EqualsAndHashCode(callSuper = true)
+        public static class Auth extends Consumer {
+            private String token;
+        }
+
+        @Data
+        @SuperBuilder
+        @ToString(callSuper = true)
+        @EqualsAndHashCode(callSuper = true)
+        public static class Consume extends Consumer {
+            private String pipe;
+            private int count;
+        }
     }
 }

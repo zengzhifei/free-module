@@ -31,7 +31,7 @@ public class NioClient extends Nio {
         }
 
         try {
-            this.socketChannel.write(src);
+            ChannelIo.write(this.socketChannel, src);
             return ChannelIo.read(this.socketChannel);
         } catch (IOException e) {
             throw new RuntimeException(e);
@@ -44,7 +44,7 @@ public class NioClient extends Nio {
         }
 
         try {
-            this.socketChannel.write(src);
+            ChannelIo.write(this.socketChannel, src);
         } catch (IOException e) {
             throw new RuntimeException(e);
         }

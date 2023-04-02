@@ -1,4 +1,4 @@
-package com.stoicfree.free.module.core.stream.enums;
+package com.stoicfree.free.module.core.stream.protocol;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -11,5 +11,5 @@ import lombok.Getter;
 @AllArgsConstructor
 public enum Command {
     // 协议命令
-    PROVIDER_AUTH, PUBLISH, DELAY_PUBLISH, DELAY_QUEUE;
+    PROVIDER_AUTH, PUBLISH, DELAY_PUBLISH, CONSUMER_AUTH, CONSUME;
 }

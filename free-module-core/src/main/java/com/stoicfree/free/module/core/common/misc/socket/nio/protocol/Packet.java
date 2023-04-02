@@ -39,7 +39,27 @@ public class Packet<Command extends Enum<Command>> {
      */
     private Object payload;
 
+    /**
+     * 获取指定格式消息载体
+     *
+     * @param clazz
+     * @param <T>
+     *
+     * @return
+     */
     public <T> T getPayload(Class<T> clazz) {
         return clazz.cast(payload);
+    }
+
+    /**
+     * 设置新消息载体
+     *
+     * @param payload
+     *
+     * @return
+     */
+    public Packet<Command> newPayload(Object payload) {
+        setPayload(payload);
+        return this;
     }
 }

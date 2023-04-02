@@ -8,13 +8,9 @@ import java.util.List;
 import java.util.Map;
 import java.util.concurrent.ExecutorService;
 
-import org.apache.commons.lang.StringUtils;
-
-import com.stoicfree.free.module.core.common.gson.GsonUtil;
-import com.stoicfree.free.module.core.common.misc.socket.nio.ChannelHelper;
+import com.stoicfree.free.module.core.common.misc.socket.nio.ChannelIo;
 import com.stoicfree.free.module.core.common.misc.socket.nio.protocol.Packet;
 import com.stoicfree.free.module.core.common.support.ExecutorHelper;
-import com.stoicfree.free.module.core.common.support.Safes;
 import com.stoicfree.free.module.core.redis.client.RedisClient;
 import com.stoicfree.free.module.core.stream.Streamer;
 import com.stoicfree.free.module.core.stream.domain.Message;
@@ -27,7 +23,6 @@ import cn.hutool.core.net.NetUtil;
 import lombok.extern.slf4j.Slf4j;
 import redis.clients.jedis.StreamEntry;
 import redis.clients.jedis.StreamEntryID;
-import redis.clients.jedis.StreamGroupInfo;
 import redis.clients.jedis.params.XReadGroupParams;
 
 /**
@@ -35,63 +30,39 @@ import redis.clients.jedis.params.XReadGroupParams;
  * @date 2023/4/1 10:29
  */
 @Slf4j
-public class ConsumerAuthHandler extends BaseHandler {
+public class ConsumerConsumeHandler extends BaseHandler {
     private static final ExecutorService EXECUTOR = ExecutorHelper.newFixedThreadPool("stream-consumer", 2, 4);
 
     @Override
     public boolean match(Command command) {
-        return Command.CONSUMER_AUTH.equals(command);
-    }
-
-    @Override
-    public CommandHandler validate(SelectionKey selectionKey, SocketChannel channel) {
-        return this;
+        return Command.CONSUME.equals(command);
     }
 
     @Override
     public void handle(RedisClient client, SelectionKey selectionKey, SocketChannel channel, Packet<Command> packet) {
         try {
-            Payload.Consumer.Auth auth = packet.getPayload(Payload.Consumer.Auth.class);
-
-            String pipe = client.hget(Streamer.getQueueKey(auth.getQueue()), Streamer.safe(auth.getToken()));
-            if (StringUtils.isBlank(pipe)) {
-                throw new StreamException("consumer auth fail");
-            }
-            if (!createGroup(client, pipe, auth.getQueue())) {
-                throw new StreamException("consumer create group fail");
-            }
-
-            selectionKey.attach(true);
-
-            consume(client, channel, pipe, auth.getQueue(), auth.getCount());
+            consume(client, channel, packet);
         } catch (Exception e) {
             IoUtil.close(channel);
             throw new StreamException(e.getMessage());
         }
     }
 
-    private boolean createGroup(RedisClient client, String pipe, String queue) {
-        if (client.exists(pipe)) {
-            List<StreamGroupInfo> groupInfos = client.xinfoGroup(pipe);
-            boolean isCreated = Safes.of(groupInfos).stream().anyMatch(e -> e.getName().equals(queue));
-            if (isCreated) {
-                return true;
-            }
-        }
+    private void consume(RedisClient client, SocketChannel channel, Packet<Command> packet) {
+        Payload.Consumer.Consume consume = packet.getPayload(Payload.Consumer.Consume.class);
+        String pipe = consume.getPipe();
+        String queue = consume.getQueue();
 
-        String ok = client.xgroupCreate(pipe, queue, StreamEntryID.LAST_ENTRY, true);
-        return RedisClient.OK.equals(ok);
-    }
-
-    private void consume(RedisClient client, SocketChannel channel, String pipe, String queue, int count) {
+        // 校验和设置运行中queue消费
         if (client.hexists(Streamer.RUNNING_CONSUME_QUEUE_KEY, queue)) {
             return;
         } else {
             client.hset(Streamer.RUNNING_CONSUME_QUEUE_KEY, queue, NetUtil.getLocalhostStr());
         }
 
+        // 线程池消费
         EXECUTOR.execute(() -> {
-            XReadGroupParams groupParams = XReadGroupParams.xReadGroupParams().block(0).count(count);
+            XReadGroupParams groupParams = XReadGroupParams.xReadGroupParams().block(0).count(consume.getCount());
             Map<String, StreamEntryID> streams = new HashMap<>(1);
             streams.put(pipe, StreamEntryID.UNRECEIVED_ENTRY);
 
@@ -112,14 +83,15 @@ public class ConsumerAuthHandler extends BaseHandler {
                         messages.add(message);
                     }
 
-                    ChannelHelper.write(channel, GsonUtil.toJson(messages));
+                    // 返回消息
+                    ChannelIo.writeIn(channel, packet.newPayload(messages));
 
+                    // ack
                     client.xack(pipe, queue, ids.toArray(new StreamEntryID[0]));
                 } catch (Exception e) {
                     log.error("stream consumer consume", e);
                 } finally {
-                    log.info("stream consumer consume pipe[{}], queue[{}], hash[{}]",
-                            pipe, queue, GsonUtil.toJson(entries));
+                    log.info("stream consumer consume pipe[{}], queue[{}], hash[{}]", pipe, queue, entries);
                 }
             }
         });

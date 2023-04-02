@@ -14,6 +14,7 @@ import org.apache.commons.lang.StringUtils;
 import org.springframework.core.annotation.AnnotationConfigurationException;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.stoicfree.free.module.core.common.support.AnnotatedBeanContainer;
@@ -33,6 +34,7 @@ import com.stoicfree.free.module.core.rpc.safe.SecureKeeper;
  */
 @NoLogin
 @RestController
+@RequestMapping("/rpc")
 public class ProviderAgent extends AnnotatedBeanContainer {
     private final Map<String, TwoTuple<Object, Method>> providers = new HashMap<>();
     private final ProviderProperties providerProperties;

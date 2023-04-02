@@ -9,6 +9,10 @@ import lombok.Data;
 @Data
 public class ProviderProperties {
     /**
+     * server地址
+     */
+    private String metaHost;
+    /**
      * pipe名称
      */
     private String pipe;
@@ -16,8 +20,4 @@ public class ProviderProperties {
      * pipe密码
      */
     private String password;
-    /**
-     * 最大长度
-     */
-    private long maxLen = Long.MAX_VALUE;
 }

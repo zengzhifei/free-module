@@ -1,10 +1,11 @@
 package com.stoicfree.free.module.core.stream.handler;
 
+import java.nio.channels.SelectionKey;
 import java.nio.channels.SocketChannel;
 
+import com.stoicfree.free.module.core.common.misc.socket.nio.protocol.Packet;
 import com.stoicfree.free.module.core.redis.client.RedisClient;
-import com.stoicfree.free.module.core.stream.enums.Command;
-import com.stoicfree.free.module.core.stream.protocol.Packet;
+import com.stoicfree.free.module.core.stream.protocol.Command;
 
 /**
  * @author zengzhifei
@@ -21,11 +22,22 @@ public interface CommandHandler {
     boolean match(Command command);
 
     /**
+     * 验证命令
+     *
+     * @param selectionKey
+     * @param channel
+     *
+     * @return
+     */
+    CommandHandler validate(SelectionKey selectionKey, SocketChannel channel);
+
+    /**
      * 执行命令
      *
      * @param client
+     * @param selectionKey
      * @param channel
      * @param packet
      */
-    void handle(RedisClient client, SocketChannel channel, Packet packet);
+    void handle(RedisClient client, SelectionKey selectionKey, SocketChannel channel, Packet<Command> packet);
 }

@@ -3,7 +3,7 @@ package com.stoicfree.free.module.core.stream.handler;
 import java.util.HashSet;
 import java.util.Set;
 
-import com.stoicfree.free.module.core.stream.enums.Command;
+import com.stoicfree.free.module.core.stream.protocol.Command;
 
 import cn.hutool.core.util.ClassUtil;
 import cn.hutool.core.util.ReflectUtil;
@@ -16,8 +16,8 @@ public class CommandHandlerSelect {
     private static final Set<CommandHandler> HANDLERS = new HashSet<>();
 
     static {
-        Set<Class<?>> classes = ClassUtil.scanPackageBySuper(CommandHandler.class.getPackage().getName(),
-                CommandHandler.class);
+        String packageName = CommandHandler.class.getPackage().getName();
+        Set<Class<?>> classes = ClassUtil.scanPackageBySuper(packageName, CommandHandler.class);
         for (Class<?> clazz : classes) {
             CommandHandler handler = (CommandHandler) ReflectUtil.newInstance(clazz);
             HANDLERS.add(handler);
@@ -32,7 +32,8 @@ public class CommandHandlerSelect {
      * @return
      */
     public static CommandHandler select(Command command) {
-        return HANDLERS.stream().filter(handler -> handler.match(command)).findFirst()
+        return HANDLERS.stream()
+                .filter(handler -> handler.match(command)).findFirst()
                 .orElseThrow(() -> new RuntimeException("command is not support"));
     }
 }

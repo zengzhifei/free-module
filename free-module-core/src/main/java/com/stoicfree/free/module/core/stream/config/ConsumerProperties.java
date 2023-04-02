@@ -9,6 +9,10 @@ import lombok.Data;
 @Data
 public class ConsumerProperties {
     /**
+     * server地址
+     */
+    private String metaHost;
+    /**
      * queue名称
      */
     private String queue;
