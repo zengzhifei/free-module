@@ -4,13 +4,11 @@ import java.nio.channels.SelectionKey;
 import java.nio.channels.SocketChannel;
 
 import com.stoicfree.free.module.core.common.gson.GsonUtil;
-import com.stoicfree.free.module.core.common.misc.socket.nio.ChannelIo;
 import com.stoicfree.free.module.core.common.misc.socket.nio.protocol.Packet;
 import com.stoicfree.free.module.core.common.support.ID;
 import com.stoicfree.free.module.core.common.util.DateUtils;
 import com.stoicfree.free.module.core.redis.client.RedisClient;
 import com.stoicfree.free.module.core.stream.Streamer;
-import com.stoicfree.free.module.core.stream.exception.StreamException;
 import com.stoicfree.free.module.core.stream.protocol.Command;
 import com.stoicfree.free.module.core.stream.protocol.Payload;
 
@@ -26,7 +24,7 @@ public class DelayPublishHandler extends BaseHandler {
 
     @Override
     public void handle(RedisClient client, SelectionKey selectionKey, SocketChannel channel, Packet<Command> packet) {
-        try {
+        execute(channel, packet, null, () -> {
             Payload.Provider.DelayPublish delayPublish = packet.getPayload(Payload.Provider.DelayPublish.class);
 
             String id = ID.SNOWFLAKE.nextIdStr();
@@ -39,9 +37,7 @@ public class DelayPublishHandler extends BaseHandler {
                 throw new RuntimeException("delay publish fail");
             }
 
-            ChannelIo.writeIn(channel, packet.newPayload(id));
-        } catch (Exception e) {
-            throw new StreamException(e.getMessage());
-        }
+            return id;
+        });
     }
 }

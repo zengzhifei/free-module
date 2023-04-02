@@ -7,17 +7,15 @@ import java.util.concurrent.ExecutorService;
 
 import org.apache.commons.lang.StringUtils;
 
-import com.stoicfree.free.module.core.common.misc.socket.nio.ChannelIo;
 import com.stoicfree.free.module.core.common.misc.socket.nio.protocol.Packet;
 import com.stoicfree.free.module.core.common.support.ExecutorHelper;
 import com.stoicfree.free.module.core.common.support.Safes;
 import com.stoicfree.free.module.core.redis.client.RedisClient;
 import com.stoicfree.free.module.core.stream.Streamer;
-import com.stoicfree.free.module.core.stream.exception.StreamException;
+import com.stoicfree.free.module.core.stream.exception.StreamServerException;
 import com.stoicfree.free.module.core.stream.protocol.Command;
 import com.stoicfree.free.module.core.stream.protocol.Payload;
 
-import cn.hutool.core.io.IoUtil;
 import lombok.extern.slf4j.Slf4j;
 import redis.clients.jedis.StreamEntryID;
 import redis.clients.jedis.StreamGroupInfo;
@@ -42,29 +40,25 @@ public class ConsumerAuthHandler extends BaseHandler {
 
     @Override
     public void handle(RedisClient client, SelectionKey selectionKey, SocketChannel channel, Packet<Command> packet) {
-        try {
+        execute(channel, packet, null, () -> {
             Payload.Consumer.Auth auth = packet.getPayload(Payload.Consumer.Auth.class);
 
             // 验证queue
             String pipe = client.hget(Streamer.getQueueKey(auth.getQueue()), Streamer.safe(auth.getToken()));
             if (StringUtils.isBlank(pipe)) {
-                throw new StreamException("consumer auth fail");
+                throw new StreamServerException("consumer auth fail");
             }
 
             // 创建分组
             if (!createGroup(client, pipe, auth.getQueue())) {
-                throw new StreamException("consumer create group fail");
+                throw new StreamServerException("consumer create group fail");
             }
 
             // 种入验证标识
             selectionKey.attach(true);
 
-            // 返回pipe
-            ChannelIo.writeIn(channel, packet.newPayload(pipe));
-        } catch (Exception e) {
-            IoUtil.close(channel);
-            throw new StreamException(e.getMessage());
-        }
+            return pipe;
+        });
     }
 
     private boolean createGroup(RedisClient client, String pipe, String queue) {

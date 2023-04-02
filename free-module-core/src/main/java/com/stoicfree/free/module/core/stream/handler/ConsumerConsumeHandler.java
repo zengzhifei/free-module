@@ -14,11 +14,9 @@ import com.stoicfree.free.module.core.common.support.ExecutorHelper;
 import com.stoicfree.free.module.core.redis.client.RedisClient;
 import com.stoicfree.free.module.core.stream.Streamer;
 import com.stoicfree.free.module.core.stream.domain.Message;
-import com.stoicfree.free.module.core.stream.exception.StreamException;
 import com.stoicfree.free.module.core.stream.protocol.Command;
 import com.stoicfree.free.module.core.stream.protocol.Payload;
 
-import cn.hutool.core.io.IoUtil;
 import cn.hutool.core.net.NetUtil;
 import lombok.extern.slf4j.Slf4j;
 import redis.clients.jedis.StreamEntry;
@@ -40,12 +38,7 @@ public class ConsumerConsumeHandler extends BaseHandler {
 
     @Override
     public void handle(RedisClient client, SelectionKey selectionKey, SocketChannel channel, Packet<Command> packet) {
-        try {
-            consume(client, channel, packet);
-        } catch (Exception e) {
-            IoUtil.close(channel);
-            throw new StreamException(e.getMessage());
-        }
+        execute(channel, () -> consume(client, channel, packet));
     }
 
     private void consume(RedisClient client, SocketChannel channel, Packet<Command> packet) {

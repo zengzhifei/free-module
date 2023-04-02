@@ -3,13 +3,15 @@ package com.stoicfree.free.module.core.stream.client;
 import java.nio.ByteBuffer;
 import java.util.Date;
 
+import org.apache.commons.lang.StringUtils;
+
 import com.stoicfree.free.module.core.common.misc.socket.nio.ChannelIo;
 import com.stoicfree.free.module.core.common.misc.socket.nio.NioClient;
 import com.stoicfree.free.module.core.common.misc.socket.nio.protocol.Packet;
 import com.stoicfree.free.module.core.common.misc.socket.nio.protocol.Protocol;
 import com.stoicfree.free.module.core.stream.IConsumer;
 import com.stoicfree.free.module.core.stream.domain.Message;
-import com.stoicfree.free.module.core.stream.exception.StreamException;
+import com.stoicfree.free.module.core.stream.exception.StreamClientException;
 import com.stoicfree.free.module.core.stream.protocol.Command;
 import com.stoicfree.free.module.core.stream.protocol.Payload;
 
@@ -51,7 +53,7 @@ public class StreamClient {
         ByteBuffer input = Protocol.encode(Command.PROVIDER_AUTH, payload);
         ByteBuffer output = blockingClient.blockingWrite(input);
         if (Protocol.decode(output).getPayload(Boolean.class)) {
-            throw new StreamException("provider auth fail");
+            throw new StreamClientException("provider auth fail");
         } else {
             nonblockingClient.nonblockingWrite(input);
         }
@@ -62,12 +64,13 @@ public class StreamClient {
         Payload.Consumer.Auth payload = Payload.Consumer.Auth.builder().queue(queue).token(token).build();
         ByteBuffer input = Protocol.encode(Command.CONSUMER_AUTH, payload);
         ByteBuffer output = blockingClient.blockingWrite(input);
-        if (Protocol.decode(output).getPayload(Boolean.class)) {
-            throw new StreamException("consumer auth fail");
+        String pipe = Protocol.decode(output).getPayload(String.class);
+        if (StringUtils.isBlank(pipe)) {
+            throw new StreamClientException("consumer auth fail");
         } else {
             nonblockingClient.nonblockingWrite(input);
         }
-        return new Consumer(queue, nonblockingClient);
+        return new Consumer(pipe, queue, nonblockingClient);
     }
 
     public static class Provider {
@@ -107,16 +110,19 @@ public class StreamClient {
     }
 
     public static class Consumer {
+        private final String pipe;
         private final String queue;
         private final NioClient nonblockingClient;
 
-        private Consumer(String queue, NioClient nonblockingClient) {
+        public Consumer(String pipe, String queue, NioClient nonblockingClient) {
+            this.pipe = pipe;
             this.queue = queue;
             this.nonblockingClient = nonblockingClient;
         }
 
         public void consume(int count) {
-            Payload.Consumer.Consume payload = Payload.Consumer.Consume.builder().queue(queue).count(count).build();
+            Payload.Consumer.Consume payload = Payload.Consumer.Consume.builder()
+                    .pipe(pipe).queue(queue).count(count).build();
             nonblockingClient.nonblockingWrite(Protocol.encode(Command.CONSUME, payload));
         }
     }
