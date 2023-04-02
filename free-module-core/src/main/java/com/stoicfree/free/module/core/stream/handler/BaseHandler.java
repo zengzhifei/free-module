@@ -45,17 +45,15 @@ public abstract class BaseHandler implements CommandHandler {
 
     protected void execute(SocketChannel channel, Packet<Command> packet, Object defaultPayload,
                            Callback2<Object> callback) {
-        Object newPayload = null;
         try {
-            newPayload = callback.call();
+            Object newPayload = callback.call();
+            ChannelIo.writeIn(channel, packet.newPayload(newPayload));
         } catch (Exception e) {
             log.error("stream execute", e);
-            newPayload = defaultPayload;
+            ChannelIo.writeIn(channel, packet.newPayload(defaultPayload));
             IoUtil.close(channel);
             throw new StreamServerException(e.getMessage());
         } finally {
-            // 返回结果
-            ChannelIo.writeIn(channel, packet.newPayload(newPayload));
             log.info("stream write packet: {}", packet);
         }
     }
