@@ -14,6 +14,10 @@ import cn.hutool.core.io.BufferUtil;
 public class Protocol {
     public static <Command extends Enum<Command>, T> ByteBuffer encode(Command command, T payload) {
         Packet<Command> packet = Packet.<Command>builder().command(command).payload(payload).build();
+        return encode(packet);
+    }
+
+    public static <Command extends Enum<Command>, T> ByteBuffer encode(Packet<Command> packet) {
         return BufferUtil.createUtf8(GsonUtil.toJson(packet));
     }
 

@@ -34,7 +34,7 @@ public class NioServer extends Nio {
             // 服务器套接字注册到Selector中 并指定Selector监控连接事件
             this.serverSocketChannel.register(selector, SelectionKey.OP_ACCEPT);
         } catch (IOException e) {
-            close(e);
+            this.close(e);
         }
     }
 
