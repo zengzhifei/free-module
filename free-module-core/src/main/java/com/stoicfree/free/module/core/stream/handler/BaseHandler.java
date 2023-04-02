@@ -37,6 +37,7 @@ public abstract class BaseHandler implements CommandHandler {
         try {
             callback0.call();
         } catch (Exception e) {
+            log.error("stream execute", e);
             IoUtil.close(channel);
             throw new StreamServerException(e.getMessage());
         }
@@ -48,6 +49,7 @@ public abstract class BaseHandler implements CommandHandler {
         try {
             newPayload = callback.call();
         } catch (Exception e) {
+            log.error("stream execute", e);
             newPayload = defaultPayload;
             IoUtil.close(channel);
             throw new StreamServerException(e.getMessage());
