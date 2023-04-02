@@ -30,12 +30,9 @@ public class NioClient extends Nio {
             throw new UnsupportedOperationException("blocking write must running of blocking mode");
         }
 
-        try {
-            ChannelIo.write(this.socketChannel, src);
-            return ChannelIo.read(this.socketChannel);
-        } catch (IOException e) {
-            throw new RuntimeException(e);
-        }
+        ChannelIo.write(this.socketChannel, src);
+
+        return ChannelIo.read(this.socketChannel);
     }
 
     public void nonblockingWrite(ByteBuffer... src) {
@@ -43,11 +40,7 @@ public class NioClient extends Nio {
             throw new UnsupportedOperationException("nonblocking write must running of nonblocking mode");
         }
 
-        try {
-            ChannelIo.write(this.socketChannel, src);
-        } catch (IOException e) {
-            throw new RuntimeException(e);
-        }
+        ChannelIo.write(this.socketChannel, src);
     }
 
     public SocketChannel getChannel() {
