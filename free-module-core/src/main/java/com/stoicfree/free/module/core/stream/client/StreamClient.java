@@ -53,9 +53,10 @@ public class StreamClient {
         ByteBuffer input = Protocol.encode(Command.PROVIDER_AUTH, payload);
         ByteBuffer output = blockingClient.blockingWrite(input);
         if (Protocol.decode(output).getPayload(Boolean.class)) {
-            throw new StreamClientException("provider auth fail");
-        } else {
+            input.flip();
             nonblockingClient.nonblockingWrite(input);
+        } else {
+            throw new StreamClientException("provider auth fail");
         }
         return new Provider(pipe, blockingClient, nonblockingClient);
     }
@@ -65,10 +66,11 @@ public class StreamClient {
         ByteBuffer input = Protocol.encode(Command.CONSUMER_AUTH, payload);
         ByteBuffer output = blockingClient.blockingWrite(input);
         String pipe = Protocol.decode(output).getPayload(String.class);
-        if (StringUtils.isBlank(pipe)) {
-            throw new StreamClientException("consumer auth fail");
-        } else {
+        if (StringUtils.isNotBlank(pipe)) {
+            input.flip();
             nonblockingClient.nonblockingWrite(input);
+        } else {
+            throw new StreamClientException("consumer auth fail");
         }
         return new Consumer(pipe, queue, nonblockingClient);
     }

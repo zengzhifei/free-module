@@ -27,6 +27,7 @@ public abstract class BaseHandler implements CommandHandler {
     public CommandHandler validate(SelectionKey selectionKey, SocketChannel channel) {
         boolean isAuth = Convert.toBool(selectionKey.attachment(), false);
         if (!isAuth) {
+            log.error("stream execute auth fail");
             IoUtil.close(channel);
             throw new StreamServerException("stream auth fail");
         }

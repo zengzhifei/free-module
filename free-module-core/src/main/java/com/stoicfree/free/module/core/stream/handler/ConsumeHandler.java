@@ -28,7 +28,7 @@ import redis.clients.jedis.params.XReadGroupParams;
  * @date 2023/4/1 10:29
  */
 @Slf4j
-public class ConsumerConsumeHandler extends BaseHandler {
+public class ConsumeHandler extends BaseHandler {
     private static final ExecutorService EXECUTOR = ExecutorHelper.newFixedThreadPool("stream-consumer", 2, 4);
 
     @Override
@@ -48,6 +48,7 @@ public class ConsumerConsumeHandler extends BaseHandler {
 
         // 校验和设置运行中queue消费
         if (client.hexists(Streamer.RUNNING_CONSUME_QUEUE_KEY, queue)) {
+            log.info("stream consume queue[{}] is running", queue);
             return;
         } else {
             client.hset(Streamer.RUNNING_CONSUME_QUEUE_KEY, queue, NetUtil.getLocalhostStr());
