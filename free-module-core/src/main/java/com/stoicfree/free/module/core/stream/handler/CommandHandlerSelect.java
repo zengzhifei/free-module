@@ -7,11 +7,13 @@ import com.stoicfree.free.module.core.stream.protocol.Command;
 
 import cn.hutool.core.util.ClassUtil;
 import cn.hutool.core.util.ReflectUtil;
+import lombok.extern.slf4j.Slf4j;
 
 /**
  * @author zengzhifei
  * @date 2023/3/31 23:11
  */
+@Slf4j
 public class CommandHandlerSelect {
     private static final Set<CommandHandler> HANDLERS = new HashSet<>();
 
@@ -19,8 +21,15 @@ public class CommandHandlerSelect {
         String packageName = CommandHandler.class.getPackage().getName();
         Set<Class<?>> classes = ClassUtil.scanPackageBySuper(packageName, CommandHandler.class);
         for (Class<?> clazz : classes) {
-            CommandHandler handler = (CommandHandler) ReflectUtil.newInstance(clazz);
-            HANDLERS.add(handler);
+            if (ClassUtil.isAbstract(clazz)) {
+                continue;
+            }
+            try {
+                CommandHandler handler = (CommandHandler) ReflectUtil.newInstance(clazz);
+                HANDLERS.add(handler);
+            } catch (Exception e) {
+                log.warn("handler {} can not new instance", clazz.getName());
+            }
         }
     }
 
