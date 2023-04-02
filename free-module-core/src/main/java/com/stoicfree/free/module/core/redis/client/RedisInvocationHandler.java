@@ -6,6 +6,7 @@ import java.util.Collections;
 
 import com.stoicfree.free.module.core.redis.config.RedisProperties;
 
+import cn.hutool.core.util.ReflectUtil;
 import lombok.extern.slf4j.Slf4j;
 import redis.clients.jedis.Jedis;
 import redis.clients.jedis.JedisPool;
@@ -22,12 +23,13 @@ public class RedisInvocationHandler implements InvocationHandler {
 
     @Override
     public Object invoke(Object proxy, Method method, Object[] args) throws Throwable {
-        String methodName = method.getName();
         try (Jedis jedis = jedisPool.getResource()) {
             Object ret;
-            if ("lock".equals(methodName)) {
+            Method lock = ReflectUtil.getMethod(RedisClient.class, "lock", String.class, String.class, Long.class);
+            Method unlock = ReflectUtil.getMethod(RedisClient.class, "unlock", String.class, String.class);
+            if (method.equals(lock)) {
                 ret = jedis.set((String) args[0], (String) args[1], SetParams.setParams().nx().px((long) args[2]));
-            } else if ("unlock".equals(methodName)) {
+            } else if (method.equals(unlock)) {
                 String luaScript = "if redis.call('get', KEYS[1]) == ARGV[1] then return redis.call('del', KEYS[1]) "
                         + "else return 0 end";
                 ret = jedis.eval(luaScript, Collections.singletonList((String) args[0]),

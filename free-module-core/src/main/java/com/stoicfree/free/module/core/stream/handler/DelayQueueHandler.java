@@ -12,6 +12,7 @@ import java.util.concurrent.TimeUnit;
 
 import org.apache.commons.collections.CollectionUtils;
 
+import com.stoicfree.free.module.core.common.constant.Constants;
 import com.stoicfree.free.module.core.common.gson.GsonUtil;
 import com.stoicfree.free.module.core.common.misc.socket.nio.protocol.Packet;
 import com.stoicfree.free.module.core.common.support.ExecutorHelper;
@@ -21,7 +22,7 @@ import com.stoicfree.free.module.core.stream.Streamer;
 import com.stoicfree.free.module.core.stream.protocol.Command;
 import com.stoicfree.free.module.core.stream.protocol.Payload;
 
-import cn.hutool.core.net.NetUtil;
+import cn.hutool.core.util.RuntimeUtil;
 import lombok.extern.slf4j.Slf4j;
 import redis.clients.jedis.StreamEntryID;
 import redis.clients.jedis.Tuple;
@@ -46,11 +47,14 @@ public class DelayQueueHandler extends BaseHandler {
     }
 
     public void handle(RedisClient client) {
-        // 校验和设置运行中delay queue消费
-        if (client.hexists(Streamer.RUNNING_CONSUME_DELAY_QUEUE_KEY, "0")) {
+        // 获取delay queue消费锁
+        String lock = client.lock(Streamer.RUNNING_CONSUME_DELAY_QUEUE_KEY, "0", 1000L * Constants.YEAR);
+        if (!RedisClient.OK.equals(lock)) {
+            log.info("stream delay consume queue is running");
             return;
         } else {
-            client.hset(Streamer.RUNNING_CONSUME_DELAY_QUEUE_KEY, "0", NetUtil.getLocalhostStr());
+            // 服务关闭,解锁
+            RuntimeUtil.addShutdownHook(() -> client.unlock(Streamer.RUNNING_CONSUME_DELAY_QUEUE_KEY, "0"));
         }
 
         // 延迟消费
