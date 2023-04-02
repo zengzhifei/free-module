@@ -13,13 +13,14 @@ import cn.hutool.crypto.SecureUtil;
  */
 public class Streamer {
     public static final String HASH_KEY = "message";
+    public static final String DELAY_ID = "delayId";
     public static final String PIPE_PREFIX = "pipe:";
     public static final String QUEUE_PREFIX = "queue:";
-    public static final String DELAY_KEY = "delay";
-    public static final String DELAY_ID = "delayId";
+    public static final String DELAY_PREFIX = "delay:";
+    public static final String STREAM_PREFIX = "stream:";
+    public static final String RUNNING_CONSUME_QUEUE_PREFIX = "running:consume_queue:";
+    public static final String RUNNING_CONSUME_DELAY_PREFIX = "running:consume_delay:";
     public static final String DEFAULT_CONSUMER_ID = "c0";
-    public static final String RUNNING_CONSUME_QUEUE_KEY = "running_consume_queue";
-    public static final String RUNNING_CONSUME_DELAY_QUEUE_KEY = "running_consume_delay_queue";
     public static final String VERSION = "5.0";
 
     public static String getPipeKey(String pipe) {
@@ -30,8 +31,20 @@ public class Streamer {
         return QUEUE_PREFIX + queue;
     }
 
-    public static String getDelayKey() {
-        return DELAY_KEY;
+    public static String getDelayKey(int index) {
+        return DELAY_PREFIX + index;
+    }
+
+    public static String getStreamKey(String pipe) {
+        return STREAM_PREFIX + pipe;
+    }
+
+    public static String getRunningConsumeQueueKey(String queue) {
+        return RUNNING_CONSUME_QUEUE_PREFIX + queue;
+    }
+
+    public static String getRunningConsumeDelayKey(int index) {
+        return RUNNING_CONSUME_DELAY_PREFIX + index;
     }
 
     public static String safe(String data) {

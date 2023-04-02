@@ -22,6 +22,7 @@ import com.stoicfree.free.module.core.stream.Streamer;
 import com.stoicfree.free.module.core.stream.protocol.Command;
 import com.stoicfree.free.module.core.stream.protocol.Payload;
 
+import cn.hutool.core.net.NetUtil;
 import cn.hutool.core.util.RuntimeUtil;
 import lombok.extern.slf4j.Slf4j;
 import redis.clients.jedis.StreamEntryID;
@@ -48,13 +49,14 @@ public class DelayQueueHandler extends BaseHandler {
 
     public void handle(RedisClient client) {
         // 获取delay queue消费锁
-        String lock = client.lock(Streamer.RUNNING_CONSUME_DELAY_QUEUE_KEY, "0", 1000L * Constants.YEAR);
+        String ip = NetUtil.getLocalhostStr();
+        String lock = client.lock(Streamer.getRunningConsumeDelayKey(0), ip, 1000L * Constants.YEAR);
         if (!RedisClient.OK.equals(lock)) {
             log.info("stream delay consume queue is running");
             return;
         } else {
             // 服务关闭,解锁
-            RuntimeUtil.addShutdownHook(() -> client.unlock(Streamer.RUNNING_CONSUME_DELAY_QUEUE_KEY, "0"));
+            RuntimeUtil.addShutdownHook(() -> client.unlock(Streamer.getRunningConsumeDelayKey(0), ip));
         }
 
         // 延迟消费
@@ -64,7 +66,7 @@ public class DelayQueueHandler extends BaseHandler {
     private void readDelayQueue(RedisClient client) {
         List<String> members = new ArrayList<>();
         try {
-            Set<Tuple> scoreAndMembers = client.zrangeByScoreWithScores(Streamer.DELAY_KEY, 0,
+            Set<Tuple> scoreAndMembers = client.zrangeByScoreWithScores(Streamer.getDelayKey(0), 0,
                     DateUtils.currentSeconds());
             for (Tuple scoreAndMember : scoreAndMembers) {
                 String member = scoreAndMember.getElement();
@@ -76,7 +78,7 @@ public class DelayQueueHandler extends BaseHandler {
             log.error("provider read delay queue error", e);
         } finally {
             if (CollectionUtils.isNotEmpty(members)) {
-                client.zrem(Streamer.DELAY_KEY, members.toArray(new String[0]));
+                client.zrem(Streamer.getDelayKey(0), members.toArray(new String[0]));
             }
         }
     }

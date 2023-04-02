@@ -32,7 +32,7 @@ public class DelayPublishHandler extends BaseHandler {
                     .pipe(delayPublish.getPipe()).message(delayPublish.getMessage()).id(id)
                     .build();
             long time = DateUtils.getSecondTime(delayPublish.getDate());
-            boolean ret = client.zadd(Streamer.DELAY_KEY, time, GsonUtil.toJson(delayQueue)) > 0;
+            boolean ret = client.zadd(Streamer.getDelayKey(0), time, GsonUtil.toJson(delayQueue)) > 0;
             if (!ret) {
                 throw new RuntimeException("delay publish fail");
             }

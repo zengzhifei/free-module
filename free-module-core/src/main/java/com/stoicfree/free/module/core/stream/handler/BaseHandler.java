@@ -9,6 +9,7 @@ import com.stoicfree.free.module.core.common.misc.socket.nio.protocol.Packet;
 import com.stoicfree.free.module.core.common.support.Callback0;
 import com.stoicfree.free.module.core.common.support.Callback2;
 import com.stoicfree.free.module.core.redis.client.RedisClient;
+import com.stoicfree.free.module.core.stream.Streamer;
 import com.stoicfree.free.module.core.stream.exception.StreamServerException;
 import com.stoicfree.free.module.core.stream.protocol.Command;
 
@@ -60,6 +61,6 @@ public abstract class BaseHandler implements CommandHandler {
     }
 
     protected StreamEntryID publish(RedisClient client, String pipe, Map<String, String> hash) {
-        return client.xadd(pipe, StreamEntryID.NEW_ENTRY, hash, Long.MAX_VALUE, true);
+        return client.xadd(Streamer.getStreamKey(pipe), StreamEntryID.NEW_ENTRY, hash, Long.MAX_VALUE, true);
     }
 }

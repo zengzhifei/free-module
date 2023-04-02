@@ -18,6 +18,7 @@ import com.stoicfree.free.module.core.stream.domain.Message;
 import com.stoicfree.free.module.core.stream.protocol.Command;
 import com.stoicfree.free.module.core.stream.protocol.Payload;
 
+import cn.hutool.core.net.NetUtil;
 import cn.hutool.core.util.RuntimeUtil;
 import lombok.extern.slf4j.Slf4j;
 import redis.clients.jedis.StreamEntry;
@@ -48,20 +49,22 @@ public class ConsumeHandler extends BaseHandler {
         String queue = consume.getQueue();
 
         // 获取queue消费锁
-        String lock = client.lock(Streamer.RUNNING_CONSUME_QUEUE_KEY, queue, 1000L * Constants.YEAR);
+        String ip = NetUtil.getLocalhostStr();
+        String lock = client.lock(Streamer.getRunningConsumeQueueKey(queue), ip, 1000L * Constants.YEAR);
         if (!RedisClient.OK.equals(lock)) {
             log.info("stream consume queue[{}] is running", queue);
             return;
         } else {
             // 服务关闭,解锁
-            RuntimeUtil.addShutdownHook(() -> client.unlock(Streamer.RUNNING_CONSUME_QUEUE_KEY, queue));
+            RuntimeUtil.addShutdownHook(
+                    () -> client.unlock(Streamer.getRunningConsumeQueueKey(queue), ip));
         }
 
         // 线程池消费
         EXECUTOR.execute(() -> {
             XReadGroupParams groupParams = XReadGroupParams.xReadGroupParams().block(0).count(consume.getCount());
             Map<String, StreamEntryID> streams = new HashMap<>(1);
-            streams.put(pipe, StreamEntryID.UNRECEIVED_ENTRY);
+            streams.put(Streamer.getStreamKey(pipe), StreamEntryID.UNRECEIVED_ENTRY);
 
             while (true) {
                 List<Map.Entry<String, List<StreamEntry>>> entries = null;

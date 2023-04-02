@@ -62,15 +62,15 @@ public class ConsumerAuthHandler extends BaseHandler {
     }
 
     private boolean createGroup(RedisClient client, String pipe, String queue) {
-        if (client.exists(pipe)) {
-            List<StreamGroupInfo> groupInfos = client.xinfoGroup(pipe);
+        if (client.exists(Streamer.getStreamKey(pipe))) {
+            List<StreamGroupInfo> groupInfos = client.xinfoGroup(Streamer.getStreamKey(pipe));
             boolean isCreated = Safes.of(groupInfos).stream().anyMatch(e -> e.getName().equals(queue));
             if (isCreated) {
                 return true;
             }
         }
 
-        String ok = client.xgroupCreate(pipe, queue, StreamEntryID.LAST_ENTRY, true);
+        String ok = client.xgroupCreate(Streamer.getStreamKey(pipe), queue, StreamEntryID.LAST_ENTRY, true);
         return RedisClient.OK.equals(ok);
     }
 }
