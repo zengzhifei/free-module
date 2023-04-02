@@ -3,6 +3,8 @@ package com.stoicfree.free.module.core.common.misc.socket.nio.protocol;
 import java.io.Serializable;
 import java.util.UUID;
 
+import com.stoicfree.free.module.core.common.gson.GsonUtil;
+
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -49,13 +51,14 @@ public class Packet<Command extends Enum<Command>> implements Serializable {
     /**
      * 获取指定格式消息载体
      *
-     * @param clazz
+     * @param rawClazz
+     * @param genericClasses
      * @param <T>
      *
      * @return
      */
-    public <T> T getPayload(Class<T> clazz) {
-        return clazz.cast(payload);
+    public <T> T getPayload(Class<T> rawClazz, Class<?>... genericClasses) {
+        return GsonUtil.fromJson(GsonUtil.toJson(payload), rawClazz, genericClasses);
     }
 
     /**
