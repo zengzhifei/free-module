@@ -57,7 +57,7 @@ public class Packet<Command extends Enum<Command>> implements Serializable {
      *
      * @return
      */
-    public <T> T getPayload(Class<T> rawClazz, Class<?>... genericClasses) {
+    public <R extends T, T> R getPayload(Class<T> rawClazz, Class<?>... genericClasses) {
         return GsonUtil.fromJson(GsonUtil.toJson(payload), rawClazz, genericClasses);
     }
 

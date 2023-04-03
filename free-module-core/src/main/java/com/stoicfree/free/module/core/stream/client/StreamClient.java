@@ -2,6 +2,7 @@ package com.stoicfree.free.module.core.stream.client;
 
 import java.nio.ByteBuffer;
 import java.util.Date;
+import java.util.List;
 
 import org.apache.commons.lang.StringUtils;
 
@@ -14,8 +15,6 @@ import com.stoicfree.free.module.core.stream.domain.Message;
 import com.stoicfree.free.module.core.stream.exception.StreamClientException;
 import com.stoicfree.free.module.core.stream.protocol.Command;
 import com.stoicfree.free.module.core.stream.protocol.Payload;
-
-import cn.hutool.core.convert.Convert;
 
 /**
  * @author zengzhifei
@@ -36,8 +35,8 @@ public class StreamClient {
         this.nonblockingClient.registerChannelHandler((selectionKey, channel) -> {
             Packet<Command> packet = ChannelIo.readout(channel);
             if (Command.CONSUME.equals(packet.getCommand())) {
-                Object payload = packet.getPayload();
-                consumer.batchConsume(Convert.toList(Message.class, payload));
+                List<Message> messages = packet.getPayload(List.class, Message.class);
+                consumer.batchConsume(messages);
             }
         });
         return this;
