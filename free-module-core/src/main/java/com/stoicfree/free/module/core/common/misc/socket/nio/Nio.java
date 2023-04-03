@@ -58,7 +58,7 @@ public abstract class Nio implements Closeable {
         try {
             this.handler.handle(selectionKey, socketChannel);
         } catch (Exception e) {
-            IoUtil.close(socketChannel);
+            log.error("channel was closed, because handler handle error", e);
         }
     }
 
