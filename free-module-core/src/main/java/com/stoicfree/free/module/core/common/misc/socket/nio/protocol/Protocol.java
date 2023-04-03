@@ -21,7 +21,7 @@ public class Protocol {
         return encode(packet);
     }
 
-    public static <Command extends Enum<Command>, T> ByteBuffer encode(Packet<Command> packet) {
+    public static <Command extends Enum<Command>> ByteBuffer encode(Packet<Command> packet) {
         return BufferUtil.createUtf8(GsonUtil.toJson(packet));
     }
 
