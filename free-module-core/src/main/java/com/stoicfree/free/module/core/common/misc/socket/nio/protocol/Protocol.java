@@ -15,7 +15,7 @@ import cn.hutool.core.util.ClassLoaderUtil;
  * @date 2023/3/30 19:34
  */
 public class Protocol {
-    public static <Command extends Enum<Command>, T> ByteBuffer encode(Command command, T payload) {
+    public static <Command extends Enum<Command>> ByteBuffer encode(Command command, Object payload) {
         Packet<Command> packet = Packet.<Command>builder().command(command).payload(payload).build()
                 .toBuilder().build();
         return encode(packet);
