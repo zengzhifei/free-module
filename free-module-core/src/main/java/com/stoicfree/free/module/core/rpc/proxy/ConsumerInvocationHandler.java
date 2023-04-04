@@ -46,7 +46,7 @@ public class ConsumerInvocationHandler implements InvocationHandler {
                     method.getName()));
         }
 
-        String url = consumer.getHost() + "/proxy";
+        String url = consumer.getHost() + "/rpc/proxy";
         ProxyRequest proxyParam = new ProxyRequest();
         proxyParam.setProviderId(providerId);
         proxyParam.setParams(args);
