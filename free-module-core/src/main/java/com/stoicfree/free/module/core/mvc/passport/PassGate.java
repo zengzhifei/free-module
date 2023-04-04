@@ -20,7 +20,7 @@ import com.baomidou.mybatisplus.core.toolkit.support.SFunction;
 import com.stoicfree.free.module.core.common.enums.ErrorCode;
 import com.stoicfree.free.module.core.common.gson.GsonUtil;
 import com.stoicfree.free.module.core.common.support.Assert;
-import com.stoicfree.free.module.core.common.support.BizException;
+import com.stoicfree.free.module.core.common.exception.BizException;
 import com.stoicfree.free.module.core.common.support.GlobalCache;
 import com.stoicfree.free.module.core.common.support.ID;
 import com.stoicfree.free.module.core.common.support.Safes;

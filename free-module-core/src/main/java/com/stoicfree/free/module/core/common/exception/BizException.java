@@ -1,4 +1,4 @@
-package com.stoicfree.free.module.core.common.support;
+package com.stoicfree.free.module.core.common.exception;
 
 import com.stoicfree.free.module.core.common.enums.ErrorCode;
 

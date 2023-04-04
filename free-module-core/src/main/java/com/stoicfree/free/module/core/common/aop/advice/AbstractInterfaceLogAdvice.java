@@ -7,7 +7,7 @@ import org.aspectj.lang.reflect.MethodSignature;
 
 import com.stoicfree.free.module.core.common.domain.Result;
 import com.stoicfree.free.module.core.common.gson.GsonUtil;
-import com.stoicfree.free.module.core.common.support.BizException;
+import com.stoicfree.free.module.core.common.exception.BizException;
 import com.stoicfree.free.module.core.common.support.StopWatcher;
 
 import lombok.extern.slf4j.Slf4j;

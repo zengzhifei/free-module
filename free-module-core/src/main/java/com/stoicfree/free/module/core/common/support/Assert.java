@@ -12,6 +12,7 @@ import org.apache.commons.lang.ArrayUtils;
 import org.apache.commons.lang.StringUtils;
 
 import com.stoicfree.free.module.core.common.enums.ErrorCode;
+import com.stoicfree.free.module.core.common.exception.BizException;
 import com.stoicfree.free.module.core.common.util.TypeUtils;
 
 import cn.hutool.core.util.CharsetUtil;

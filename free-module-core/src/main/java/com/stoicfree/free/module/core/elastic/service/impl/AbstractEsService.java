@@ -24,7 +24,7 @@ import org.elasticsearch.search.SearchHits;
 import com.google.common.collect.Maps;
 import com.stoicfree.free.module.core.common.enums.ErrorCode;
 import com.stoicfree.free.module.core.common.gson.GsonUtil;
-import com.stoicfree.free.module.core.common.support.BizException;
+import com.stoicfree.free.module.core.common.exception.BizException;
 import com.stoicfree.free.module.core.common.support.Safes;
 import com.stoicfree.free.module.core.common.support.StopWatcher;
 import com.stoicfree.free.module.core.elastic.domain.EsPage;

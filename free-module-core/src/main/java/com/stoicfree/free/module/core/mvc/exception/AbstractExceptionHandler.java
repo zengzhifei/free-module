@@ -18,7 +18,7 @@ import org.springframework.web.method.annotation.MethodArgumentTypeMismatchExcep
 
 import com.stoicfree.free.module.core.common.domain.Result;
 import com.stoicfree.free.module.core.common.enums.ErrorCode;
-import com.stoicfree.free.module.core.common.support.BizException;
+import com.stoicfree.free.module.core.common.exception.BizException;
 
 import lombok.extern.slf4j.Slf4j;
 
