@@ -45,10 +45,6 @@ public class NioClient extends Nio {
         ChannelIo.write(this.socketChannel, proto);
     }
 
-    public SocketChannel getChannel() {
-        return this.socketChannel;
-    }
-
     private void init(InetSocketAddress address, boolean block) {
         try {
             // 创建一个SocketChannel对象
