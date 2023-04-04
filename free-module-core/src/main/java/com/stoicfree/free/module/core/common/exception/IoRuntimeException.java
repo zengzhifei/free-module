@@ -8,6 +8,10 @@ public class IoRuntimeException extends RuntimeException {
     public IoRuntimeException() {
     }
 
+    public IoRuntimeException(String message) {
+        super(message);
+    }
+
     public IoRuntimeException(Exception e) {
         super(e.getMessage());
     }

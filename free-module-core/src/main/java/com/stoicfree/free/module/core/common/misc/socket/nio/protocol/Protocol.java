@@ -3,6 +3,7 @@ package com.stoicfree.free.module.core.common.misc.socket.nio.protocol;
 import java.nio.ByteBuffer;
 import java.util.Map;
 
+import com.stoicfree.free.module.core.common.exception.IoRuntimeException;
 import com.stoicfree.free.module.core.common.gson.GsonUtil;
 import com.stoicfree.free.module.core.common.support.Func;
 import com.stoicfree.free.module.core.common.util.LambdaUtils;
@@ -45,6 +46,11 @@ public final class Protocol {
 
         public ByteBuffer pack() {
             int bodyLength = bodyBuffer.remaining();
+            int maxLength = (int) (Math.pow(10, HEADER_LENGTH) - 1);
+            if (bodyLength > maxLength) {
+                throw new IoRuntimeException(String.format("packet size[%d] more than max length[%d]", bodyLength,
+                        maxLength));
+            }
             String header = String.format("%0" + HEADER_LENGTH + "d", bodyLength);
             ByteBuffer headerBuffer = BufferUtil.createUtf8(header);
             int headerLen = headerBuffer.remaining();
