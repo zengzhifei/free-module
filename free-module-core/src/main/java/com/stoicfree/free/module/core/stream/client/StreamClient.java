@@ -49,10 +49,9 @@ public class StreamClient {
 
     public Provider providerAuth(String pipe, String password) {
         Payload.Provider.Auth payload = Payload.Provider.Auth.builder().pipe(pipe).password(password).build();
-        ByteBuffer input = Protocol.encode(Command.PROVIDER_AUTH, payload);
+        Protocol.Proto input = Protocol.encode(Command.PROVIDER_AUTH, payload);
         ByteBuffer output = blockingClient.blockingWrite(input);
         if (Protocol.decode(output).getPayload(Boolean.class)) {
-            input.flip();
             nonblockingClient.nonblockingWrite(input);
         } else {
             throw new StreamClientException("provider auth fail");
@@ -62,11 +61,10 @@ public class StreamClient {
 
     public Consumer consumerAuth(String queue, String token) {
         Payload.Consumer.Auth payload = Payload.Consumer.Auth.builder().queue(queue).token(token).build();
-        ByteBuffer input = Protocol.encode(Command.CONSUMER_AUTH, payload);
+        Protocol.Proto input = Protocol.encode(Command.CONSUMER_AUTH, payload);
         ByteBuffer output = blockingClient.blockingWrite(input);
         String pipe = Protocol.decode(output).getPayload(String.class);
         if (StringUtils.isNotBlank(pipe)) {
-            input.flip();
             nonblockingClient.nonblockingWrite(input);
         } else {
             throw new StreamClientException("consumer auth fail");

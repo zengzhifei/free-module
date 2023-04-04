@@ -30,7 +30,7 @@ public class Packet<Command extends Enum<Command>> implements Serializable {
      * 协议版本
      */
     @Builder.Default
-    private final double version = 1;
+    private final long version = 1;
 
     /**
      * Command Class
@@ -53,7 +53,6 @@ public class Packet<Command extends Enum<Command>> implements Serializable {
      *
      * @param rawClazz
      * @param genericClasses
-     * @param <T>
      *
      * @return
      */

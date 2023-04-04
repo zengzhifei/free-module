@@ -7,6 +7,8 @@ import java.nio.channels.SelectionKey;
 import java.nio.channels.Selector;
 import java.nio.channels.SocketChannel;
 
+import com.stoicfree.free.module.core.common.misc.socket.nio.protocol.Protocol;
+
 import lombok.extern.slf4j.Slf4j;
 
 /**
@@ -25,22 +27,22 @@ public class NioClient extends Nio {
         init(new InetSocketAddress(host, port), block);
     }
 
-    public ByteBuffer blockingWrite(ByteBuffer... src) {
+    public ByteBuffer blockingWrite(Protocol.Proto proto) {
         if (!this.socketChannel.isBlocking()) {
             throw new UnsupportedOperationException("blocking write must running of blocking mode");
         }
 
-        ChannelIo.write(this.socketChannel, src);
+        ChannelIo.write(this.socketChannel, proto);
 
         return ChannelIo.read(this.socketChannel);
     }
 
-    public void nonblockingWrite(ByteBuffer... src) {
+    public void nonblockingWrite(Protocol.Proto proto) {
         if (this.socketChannel.isBlocking()) {
             throw new UnsupportedOperationException("nonblocking write must running of nonblocking mode");
         }
 
-        ChannelIo.write(this.socketChannel, src);
+        ChannelIo.write(this.socketChannel, proto);
     }
 
     public SocketChannel getChannel() {
