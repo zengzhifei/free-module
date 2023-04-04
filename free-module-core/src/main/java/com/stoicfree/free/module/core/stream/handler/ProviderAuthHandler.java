@@ -3,7 +3,6 @@ package com.stoicfree.free.module.core.stream.handler;
 import java.nio.channels.SelectionKey;
 import java.nio.channels.SocketChannel;
 
-import com.stoicfree.free.module.core.common.misc.socket.nio.ChannelIo;
 import com.stoicfree.free.module.core.common.misc.socket.nio.protocol.Packet;
 import com.stoicfree.free.module.core.redis.client.RedisClient;
 import com.stoicfree.free.module.core.stream.Streamer;
@@ -34,7 +33,6 @@ public class ProviderAuthHandler extends BaseHandler {
             // 验证pipe
             Boolean ret = client.hexists(Streamer.getPipeKey(auth.getPipe()), Streamer.safe(auth.getPassword()));
             if (!ret) {
-                ChannelIo.writeIn(channel, packet.newPayload(false));
                 throw new StreamServerException("provider auth fail");
             }
 
