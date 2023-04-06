@@ -175,4 +175,15 @@
             </plugins>
         </pluginManagement>
     </build>
+
+    <distributionManagement>
+        <repository>
+            <id>github_releases</id>
+            <url>https://maven.pkg.github.com/zengzhifei/nexus_releases</url>
+        </repository>
+        <snapshotRepository>
+            <id>github_snapshots</id>
+            <url>https://maven.pkg.github.com/zengzhifei/nexus_snapshots</url>
+        </snapshotRepository>
+    </distributionManagement>
 </project>
