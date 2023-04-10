@@ -22,7 +22,7 @@ public class ShardingThreadLocal {
         CURRENT_TABLE.set(tableMap);
     }
 
-    public static void clean() {
+    public static void remove() {
         CURRENT_TABLE.remove();
     }
 }

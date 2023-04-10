@@ -35,6 +35,10 @@ public class Sharding<T, R> {
         ShardingThreadLocal.set(tableName, suffix);
     }
 
+    public void remove() {
+        ShardingThreadLocal.remove();
+    }
+
     private static class Mod<T> extends SharingStrategy<T, Long> {
         private Mod(Class<T> entityClass, TableSharding tableSharding) {
             super(entityClass, tableSharding);
