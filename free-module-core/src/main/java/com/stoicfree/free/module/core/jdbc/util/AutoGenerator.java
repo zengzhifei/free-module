@@ -39,8 +39,12 @@ public class AutoGenerator {
                     builder.addTablePrefix(tablePrefix)
                             .addInclude(getTables(scanner.apply("请输入表名，多个英文逗号分隔？所有输入all")))
                             .entityBuilder().disableSerialVersionUID().enableLombok().addIgnoreColumns(ignoreColumns)
+                            .convertFileName(fn -> fn.replace(conf.getTableTrim(), ""))
                             .mapperBuilder().enableMapperAnnotation()
-                            .serviceBuilder().formatServiceFileName("%sService")
+                            .convertMapperFileName(fn -> fn.replace(conf.getTableTrim(), "") + "Mapper")
+                            .serviceBuilder()
+                            .convertServiceFileName(fn -> fn.replace(conf.getTableTrim(), "") + "Service")
+                            .convertServiceImplFileName(fn -> fn.replace(conf.getTableTrim(), "") + "ServiceImpl")
                             .build();
                 })
                 // 模版配置
@@ -65,6 +69,7 @@ public class AutoGenerator {
         private String password;
         private String outputModule;
         private String parentPackage;
+        private String tableTrim;
         private String[] ignoreColumns;
         private String[] tablePrefix;
     }
