@@ -10,9 +10,16 @@ import java.lang.annotation.Target;
  * @author zengzhifei
  * @date 2022/8/11 11:50
  */
-@Target(ElementType.FIELD)
+@Target(ElementType.TYPE)
 @Retention(RetentionPolicy.RUNTIME)
 @Documented
-public @interface Sharding {
-    int mod();
+public @interface TableSharding {
+    Strategy strategy();
+
+    int size() default 0;
+
+    enum Strategy {
+        // 策略
+        MOD
+    }
 }

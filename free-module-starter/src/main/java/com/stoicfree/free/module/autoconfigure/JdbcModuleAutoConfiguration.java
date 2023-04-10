@@ -17,7 +17,7 @@ import com.baomidou.mybatisplus.extension.plugins.inner.DynamicTableNameInnerInt
 import com.baomidou.mybatisplus.extension.plugins.inner.PaginationInnerInterceptor;
 import com.google.common.collect.Maps;
 import com.stoicfree.free.module.core.jdbc.config.JdbcProperties;
-import com.stoicfree.free.module.core.jdbc.support.ShardingThreadLocal;
+import com.stoicfree.free.module.core.jdbc.sharding.ShardingThreadLocal;
 
 import cn.hutool.core.util.ClassUtil;
 
