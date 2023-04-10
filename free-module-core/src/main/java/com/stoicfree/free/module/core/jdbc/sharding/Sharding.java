@@ -29,10 +29,11 @@ public class Sharding<T, R> {
         return new Sharding<>((SharingStrategy<T, R>) strategy);
     }
 
-    public void shard(R value) {
+    public Sharding<T, R> shard(R value) {
         String tableName = strategy.getTableName();
         String suffix = strategy.sharding(value);
         ShardingThreadLocal.set(tableName, suffix);
+        return this;
     }
 
     public void remove() {
