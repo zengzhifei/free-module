@@ -1,4 +1,4 @@
-package cc.flyfree.free.module.core.common.biz.retry;
+package cc.flyfree.free.module.core.common.assistant.retry;
 
 import java.lang.annotation.Documented;
 import java.lang.annotation.ElementType;

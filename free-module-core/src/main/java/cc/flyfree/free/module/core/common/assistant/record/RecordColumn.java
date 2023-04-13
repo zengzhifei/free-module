@@ -1,4 +1,4 @@
-package cc.flyfree.free.module.core.common.biz.record;
+package cc.flyfree.free.module.core.common.assistant.record;
 
 import com.baomidou.mybatisplus.core.toolkit.support.SFunction;
 
