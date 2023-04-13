@@ -1,6 +1,6 @@
 org.springframework.boot.autoconfigure.EnableAutoConfiguration=\
-com.stoicfree.free.module.autoconfigure.CommonModuleAutoConfiguration,\
-com.stoicfree.free.module.autoconfigure.JdbcModuleAutoConfiguration,\
-com.stoicfree.free.module.autoconfigure.MvcModuleAutoConfiguration,\
-com.stoicfree.free.module.autoconfigure.RedisModuleAutoConfiguration,\
-com.stoicfree.free.module.autoconfigure.RpcModuleAutoConfiguration
+cc.flyfree.free.module.autoconfigure.CommonModuleAutoConfiguration,\
+cc.flyfree.free.module.autoconfigure.JdbcModuleAutoConfiguration,\
+cc.flyfree.free.module.autoconfigure.MvcModuleAutoConfiguration,\
+cc.flyfree.free.module.autoconfigure.RedisModuleAutoConfiguration,\
+cc.flyfree.free.module.autoconfigure.RpcModuleAutoConfiguration

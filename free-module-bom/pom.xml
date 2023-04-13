@@ -10,7 +10,7 @@
         <relativePath/>
     </parent>
 
-    <groupId>com.stoicfree</groupId>
+    <groupId>cc.flyfree</groupId>
     <artifactId>free-module-bom</artifactId>
     <version>1.0.0-SNAPSHOT</version>
 
@@ -53,12 +53,12 @@
         <dependencies>
             <!-- module 依赖-->
             <dependency>
-                <groupId>com.stoicfree</groupId>
+                <groupId>cc.flyfree</groupId>
                 <artifactId>free-module-starter</artifactId>
                 <version>${free-module.version}</version>
             </dependency>
             <dependency>
-                <groupId>com.stoicfree</groupId>
+                <groupId>cc.flyfree</groupId>
                 <artifactId>free-module-core</artifactId>
                 <version>${free-module.version}</version>
             </dependency>

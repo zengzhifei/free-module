@@ -5,7 +5,7 @@
 ```xml
 
 <dependency>
-    <groupId>com.stoicfree</groupId>
+    <groupId>cc.flyfree</groupId>
     <artifactId>free-module-starter</artifactId>
     <version>latest.version</version>
 </dependency>
@@ -47,7 +47,7 @@
 public class ProviderLogAdvice extends AbstractInterfaceLogAdvice {
     @Override
     @Around("execution(* com.demo.biz.aop..*(..)) "
-            + "&& !@annotation(com.stoicfree.free.common.module.aop.AspectIgnore)")
+            + "&& !@annotation(cc.flyfree.free.common.module.aop.AspectIgnore)")
     public Object advice(ProceedingJoinPoint proceedingJoinPoint) {
         super.setExceptionConsumer(e -> {
             System.out.println("InterfaceLogAdvice error:" + e.getMessage());
