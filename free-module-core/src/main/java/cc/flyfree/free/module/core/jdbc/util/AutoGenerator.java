@@ -7,6 +7,7 @@ import java.util.List;
 import org.apache.commons.lang.StringUtils;
 
 import com.baomidou.mybatisplus.generator.FastAutoGenerator;
+import com.baomidou.mybatisplus.generator.config.TemplateType;
 import com.baomidou.mybatisplus.generator.engine.FreemarkerTemplateEngine;
 
 import lombok.AllArgsConstructor;
@@ -49,7 +50,7 @@ public class AutoGenerator {
                 })
                 // 模版配置
                 .templateConfig((scanner, builder) -> {
-                    builder.controller("").mapperXml("").build();
+                    builder.disable(TemplateType.CONTROLLER, TemplateType.XML).build();
                 })
                 .templateEngine(new FreemarkerTemplateEngine())
                 .execute();
