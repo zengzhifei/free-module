@@ -1,4 +1,4 @@
-# 一个自由配置各种模块的Spring starter。
+# 一个自由配置各种模块的Spring starter。支持jdk8版本。
 
 ## 引入maven依赖
 
