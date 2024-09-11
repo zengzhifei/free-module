@@ -5,11 +5,6 @@ import java.util.Collections;
 import java.util.Set;
 import java.util.stream.Collectors;
 
-import javax.annotation.PostConstruct;
-import javax.servlet.http.Cookie;
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
-
 import org.apache.commons.collections.CollectionUtils;
 import org.springframework.web.method.HandlerMethod;
 
@@ -17,10 +12,11 @@ import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.core.conditions.update.LambdaUpdateWrapper;
 import com.baomidou.mybatisplus.core.mapper.BaseMapper;
 import com.baomidou.mybatisplus.core.toolkit.support.SFunction;
+
 import cc.flyfree.free.module.core.common.enums.ErrorCode;
+import cc.flyfree.free.module.core.common.exception.BizException;
 import cc.flyfree.free.module.core.common.gson.GsonUtil;
 import cc.flyfree.free.module.core.common.support.Assert;
-import cc.flyfree.free.module.core.common.exception.BizException;
 import cc.flyfree.free.module.core.common.support.GlobalCache;
 import cc.flyfree.free.module.core.common.support.ID;
 import cc.flyfree.free.module.core.common.support.Safes;
@@ -33,13 +29,16 @@ import cc.flyfree.free.module.core.mvc.passport.anotation.NoLogin;
 import cc.flyfree.free.module.core.mvc.passport.context.TokenContext;
 import cc.flyfree.free.module.core.mvc.passport.context.UserColumn;
 import cc.flyfree.free.module.core.mvc.passport.context.UserContext;
-
 import cn.hutool.core.date.DateUtil;
 import cn.hutool.core.util.RandomUtil;
 import cn.hutool.crypto.SecureUtil;
 import cn.hutool.crypto.digest.BCrypt;
 import cn.hutool.crypto.symmetric.AES;
-import cn.hutool.extra.servlet.ServletUtil;
+import cn.hutool.extra.servlet.JakartaServletUtil;
+import jakarta.annotation.PostConstruct;
+import jakarta.servlet.http.Cookie;
+import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpServletResponse;
 
 /**
  * @author zengzhifei
@@ -113,7 +112,7 @@ public class PassGate<E> {
         }
 
         // 获取token
-        String token = Safes.of(ServletUtil.getCookie(request, properties.getTokenKey()), Cookie::getValue);
+        String token = Safes.of(JakartaServletUtil.getCookie(request, properties.getTokenKey()), Cookie::getValue);
         Assert.notBlank(token, ErrorCode.NOT_LOGIN);
 
         // 解密token

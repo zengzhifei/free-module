@@ -1,14 +1,13 @@
 package cc.flyfree.free.module.core.mvc.interceptor;
 
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
-
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.servlet.HandlerInterceptor;
 import org.springframework.web.servlet.ModelAndView;
 
-import cc.flyfree.free.module.core.mvc.passport.context.UserContext;
 import cc.flyfree.free.module.core.mvc.passport.PassGate;
+import cc.flyfree.free.module.core.mvc.passport.context.UserContext;
+import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpServletResponse;
 
 /**
  * @author zengzhifei

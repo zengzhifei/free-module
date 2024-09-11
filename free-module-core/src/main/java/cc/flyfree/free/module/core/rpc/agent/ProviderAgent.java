@@ -8,8 +8,6 @@ import java.util.Map;
 import java.util.Set;
 import java.util.stream.Collectors;
 
-import javax.servlet.http.HttpServletRequest;
-
 import org.apache.commons.lang.StringUtils;
 import org.springframework.core.annotation.AnnotationConfigurationException;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -27,6 +25,7 @@ import cc.flyfree.free.module.core.rpc.domain.ProxyRequest;
 import cc.flyfree.free.module.core.rpc.domain.ProxyResponse;
 import cc.flyfree.free.module.core.rpc.exception.ProviderException;
 import cc.flyfree.free.module.core.rpc.safe.SecureKeeper;
+import jakarta.servlet.http.HttpServletRequest;
 
 /**
  * @author zengzhifei

@@ -2,14 +2,12 @@ package cc.flyfree.free.module.core.stream;
 
 import java.util.Date;
 
-import javax.annotation.PostConstruct;
-
 import cc.flyfree.free.module.core.common.enums.ErrorCode;
 import cc.flyfree.free.module.core.common.support.Assert;
 import cc.flyfree.free.module.core.stream.client.StreamClient;
 import cc.flyfree.free.module.core.stream.config.ProviderProperties;
-
 import cn.hutool.core.convert.Convert;
+import jakarta.annotation.PostConstruct;
 import lombok.extern.slf4j.Slf4j;
 
 /**

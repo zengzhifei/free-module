@@ -1,25 +1,18 @@
 package cc.flyfree.free.module.autoconfigure;
 
-import java.util.Map;
-import java.util.Set;
-
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnExpression;
 import org.springframework.boot.context.properties.EnableConfigurationProperties;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
 import com.baomidou.mybatisplus.annotation.DbType;
-import com.baomidou.mybatisplus.annotation.TableName;
 import com.baomidou.mybatisplus.extension.plugins.MybatisPlusInterceptor;
 import com.baomidou.mybatisplus.extension.plugins.handler.TableNameHandler;
 import com.baomidou.mybatisplus.extension.plugins.inner.DynamicTableNameInnerInterceptor;
 import com.baomidou.mybatisplus.extension.plugins.inner.PaginationInnerInterceptor;
-import com.google.common.collect.Maps;
+
 import cc.flyfree.free.module.core.jdbc.config.JdbcProperties;
 import cc.flyfree.free.module.core.jdbc.sharding.ShardingThreadLocal;
-
-import cn.hutool.core.util.ClassUtil;
 
 /**
  * @author zengzhifei
@@ -29,28 +22,18 @@ import cn.hutool.core.util.ClassUtil;
 @ConditionalOnExpression("${free.jdbc.enable:false}")
 @EnableConfigurationProperties(JdbcProperties.class)
 public class JdbcModuleAutoConfiguration {
-    @Autowired
-    private JdbcProperties jdbcProperties;
-
     @Bean
-    public TableNameHandler tableNameHandler() {
-        return (sql, tableName) -> tableName.replace("{}", ShardingThreadLocal.get(tableName).toString());
-    }
-
-    @Bean
-    public MybatisPlusInterceptor mybatisPlusInterceptor(TableNameHandler tableNameHandler) {
+    public MybatisPlusInterceptor mybatisPlusInterceptor() {
         MybatisPlusInterceptor interceptor = new MybatisPlusInterceptor();
         DynamicTableNameInnerInterceptor dynamicTableNameInnerInterceptor = new DynamicTableNameInnerInterceptor();
-        Map<String, TableNameHandler> tableNameHandlerMap = Maps.newHashMap();
-
-        Set<Class<?>> classes = ClassUtil.scanPackageByAnnotation(jdbcProperties.getEntityPackage(), TableName.class);
-        for (Class<?> clazz : classes) {
-            String tableName = clazz.getDeclaredAnnotation(TableName.class).value();
+        TableNameHandler handler = (sql, tableName) -> {
             if (tableName.contains("{}")) {
-                tableNameHandlerMap.put(tableName, tableNameHandler);
+                return tableName.replace("{}", ShardingThreadLocal.get(tableName));
+            } else {
+                return tableName;
             }
-        }
-        dynamicTableNameInnerInterceptor.setTableNameHandlerMap(tableNameHandlerMap);
+        };
+        dynamicTableNameInnerInterceptor.setTableNameHandler(handler);
         // 分表插件
         interceptor.addInnerInterceptor(dynamicTableNameInnerInterceptor);
         // 分页插件

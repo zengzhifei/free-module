@@ -25,12 +25,8 @@ import cc.flyfree.free.module.core.mvc.filter.RequestWrapperFilter;
 import cc.flyfree.free.module.core.mvc.interceptor.LoggingInterceptor;
 import cc.flyfree.free.module.core.mvc.interceptor.PassportInterceptor;
 import cc.flyfree.free.module.core.mvc.passport.anotation.advice.LoginAdvice;
-
-import springfox.documentation.builders.ApiInfoBuilder;
-import springfox.documentation.builders.PathSelectors;
-import springfox.documentation.builders.RequestHandlerSelectors;
-import springfox.documentation.spi.DocumentationType;
-import springfox.documentation.spring.web.plugins.Docket;
+import io.swagger.v3.oas.models.OpenAPI;
+import io.swagger.v3.oas.models.info.Info;
 
 /**
  * @author zengzhifei
@@ -108,17 +104,15 @@ public class MvcModuleAutoConfiguration {
 
     @Bean
     @ConditionalOnExpression("${free.mvc.swagger.enable:false}")
-    public Docket docket() {
+    public OpenAPI swaggerOpenApi() {
         SwaggerProperties swaggerProperties = mvcProperties.getSwagger();
-        return new Docket(DocumentationType.SWAGGER_2)
-                .enable(swaggerProperties.isEnable())
-                .apiInfo(new ApiInfoBuilder()
-                        .title(swaggerProperties.getTitle())
-                        .description(swaggerProperties.getDescription())
-                        .build())
-                .select()
-                .apis(RequestHandlerSelectors.basePackage(swaggerProperties.getBasePackage()))
-                .paths(PathSelectors.any())
-                .build();
+        Info info = new Info()
+                .title(swaggerProperties.getTitle())
+                .description(swaggerProperties.getDescription())
+                .version(swaggerProperties.getVersion());
+        OpenAPI openApi = new OpenAPI();
+        openApi.setInfo(info);
+        openApi.setOpenapi(swaggerProperties.getBasePackage());
+        return openApi;
     }
 }

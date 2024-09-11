@@ -3,10 +3,6 @@ package cc.flyfree.free.module.core.common.misc.msg;
 import java.util.Optional;
 import java.util.Properties;
 
-import javax.annotation.PostConstruct;
-import javax.mail.internet.InternetAddress;
-import javax.mail.internet.MimeMessage;
-
 import org.apache.commons.lang.StringUtils;
 import org.springframework.boot.autoconfigure.freemarker.FreeMarkerProperties;
 import org.springframework.mail.SimpleMailMessage;
@@ -16,9 +12,11 @@ import org.springframework.ui.freemarker.FreeMarkerConfigurationFactory;
 import org.springframework.ui.freemarker.FreeMarkerTemplateUtils;
 
 import cc.flyfree.free.module.core.common.config.MailProperties;
-
 import freemarker.template.Configuration;
 import freemarker.template.Template;
+import jakarta.annotation.PostConstruct;
+import jakarta.mail.internet.InternetAddress;
+import jakarta.mail.internet.MimeMessage;
 import lombok.extern.slf4j.Slf4j;
 
 /**

@@ -4,17 +4,15 @@ import java.io.IOException;
 import java.io.OutputStream;
 import java.util.Optional;
 
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
-
 import cc.flyfree.free.module.core.common.enums.ErrorCode;
 import cc.flyfree.free.module.core.common.support.Assert;
 import cc.flyfree.free.module.core.common.util.EnumUtils;
 import cc.flyfree.free.module.core.mvc.captcha.enums.CaptchaStyle;
 import cc.flyfree.free.module.core.mvc.config.CaptchaProperties;
-
 import cn.hutool.captcha.CaptchaUtil;
 import cn.hutool.captcha.ICaptcha;
+import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpServletResponse;
 
 /**
  * @author zengzhifei

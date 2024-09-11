@@ -14,6 +14,7 @@ import org.apache.commons.lang.StringUtils;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import com.google.gson.JsonObject;
+import com.google.gson.ToNumberPolicy;
 import com.google.gson.TypeAdapterFactory;
 import com.google.gson.annotations.SerializedName;
 import com.google.gson.internal.bind.ObjectTypeAdapter;
@@ -122,8 +123,6 @@ public class GsonUtil {
                 .setExclusionStrategies(new GsonIgnoreExclusionStrategy())
                 // 当Map的key为复杂对象时,需要开启该方法
                 .enableComplexMapKeySerialization()
-                // 当字段值为空或null时，依然对该字段进行转换
-                .serializeNulls()
                 // 时间转化为特定格式
                 .setDateFormat("yyyy-MM-dd HH:mm:ss")
                 // 当key为class类型时,需要开启该方法
@@ -151,7 +150,7 @@ public class GsonUtil {
                     listField.setAccessible(true);
                     @SuppressWarnings("unchecked")
                     List<TypeAdapterFactory> list = (List<TypeAdapterFactory>) listField.get(o);
-                    int i = list.indexOf(ObjectTypeAdapter.FACTORY);
+                    int i = list.indexOf(ObjectTypeAdapter.getFactory(ToNumberPolicy.DOUBLE));
                     list.set(i, GsonObjectTypeAdapter.FACTORY);
                     break;
                 }

@@ -1,12 +1,11 @@
 package cc.flyfree.free.module.core.common.misc.eventbus;
 
-import javax.annotation.PostConstruct;
-
 import com.google.common.eventbus.AllowConcurrentEvents;
 import com.google.common.eventbus.AsyncEventBus;
 import com.google.common.eventbus.Subscribe;
-import cc.flyfree.free.module.core.common.support.ExecutorHelper;
 
+import cc.flyfree.free.module.core.common.support.ExecutorHelper;
+import jakarta.annotation.PostConstruct;
 import lombok.extern.slf4j.Slf4j;
 
 /**

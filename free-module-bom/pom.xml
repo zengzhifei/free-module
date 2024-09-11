@@ -6,7 +6,7 @@
     <parent>
         <groupId>org.springframework.boot</groupId>
         <artifactId>spring-boot-starter-parent</artifactId>
-        <version>2.1.18.RELEASE</version>
+        <version>3.1.4</version>
         <relativePath/>
     </parent>
 
@@ -19,21 +19,20 @@
 
     <properties>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-        <java.version>1.8</java.version>
-        <maven.compiler.source>1.8</maven.compiler.source>
-        <maven.compiler.target>1.8</maven.compiler.target>
+        <java.version>17</java.version>
+        <maven.compiler.source>17</maven.compiler.source>
+        <maven.compiler.target>17</maven.compiler.target>
+        <spring-boot.version>3.1.4</spring-boot.version>
         <free-module.version>1.0.0-SNAPSHOT</free-module.version>
 
-        <spring-boot.version>2.1.18.RELEASE</spring-boot.version>
-        <log4j2.version>2.17.0</log4j2.version>
+        <log4j2.version>2.20.0</log4j2.version>
         <elasticsearch.version>7.3.2</elasticsearch.version>
         <jackson-bom.version>2.11.2</jackson-bom.version>
-        <swagger.version>2.9.2</swagger.version>
+        <swagger.version>2.0.4</swagger.version>
         <itextpdf.version>5.5.11</itextpdf.version>
         <itext-asian.version>5.2.0</itext-asian.version>
         <pdfbox.version>2.0.17</pdfbox.version>
-        <mybatis-plus.version>3.4.2</mybatis-plus.version>
-        <mybatis-plus-generator.version>3.5.1</mybatis-plus-generator.version>
+        <mybatis-plus.version>3.5.3.1</mybatis-plus.version>
         <mysql.version>5.1.47</mysql.version>
         <jedis.version>3.7.0</jedis.version>
         <guava.version>31.1-jre</guava.version>
@@ -41,10 +40,9 @@
         <commons-lang.version>2.6</commons-lang.version>
         <commons-collections.version>3.2.1</commons-collections.version>
         <commons-codec.version>1.15</commons-codec.version>
-        <lombok.version>1.18.16</lombok.version>
-        <hutool.version>5.8.3</hutool.version>
+        <lombok.version>1.18.26</lombok.version>
+        <hutool.version>5.8.23</hutool.version>
         <slf4j.version>1.7.36</slf4j.version>
-        <sun-mail.version>1.6.2</sun-mail.version>
         <poi-ooxml.version>5.1.0</poi-ooxml.version>
         <freemarker.version>2.3.31</freemarker.version>
     </properties>
@@ -71,17 +69,12 @@
             <dependency>
                 <groupId>com.baomidou</groupId>
                 <artifactId>mybatis-plus-generator</artifactId>
-                <version>${mybatis-plus-generator.version}</version>
+                <version>${mybatis-plus.version}</version>
             </dependency>
             <!-- swagger -->
             <dependency>
-                <groupId>io.springfox</groupId>
-                <artifactId>springfox-swagger2</artifactId>
-                <version>${swagger.version}</version>
-            </dependency>
-            <dependency>
-                <groupId>io.springfox</groupId>
-                <artifactId>springfox-swagger-ui</artifactId>
+                <groupId>org.springdoc</groupId>
+                <artifactId>springdoc-openapi-starter-webmvc-ui</artifactId>
                 <version>${swagger.version}</version>
             </dependency>
             <!-- pdf -->
@@ -136,6 +129,11 @@
                 <artifactId>poi-ooxml</artifactId>
                 <version>${poi-ooxml.version}</version>
             </dependency>
+            <dependency>
+                <groupId>org.elasticsearch.client</groupId>
+                <artifactId>elasticsearch-rest-high-level-client</artifactId>
+                <version>${elasticsearch.version}</version>
+            </dependency>
         </dependencies>
     </dependencyManagement>
 
@@ -147,9 +145,9 @@
                     <artifactId>maven-compiler-plugin</artifactId>
                     <configuration>
                         <compilerArgument>-parameters</compilerArgument>
-                        <compilerVersion>1.8</compilerVersion>
-                        <source>1.8</source>
-                        <target>1.8</target>
+                        <compilerVersion>${java.version}</compilerVersion>
+                        <source>${java.version}</source>
+                        <target>${java.version}</target>
                         <encoding>UTF-8</encoding>
                     </configuration>
                 </plugin>
@@ -178,12 +176,8 @@
 
     <distributionManagement>
         <repository>
-            <id>github_releases</id>
-            <url>https://maven.pkg.github.com/zengzhifei/nexus_releases</url>
+            <id>github</id>
+            <url>https://maven.pkg.github.com/zengzhifei/free-module</url>
         </repository>
-        <snapshotRepository>
-            <id>github_snapshots</id>
-            <url>https://maven.pkg.github.com/zengzhifei/nexus_snapshots</url>
-        </snapshotRepository>
     </distributionManagement>
 </project>

@@ -3,23 +3,22 @@ package cc.flyfree.free.module.core.mvc.interceptor;
 import java.util.Map;
 import java.util.StringJoiner;
 
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
-
 import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.multipart.MultipartRequest;
 import org.springframework.web.servlet.HandlerInterceptor;
 
 import com.google.gson.Gson;
 import com.google.gson.JsonObject;
+
 import cc.flyfree.free.module.core.common.gson.GsonUtil;
 import cc.flyfree.free.module.core.common.support.Safes;
 import cc.flyfree.free.module.core.common.util.DateUtils;
 import cc.flyfree.free.module.core.mvc.config.LoggingProperties;
-
 import cn.hutool.core.date.BetweenFormatter;
 import cn.hutool.core.date.DatePattern;
-import cn.hutool.extra.servlet.ServletUtil;
+import cn.hutool.extra.servlet.JakartaServletUtil;
+import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpServletResponse;
 import lombok.Data;
 import lombok.extern.slf4j.Slf4j;
 
@@ -42,15 +41,15 @@ public class LoggingInterceptor implements HandlerInterceptor {
         Logging logging = Logging.removeAndCreate();
 
         logging.setPath(request.getRequestURI());
-        logging.setIp(ServletUtil.getClientIP(request));
+        logging.setIp(JakartaServletUtil.getClientIP(request));
         logging.setStart(System.currentTimeMillis());
         logging.setMethod(request.getMethod());
-        Map<String, String> headerMap = Safes.of(ServletUtil.getHeaderMap(request));
+        Map<String, String> headerMap = Safes.of(JakartaServletUtil.getHeaderMap(request));
         headerMap.remove("cookie");
         logging.setHeader(headerMap);
-        logging.setParam(ServletUtil.getParamMap(request));
-        logging.setBody(ServletUtil.getBody(request));
-        if (ServletUtil.isMultipart(request) && request instanceof MultipartRequest) {
+        logging.setParam(JakartaServletUtil.getParamMap(request));
+        logging.setBody(JakartaServletUtil.getBody(request));
+        if (JakartaServletUtil.isMultipart(request) && request instanceof MultipartRequest) {
             logging.setFile(((MultipartRequest) request).getFileMap());
         }
 
