@@ -22,7 +22,6 @@
         <java.version>1.8</java.version>
         <maven.compiler.source>1.8</maven.compiler.source>
         <maven.compiler.target>1.8</maven.compiler.target>
-        <free-module.version>1.0.0-SNAPSHOT</free-module.version>
 
         <spring-boot.version>2.1.18.RELEASE</spring-boot.version>
         <log4j2.version>2.17.0</log4j2.version>
@@ -55,12 +54,12 @@
             <dependency>
                 <groupId>cc.flyfree</groupId>
                 <artifactId>free-module-starter</artifactId>
-                <version>${free-module.version}</version>
+                <version>${project.version}</version>
             </dependency>
             <dependency>
                 <groupId>cc.flyfree</groupId>
                 <artifactId>free-module-core</artifactId>
-                <version>${free-module.version}</version>
+                <version>${project.version}</version>
             </dependency>
             <!-- mysql依赖 -->
             <dependency>
