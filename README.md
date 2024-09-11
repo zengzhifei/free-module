@@ -1,4 +1,4 @@
-# 一个自由配置各种模块的Spring starter。支持jdk8版本。
+# 一个自由配置各种模块的Spring starter。
 
 ## 引入maven依赖
 
@@ -10,6 +10,13 @@
     <version>latest.version</version>
 </dependency>
 ```
+
+## 版本说明
+| 版本  | jdk | 更新说明   |
+|-------|------|--------|
+| 1.0.0-SNAPSHOT  | 8   | jdk8初始版本 |
+| 2.0.0-SNAPSHOT  | 17   | jdk17初始版本  |
+
 
 ## 常用注解
 
