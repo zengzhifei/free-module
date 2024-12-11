@@ -23,6 +23,7 @@
         <maven.compiler.source>17</maven.compiler.source>
         <maven.compiler.target>17</maven.compiler.target>
         <spring-boot.version>3.1.4</spring-boot.version>
+        <free-module.version>2.0.0-SNAPSHOT</free-module.version>
 
         <log4j2.version>2.20.0</log4j2.version>
         <elasticsearch.version>7.3.2</elasticsearch.version>
@@ -52,12 +53,12 @@
             <dependency>
                 <groupId>cc.flyfree</groupId>
                 <artifactId>free-module-starter</artifactId>
-                <version>${project.version}</version>
+                <version>${free-module.version}</version>
             </dependency>
             <dependency>
                 <groupId>cc.flyfree</groupId>
                 <artifactId>free-module-core</artifactId>
-                <version>${project.version}</version>
+                <version>${free-module.version}</version>
             </dependency>
             <!-- mysql依赖 -->
             <dependency>
