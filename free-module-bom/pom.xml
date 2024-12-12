@@ -42,7 +42,7 @@
         <commons-codec.version>1.15</commons-codec.version>
         <lombok.version>1.18.26</lombok.version>
         <hutool.version>5.8.23</hutool.version>
-        <slf4j.version>1.7.36</slf4j.version>
+        <slf4j.version>2.0.7</slf4j.version>
         <poi-ooxml.version>5.1.0</poi-ooxml.version>
         <freemarker.version>2.3.31</freemarker.version>
     </properties>
