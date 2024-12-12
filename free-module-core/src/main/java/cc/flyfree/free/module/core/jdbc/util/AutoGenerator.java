@@ -5,6 +5,7 @@ import java.util.Collections;
 import java.util.List;
 
 import org.apache.commons.lang.StringUtils;
+import org.apache.ibatis.annotations.Mapper;
 
 import com.baomidou.mybatisplus.generator.FastAutoGenerator;
 import com.baomidou.mybatisplus.generator.config.TemplateType;
@@ -25,7 +26,7 @@ public class AutoGenerator {
                 // 全局配置
                 .globalConfig((scanner, builder) -> {
                     String outputModule = StringUtils.defaultIfBlank(conf.getOutputModule(), "");
-                    builder.fileOverride().disableOpenDir()
+                    builder.disableOpenDir()
                             .outputDir(System.getenv("PWD") + "/" + outputModule + "/src/main/java")
                             .author(scanner.apply("请输入作者名称？"));
                 })
@@ -36,14 +37,17 @@ public class AutoGenerator {
                 // 策略配置
                 .strategyConfig((scanner, builder) -> {
                     String[] tablePrefix = conf.getTablePrefix() != null ? conf.getTablePrefix() : new String[0];
+                    String[] tableSuffix = conf.getTableSuffix() != null ? conf.getTableSuffix() : new String[0];
                     String[] ignoreColumns = conf.getIgnoreColumns() != null ? conf.getIgnoreColumns() : new String[0];
                     builder.addTablePrefix(tablePrefix)
+                            .addTableSuffix(tableSuffix)
                             .addInclude(getTables(scanner.apply("请输入表名，多个英文逗号分隔？所有输入all")))
-                            .entityBuilder().disableSerialVersionUID().enableLombok().addIgnoreColumns(ignoreColumns)
+                            .entityBuilder().enableFileOverride().disableSerialVersionUID().enableLombok()
+                            .addIgnoreColumns(ignoreColumns)
                             .convertFileName(fn -> fn.replace(conf.getTableTrim(), ""))
-                            .mapperBuilder().enableMapperAnnotation()
+                            .mapperBuilder().enableFileOverride().mapperAnnotation(Mapper.class)
                             .convertMapperFileName(fn -> fn.replace(conf.getTableTrim(), "") + "Mapper")
-                            .serviceBuilder()
+                            .serviceBuilder().enableFileOverride()
                             .convertServiceFileName(fn -> fn.replace(conf.getTableTrim(), "") + "Service")
                             .convertServiceImplFileName(fn -> fn.replace(conf.getTableTrim(), "") + "ServiceImpl")
                             .build();
@@ -73,5 +77,6 @@ public class AutoGenerator {
         private String tableTrim;
         private String[] ignoreColumns;
         private String[] tablePrefix;
+        private String[] tableSuffix;
     }
 }
