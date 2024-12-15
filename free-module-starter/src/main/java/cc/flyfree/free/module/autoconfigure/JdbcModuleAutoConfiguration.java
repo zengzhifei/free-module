@@ -12,7 +12,7 @@ import com.baomidou.mybatisplus.extension.plugins.inner.DynamicTableNameInnerInt
 import com.baomidou.mybatisplus.extension.plugins.inner.PaginationInnerInterceptor;
 
 import cc.flyfree.free.module.core.jdbc.config.JdbcProperties;
-import cc.flyfree.free.module.core.jdbc.sharding.ShardingThreadLocal;
+import cc.flyfree.free.module.core.jdbc.shard.ShardingThreadLocal;
 
 /**
  * @author zengzhifei
@@ -28,7 +28,7 @@ public class JdbcModuleAutoConfiguration {
         DynamicTableNameInnerInterceptor dynamicTableNameInnerInterceptor = new DynamicTableNameInnerInterceptor();
         TableNameHandler handler = (sql, tableName) -> {
             if (tableName.contains("{}")) {
-                return tableName.replace("{}", ShardingThreadLocal.get(tableName));
+                return tableName.replace("{}", ShardingThreadLocal.get(tableName).toString());
             } else {
                 return tableName;
             }

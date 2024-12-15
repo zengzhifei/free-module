@@ -1,4 +1,4 @@
-package cc.flyfree.free.module.core.jdbc.annotation;
+package cc.flyfree.free.module.core.jdbc.shard;
 
 import java.lang.annotation.Documented;
 import java.lang.annotation.ElementType;
@@ -8,18 +8,18 @@ import java.lang.annotation.Target;
 
 /**
  * @author zengzhifei
- * @date 2022/8/11 11:50
+ * @date 2024/5/6 16:40
  */
-@Target(ElementType.TYPE)
+@Target(ElementType.FIELD)
 @Retention(RetentionPolicy.RUNTIME)
 @Documented
-public @interface TableSharding {
+public @interface Sharding {
     Strategy strategy();
 
-    int size() default 0;
+    int mod() default 0;
 
     enum Strategy {
-        // 策略
-        MOD
+        // 策略类型
+        MOD;
     }
 }
