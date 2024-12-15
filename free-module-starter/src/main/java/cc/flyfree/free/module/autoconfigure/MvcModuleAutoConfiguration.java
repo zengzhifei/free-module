@@ -112,7 +112,6 @@ public class MvcModuleAutoConfiguration {
                 .version(swaggerProperties.getVersion());
         OpenAPI openApi = new OpenAPI();
         openApi.setInfo(info);
-        openApi.setOpenapi(swaggerProperties.getBasePackage());
         return openApi;
     }
 }
