@@ -39,6 +39,7 @@ import jakarta.annotation.PostConstruct;
 import jakarta.servlet.http.Cookie;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
+import jakarta.servlet.http.HttpSession;
 
 /**
  * @author zengzhifei
@@ -103,6 +104,17 @@ public class PassGate<E> {
 
         // 写入登录状态
         refreshToken(uuid, dbPassword, request, response);
+    }
+
+    public void logout(HttpSession session, HttpServletRequest request, HttpServletResponse response) {
+        // 清除SessionId
+        session.invalidate();
+        // 清除cookie
+        Cookie cookie = new Cookie(properties.getTokenKey(), null);
+        cookie.setMaxAge(0);
+        cookie.setDomain(UrlUtils.getDomain(request.getHeader("host"), 1));
+        cookie.setPath("/");
+        response.addCookie(cookie);
     }
 
     public void verifyLogin(HttpServletRequest request, HttpServletResponse response, Object handler) {
