@@ -6,9 +6,11 @@ import java.util.List;
 
 import org.apache.commons.lang.StringUtils;
 import org.apache.ibatis.annotations.Mapper;
+import org.apache.ibatis.type.JdbcType;
 
 import com.baomidou.mybatisplus.generator.FastAutoGenerator;
 import com.baomidou.mybatisplus.generator.config.TemplateType;
+import com.baomidou.mybatisplus.generator.config.rules.DbColumnType;
 import com.baomidou.mybatisplus.generator.engine.FreemarkerTemplateEngine;
 
 import lombok.AllArgsConstructor;
@@ -52,6 +54,16 @@ public class AutoGenerator {
                             .convertServiceImplFileName(fn -> fn.replace(conf.getTableTrim(), "") + "ServiceImpl")
                             .build();
                 })
+                // 类型配置
+                .dataSourceConfig((scanner, builder) ->
+                        builder.typeConvertHandler((globalConfig, typeRegistry, metaInfo) -> {
+                            // 兼容旧版本转换成Bool
+                            if (JdbcType.TINYINT == metaInfo.getJdbcType()) {
+                                return DbColumnType.BOOLEAN;
+                            }
+                            return typeRegistry.getColumnType(metaInfo);
+                        })
+                )
                 // 模版配置
                 .templateConfig((scanner, builder) -> {
                     builder.disable(TemplateType.CONTROLLER, TemplateType.XML).build();
