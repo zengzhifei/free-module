@@ -1,6 +1,6 @@
 #!/bin/sh
 
-DEPLOY_VERSION="2.0.6-SNAPSHOT"
+DEPLOY_VERSION="2.0.8-SNAPSHOT"
 
 CURRENT_VERSION=$(sed -n 's/.*<free-module.version>\([^\<]*\)<\/free-module.version>.*/\1/p' "free-module-bom/pom.xml")
 

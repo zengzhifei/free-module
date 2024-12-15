@@ -36,6 +36,10 @@ public class UserContext {
         return get().getUsername();
     }
 
+    public static Set<String> getUserRoles() {
+        return get().getUserRoles();
+    }
+
     @Data
     @Builder
     @NoArgsConstructor
