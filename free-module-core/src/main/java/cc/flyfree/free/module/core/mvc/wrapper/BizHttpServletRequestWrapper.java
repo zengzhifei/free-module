@@ -1,15 +1,14 @@
 package cc.flyfree.free.module.core.mvc.wrapper;
 
+import java.io.BufferedInputStream;
 import java.io.BufferedReader;
 import java.io.ByteArrayInputStream;
+import java.io.ByteArrayOutputStream;
 import java.io.IOException;
-import java.io.InputStream;
 import java.io.InputStreamReader;
-import java.nio.charset.Charset;
 
 import jakarta.servlet.ReadListener;
 import jakarta.servlet.ServletInputStream;
-import jakarta.servlet.ServletRequest;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletRequestWrapper;
 
@@ -24,55 +23,15 @@ public class BizHttpServletRequestWrapper extends HttpServletRequestWrapper {
     public BizHttpServletRequestWrapper(HttpServletRequest request) throws IOException {
         super(request);
 
-        String bodyStr = getBodyString(request);
-        body = bodyStr.getBytes(Charset.defaultCharset());
-    }
-
-    public String getBodyString() {
-        final InputStream inputStream = new ByteArrayInputStream(body);
-
-        return inputStream2String(inputStream);
-    }
-
-    private String getBodyString(final ServletRequest request) {
-        try {
-            return inputStream2String(request.getInputStream());
-        } catch (IOException e) {
-            throw new RuntimeException(e);
+        try (BufferedInputStream bis = new BufferedInputStream(request.getInputStream());
+             final ByteArrayOutputStream baos = new ByteArrayOutputStream()) {
+            byte[] buffer = new byte[1024];
+            int len;
+            while ((len = bis.read(buffer)) > 0) {
+                baos.write(buffer, 0, len);
+            }
+            body = baos.toByteArray();
         }
-    }
-
-    private String inputStream2String(InputStream inputStream) {
-        StringBuilder sb = new StringBuilder();
-        BufferedReader reader = null;
-
-        try {
-            reader = new BufferedReader(new InputStreamReader(inputStream, Charset.defaultCharset()));
-            String line;
-            while ((line = reader.readLine()) != null) {
-                sb.append(line);
-            }
-        } catch (IOException e) {
-            e.printStackTrace();
-            throw new RuntimeException(e);
-        } finally {
-            if (inputStream != null) {
-                try {
-                    inputStream.close();
-                } catch (IOException e) {
-                    e.printStackTrace();
-                }
-            }
-            if (reader != null) {
-                try {
-                    reader.close();
-                } catch (IOException e) {
-                    e.printStackTrace();
-                }
-            }
-        }
-
-        return sb.toString();
     }
 
     @Override

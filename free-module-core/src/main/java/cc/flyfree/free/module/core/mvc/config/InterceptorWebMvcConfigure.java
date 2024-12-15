@@ -25,8 +25,8 @@ public class InterceptorWebMvcConfigure implements WebMvcConfigurer {
 
     private final List<HandlerInterceptor> interceptors;
 
-    private static final List<String> SWAGGER_URLS = Arrays.asList("/swagger-ui.html", "/swagger-resources/**",
-            "/webjars/**", "/error", "/csrf", "/");
+    private static final List<String> SWAGGER_URLS =  Arrays.asList("/swagger-ui.html", "/swagger-ui/**", "/swagger-resources/**",
+            "/v3/api-docs/**", "/webjars/**", "/error", "/csrf", "/");
 
     public InterceptorWebMvcConfigure(List<HandlerInterceptor> interceptors) {
         this.interceptors = interceptors == null ? new ArrayList<>(0) : interceptors;

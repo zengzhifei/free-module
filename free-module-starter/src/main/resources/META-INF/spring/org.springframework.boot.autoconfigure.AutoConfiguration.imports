@@ -1,0 +1,5 @@
+cc.flyfree.free.module.autoconfigure.CommonModuleAutoConfiguration
+cc.flyfree.free.module.autoconfigure.JdbcModuleAutoConfiguration
+cc.flyfree.free.module.autoconfigure.MvcModuleAutoConfiguration
+cc.flyfree.free.module.autoconfigure.RedisModuleAutoConfiguration
+cc.flyfree.free.module.autoconfigure.RpcModuleAutoConfiguration
