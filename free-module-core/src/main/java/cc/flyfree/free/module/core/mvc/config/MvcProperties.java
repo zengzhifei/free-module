@@ -28,4 +28,7 @@ public class MvcProperties {
 
     @NestedConfigurationProperty
     private SwaggerProperties swagger = new SwaggerProperties();
+
+    @NestedConfigurationProperty
+    private UploadProperties uploader = new UploadProperties();
 }

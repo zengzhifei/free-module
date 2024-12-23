@@ -14,6 +14,7 @@ import org.springframework.web.context.request.ServletRequestAttributes;
 import cc.flyfree.free.module.core.common.util.AopUtils;
 import cc.flyfree.free.module.core.mvc.passport.PassGate;
 import cc.flyfree.free.module.core.mvc.passport.anotation.Login;
+import jakarta.annotation.Resource;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.extern.slf4j.Slf4j;
@@ -26,7 +27,7 @@ import lombok.extern.slf4j.Slf4j;
 @Order(1)
 @Aspect
 public class LoginAdvice {
-    @Autowired
+    @Resource(type = PassGate.class)
     private PassGate<?> passGate;
 
     @Before("@annotation(cc.flyfree.free.module.core.mvc.passport.anotation.Login)")

@@ -25,6 +25,8 @@ import cc.flyfree.free.module.core.mvc.filter.RequestWrapperFilter;
 import cc.flyfree.free.module.core.mvc.interceptor.LoggingInterceptor;
 import cc.flyfree.free.module.core.mvc.interceptor.PassportInterceptor;
 import cc.flyfree.free.module.core.mvc.passport.anotation.advice.LoginAdvice;
+import cc.flyfree.free.module.core.mvc.uploader.Uploader;
+import cc.flyfree.free.module.core.mvc.uploader.anotation.advice.AutoUploaderAdvice;
 import io.swagger.v3.oas.models.OpenAPI;
 import io.swagger.v3.oas.models.info.Info;
 
@@ -113,5 +115,15 @@ public class MvcModuleAutoConfiguration {
         OpenAPI openApi = new OpenAPI();
         openApi.setInfo(info);
         return openApi;
+    }
+
+    @Bean
+    public Uploader uploader() {
+        return new Uploader(mvcProperties.getUploader());
+    }
+
+    @Bean
+    public AutoUploaderAdvice autoUploaderAdvice() {
+        return new AutoUploaderAdvice();
     }
 }
