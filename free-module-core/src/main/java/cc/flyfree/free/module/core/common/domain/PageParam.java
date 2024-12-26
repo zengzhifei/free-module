@@ -11,7 +11,7 @@ import lombok.Data;
 @Data
 public class PageParam {
     public static final Integer DEFAULT_PAGE_NO = 1;
-    public static final Integer DEFAULT_PAGE_SIZE = 50;
+    public static final Integer DEFAULT_PAGE_SIZE = 20;
 
     private Integer pageNo = 1;
     private Integer pageSize = 50;

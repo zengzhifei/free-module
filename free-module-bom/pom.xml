@@ -12,7 +12,7 @@
 
     <groupId>cc.flyfree</groupId>
     <artifactId>free-module-bom</artifactId>
-    <version>2.0.19-SNAPSHOT</version>
+    <version>2.0.20-SNAPSHOT</version>
 
     <packaging>pom</packaging>
     <description>自由的模块依赖</description>
@@ -23,7 +23,7 @@
         <maven.compiler.source>17</maven.compiler.source>
         <maven.compiler.target>17</maven.compiler.target>
         <spring-boot.version>3.1.4</spring-boot.version>
-        <free-module.version>2.0.19-SNAPSHOT</free-module.version>
+        <free-module.version>2.0.20-SNAPSHOT</free-module.version>
 
         <log4j2.version>2.20.0</log4j2.version>
         <elasticsearch.version>7.3.2</elasticsearch.version>
