@@ -3,11 +3,15 @@
 ## 引入maven依赖
 
 ```xml
+<parent>
+    <groupId>cc.flyfree</groupId>
+    <artifactId>free-module-bom</artifactId>
+    <version>latest.version</version>
+</parent>
 
 <dependency>
     <groupId>cc.flyfree</groupId>
     <artifactId>free-module-starter</artifactId>
-    <version>latest.version</version>
 </dependency>
 ```
 
