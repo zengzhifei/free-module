@@ -1,0 +1,123 @@
+server:
+  port: 8090
+
+free:
+  common:
+    mail:
+      enable: false
+      protocol: smtp
+      host: smtp.qq.com
+      port: 465
+      username: 609250539@qq.com
+      password: dnlzcgtqgcdybeef
+      from-name: zengzhifei
+      properties:
+        mail.smtp.ssl.enable: true
+    retry:
+      crontab: "*/10 * * * *"
+  mvc:
+    enable: false
+    captcha:
+      style: line
+    passport:
+      enable: false
+      token-key: fr_token
+      expires: 7d
+      exclude-paths: /test/register,/test/login
+    swagger:
+      enable: false
+      base-package: com.demo.controller
+      title: API文档
+      description: java demo api文档
+    logging:
+      to-pretty-string: true
+  jdbc:
+    enable: false
+    entity-package: com.demo.orm.entity
+  es:
+    enable: false
+  redis:
+    enable: false
+    log: false
+  rpc:
+    provider:
+      allow-product-ids: demo
+    consumer:
+      product-id: demo
+
+
+spring:
+  autoconfigure:
+    exclude:
+      - org.springframework.boot.autoconfigure.jdbc.DataSourceAutoConfiguration
+
+db:
+  demo:
+    jdbc-url: jdbc:mysql://10.138.44.197:8306/test_zzf?useUnicode=true&characterEncoding=UTF-8&zeroDateTimeBehavior=convertToNull&noAccessToProcedureBodies=true&autoReconnect=true&allowMultiQueries=true
+    username: mapp
+    password: mapp
+    pool-name: common-db-pool
+
+es:
+  goods:
+    host: 10.21.236.89
+    port: 8200
+    user: superuser
+    password: Dorich_123
+    index: goods_index_test
+    retries: 3
+
+redis:
+  demo:
+    host: 10.138.35.203
+    port: 8379
+    password: 123qwe
+    jedis-pool:
+      max-idle: 5
+      min-idle: 3
+
+stream:
+  demo1:
+    provider:
+      meta-host: 127.0.0.1:1009
+      pipe: test-1-pipe
+      password: 123456
+    consumer:
+      meta-host: 127.0.0.1:1009
+      queue: test-1-queue
+      token: 123456
+      count: 5
+  demo2:
+    consumer:
+      meta-host: 127.0.0.1:1009
+      queue: test-1-queue-2
+      token: 123456
+      count: 5
+
+management:
+  endpoints:
+    web:
+      exposure:
+        include: '*'
+    jmx:
+      exposure:
+        include: '*'
+  metrics:
+    distribution:
+      percentiles-histogram.http.server.requests: false
+    web:
+      server:
+        max-uri-tags: 300
+  endpoint:
+    health:
+      show-details: always
+  health:
+    redis:
+      enabled: false
+    elasticsearch:
+      enabled: false
+
+logging:
+  #config: classpath:default/clog/log4j2.xml
+  level:
+    com.demo.orm.mapper: debug

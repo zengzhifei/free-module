@@ -19,7 +19,7 @@ import org.springframework.web.method.annotation.MethodArgumentTypeMismatchExcep
 import cc.flyfree.free.module.core.common.domain.Result;
 import cc.flyfree.free.module.core.common.enums.ErrorCode;
 import cc.flyfree.free.module.core.common.exception.BizException;
-
+import cc.flyfree.free.module.core.rpc.exception.ConsumerException;
 import lombok.extern.slf4j.Slf4j;
 
 /**
@@ -104,6 +104,12 @@ public abstract class AbstractExceptionHandler {
     @ExceptionHandler(HttpMediaTypeNotSupportedException.class)
     public Result<String> handleHttpMediaTypeNotSupportedException(HttpMediaTypeNotSupportedException e) {
         log.error("handleHttpMediaTypeNotSupportedException", e);
+        return Result.fail(ErrorCode.UNKNOWN_ERROR.getCode(), e.getMessage());
+    }
+
+    @ExceptionHandler({ConsumerException.class})
+    public Result<String> handleConsumerException(ConsumerException e) {
+        log.error("handleConsumerException", e);
         return Result.fail(ErrorCode.UNKNOWN_ERROR.getCode(), e.getMessage());
     }
 

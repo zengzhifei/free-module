@@ -1,6 +1,6 @@
 #!/bin/sh
 
-DEPLOY_VERSION="2.0.21-SNAPSHOT"
+DEPLOY_VERSION="2.0.22-SNAPSHOT"
 
 CURRENT_VERSION=$(sed -n 's/.*<free-module.version>\([^\<]*\)<\/free-module.version>.*/\1/p' "free-module-bom/pom.xml")
 
@@ -16,6 +16,7 @@ sed -i '' "s|<free-module.version>$CURRENT_VERSION</free-module.version>|<free-m
 sed -i '' "s|<version>$CURRENT_VERSION</version>|<version>$DEPLOY_VERSION</version>|" free-module-bom/pom.xml
 sed -i '' "s|<version>$CURRENT_VERSION</version>|<version>$DEPLOY_VERSION</version>|" free-module-core/pom.xml
 sed -i '' "s|<version>$CURRENT_VERSION</version>|<version>$DEPLOY_VERSION</version>|" free-module-starter/pom.xml
+sed -i '' "s|<version>$CURRENT_VERSION</version>|<version>$DEPLOY_VERSION</version>|" free-module-demo/pom.xml
 sed -i '' "s|<version>$CURRENT_VERSION</version>|<version>$DEPLOY_VERSION</version>|g" pom.xml
 
 echo "更新后版本号: $DEPLOY_VERSION"

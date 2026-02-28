@@ -4,7 +4,7 @@
     <parent>
         <groupId>cc.flyfree</groupId>
         <artifactId>free-module-bom</artifactId>
-        <version>2.0.21-SNAPSHOT</version>
+        <version>2.0.22-SNAPSHOT</version>
         <relativePath>./free-module-bom</relativePath>
     </parent>
 
@@ -17,6 +17,7 @@
         <module>free-module-starter</module>
         <module>free-module-core</module>
         <module>free-module-bom</module>
+        <module>free-module-demo</module>
     </modules>
 
     <build>
